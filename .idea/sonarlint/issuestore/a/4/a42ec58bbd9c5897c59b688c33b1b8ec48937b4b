@@ -1,0 +1,12 @@
+
+R
+java:S14819"0Remove this unused "searchModel" local variable.(¥Õ—“ÿÿÿÿÿ8Ø¯ÑôÊ.
+O
+java:S1068"-Remove this unused "mInflater" private field.(ÉÁ’ïúÿÿÿÿ8¹˜åôÊ.
+X	java:S125W"<This block of commented-out lines of code should be removed.( —óã8›ó¥õÊ.
+N
+java:S3010",Remove this assignment of "searchArrayList".(éƒÏ‹ÿÿÿÿÿ8£ÑûóÊ.
+”
+java:S1319"rThe type of the "results" object should be an interface such as "List" rather than the implementation "ArrayList".( Õ¿ƒşÿÿÿÿ8£ÑûóÊ.
+a
+java:S18549"?Remove this useless assignment to local variable "searchModel".(¥Õ—“ÿÿÿÿÿ8Ø¯ÑôÊ.
