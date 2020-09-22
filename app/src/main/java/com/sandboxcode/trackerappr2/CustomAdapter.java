@@ -63,7 +63,7 @@ public class CustomAdapter extends BaseAdapter {
         if (convertView == null) {
 
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            convertView = inflater.inflate(R.layout.list_item, parent, false);
+            convertView = inflater.inflate(R.layout.search_list_item, parent, false);
             holder = new ViewHolder();
             holder.make = (TextView) convertView.findViewById(R.id.tv_list_item_make);
             holder.model = (TextView) convertView.findViewById(R.id.tv_list_item_model);
@@ -84,9 +84,6 @@ public class CustomAdapter extends BaseAdapter {
         holder.make.setText(make);
         holder.model.setText(model);
         holder.stock.setText(stock);
-//        tvMake.setText(make);
-//        tvModel.setText(model);
-//        tvStock.setText(stock);
 
         return convertView;
     }
