@@ -16,6 +16,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,9 +27,16 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child("user1");
+    private FirebaseAuth mAuth;
+    private DatabaseReference databaseRef;
     private ListView mListView;
     private ArrayList<SearchModel> searchList = new ArrayList<>();
+
+    private void getDbReferences() {
+        mAuth = FirebaseAuth.getInstance();
+        databaseRef = FirebaseDatabase.getInstance().getReference().child("queries")
+                .child(mAuth.getCurrentUser().getUid());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +44,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getDbReferences();
 
-        databaseReference.addChildEventListener(new ChildEventListener() {
+
+        databaseRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 String make = snapshot.child("make").getValue(String.class);

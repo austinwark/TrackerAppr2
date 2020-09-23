@@ -2,22 +2,20 @@ package com.sandboxcode.trackerappr2;
 
 public class SearchModel {
 
-    public String make;
     private String model;
-    private String stock;
+    private String trim;
+    private String year;
 
-    public SearchModel(String make, String model, String stock) {
-        this.make = make;
+    public SearchModel(String model, String trim, String year) {
         this.model = model;
-        this.stock = stock;
+        this.trim = trim;
+        this.year = year;
     }
 
-    public String getMake() {
-        return this.make;
-    }
-
-    public void setMake(String make) {
-        this.make = make;
+    /**
+     * Default constructor required by Firebase
+     */
+    public SearchModel() {
     }
 
     public String getModel() {
@@ -28,11 +26,20 @@ public class SearchModel {
         this.model = model;
     }
 
-    public String getStock() {
-        return stock;
+    public String getTrim() {
+        return trim;
     }
 
-    public void setStock(String stock) {
-        this.stock = stock;
+    public void setTrim(String trim) {
+        this.trim = trim;
     }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
 }

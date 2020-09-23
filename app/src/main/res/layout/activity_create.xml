@@ -8,52 +8,32 @@
 
     <Spinner
         android:id="@+id/spinner_model"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <EditText
-        android:id="@+id/et_min_price"
-        android:layout_width="wrap_content"
+        android:id="@+id/et_year"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:inputType="number"
         app:layout_constraintTop_toBottomOf="@+id/spinner_model"
-        app:layout_constraintRight_toLeftOf="@id/et_max_price"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <EditText
-        android:id="@+id/et_max_price"
-        android:layout_width="wrap_content"
+        android:id="@+id/et_trim"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_model"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/et_min_price" />
-
-    <EditText
-        android:id="@+id/et_min_year"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/et_min_price"
-        app:layout_constraintRight_toLeftOf="@id/et_max_year"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <EditText
-        android:id="@+id/et_max_year"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/et_max_price"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/et_min_year" />
+        app:layout_constraintTop_toBottomOf="@id/et_year"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/et_min_year"
+        app:layout_constraintTop_toBottomOf="@id/et_trim"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:text="Submit"

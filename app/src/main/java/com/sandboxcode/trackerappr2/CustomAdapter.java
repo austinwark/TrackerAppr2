@@ -22,9 +22,9 @@ public class CustomAdapter extends BaseAdapter {
      * Holds elements in a view
      */
     static class ViewHolder {
-        TextView make;
         TextView model;
-        TextView stock;
+        TextView trim;
+        TextView year;
     }
 
     public CustomAdapter(Context context, ArrayList<SearchModel> results) {
@@ -50,11 +50,11 @@ public class CustomAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String make = searchArrayList.get(position).getMake();
         String model = searchArrayList.get(position).getModel();
-        String stock = searchArrayList.get(position).getStock();
+        String trim = searchArrayList.get(position).getTrim();
+        String year = searchArrayList.get(position).getYear();
 
-        SearchModel searchModel = new SearchModel(make, model, stock);
+        SearchModel searchModel = new SearchModel(model, trim, year);
 
         final View result;
 
@@ -65,9 +65,9 @@ public class CustomAdapter extends BaseAdapter {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(R.layout.search_list_item, parent, false);
             holder = new ViewHolder();
-            holder.make = (TextView) convertView.findViewById(R.id.tv_list_item_make);
             holder.model = (TextView) convertView.findViewById(R.id.tv_list_item_model);
-            holder.stock = (TextView) convertView.findViewById(R.id.tv_list_item_stock);
+            holder.trim = (TextView) convertView.findViewById(R.id.tv_list_item_trim);
+            holder.year = (TextView) convertView.findViewById(R.id.tv_list_item_year);
 
             result = convertView;
             convertView.setTag(holder);
@@ -81,9 +81,10 @@ public class CustomAdapter extends BaseAdapter {
         result.startAnimation(animation);
         lastPosition = position;
 
-        holder.make.setText(make);
         holder.model.setText(model);
-        holder.stock.setText(stock);
+        holder.trim.setText(trim);
+        holder.year.setText(year);
+
 
         return convertView;
     }
