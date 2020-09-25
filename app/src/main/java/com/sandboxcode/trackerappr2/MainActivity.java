@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
         databaseRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                String make = snapshot.child("make").getValue(String.class);
                 String model = snapshot.child("model").getValue(String.class);
-                String stock = snapshot.child("stock").getValue(Long.class).toString();
-                SearchModel searchModel = new SearchModel(make, model, stock);
+                String trim = snapshot.child("trim").getValue(String.class);
+                String year = snapshot.child("year").getValue(String.class);
+                SearchModel searchModel = new SearchModel(model, trim, year);
                 searchList.add(searchModel);
 
                 CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), searchList);
