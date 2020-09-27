@@ -53,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
                 String model = snapshot.child("model").getValue(String.class);
                 String trim = snapshot.child("trim").getValue(String.class);
                 String year = snapshot.child("year").getValue(String.class);
-                SearchModel searchModel = new SearchModel(model, trim, year);
+//                String minPrice = snapshot.child("minPrice").getValue(String.class);
+//                String maxPrice = snapshot.child("maxPrice").getValue(String.class);
+                SearchModel searchModel = new SearchModel(model, trim, year, 2, 2);
                 searchList.add(searchModel);
 
                 CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), searchList);

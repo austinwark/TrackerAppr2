@@ -90,3 +90,7 @@ n
 >app/src/main/java/com/sandboxcode/trackerappr2/WebScraper.java,9\b\9b1821e2d5bb472243a75c80f99fc8b1deeba02b
 @
 local.properties,0\7\0712df971a99ac4d2fccb8e0fb19f377f3374cca
+Y
+)app/src/main/res/layout/activity_main.xml,7\6\76b07e40f24cce093536731477540f12e7da3cb6
+u
+Eapp/src/main/java/com/sandboxcode/trackerappr2/SearchResultModel.java,d\a\da82db0037a6ebf795782f7571148b98f1f54dbd

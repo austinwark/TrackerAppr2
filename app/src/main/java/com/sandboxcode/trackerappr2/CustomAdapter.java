@@ -54,8 +54,6 @@ public class CustomAdapter extends BaseAdapter {
         String trim = searchArrayList.get(position).getTrim();
         String year = searchArrayList.get(position).getYear();
 
-        SearchModel searchModel = new SearchModel(model, trim, year);
-
         final View result;
 
         ViewHolder holder;

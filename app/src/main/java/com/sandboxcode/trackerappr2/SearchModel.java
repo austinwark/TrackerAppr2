@@ -5,11 +5,15 @@ public class SearchModel {
     private String model;
     private String trim;
     private String year;
+    private int minPrice;
+    private int maxPrice;
 
-    public SearchModel(String model, String trim, String year) {
+    public SearchModel(String model, String trim, String year, int minPrice, int maxPrice) {
         this.model = model;
         this.trim = trim;
         this.year = year;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
     }
 
     /**
@@ -40,6 +44,22 @@ public class SearchModel {
 
     public void setYear(String year) {
         this.year = year;
+    }
+
+    public int getMinPrice() {
+        return minPrice;
+    }
+
+    public void setMinPrice(int minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    public int getMaxPrice() {
+        return maxPrice;
+    }
+
+    public void setMaxPrice(int maxPrice) {
+        this.maxPrice = maxPrice;
     }
 
 }

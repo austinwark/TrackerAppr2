@@ -1,15 +1,16 @@
 package com.sandboxcode.trackerappr2;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.slider.RangeSlider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -17,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class CreateActivity extends AppCompatActivity {
 
@@ -26,19 +29,21 @@ public class CreateActivity extends AppCompatActivity {
             "RAV4", "RAV4 Prime", "Venza", "Tacoma", "Tundra"
     };
 
+    private static final String TAG = "CreateActivity";
     private DatabaseReference databaseRef;
     private FirebaseAuth mAuth;
     private Spinner modelSpinner;
     private EditText yearEditText;
     private EditText trimEditText;
+    RangeSlider priceSlider;
+    ArrayList<SearchResultModel> results;
 
 
     private static final ArrayList<String> modelList = new ArrayList<>(Arrays.asList(models));
 
     private void getDatabaseReferences() {
         mAuth = FirebaseAuth.getInstance();
-        databaseRef = FirebaseDatabase.getInstance().getReference().child("queries")
-                .child(mAuth.getCurrentUser().getUid());
+        databaseRef = FirebaseDatabase.getInstance().getReference();
     }
 
 
@@ -65,19 +70,24 @@ public class CreateActivity extends AppCompatActivity {
         String trim = trimEditText.getText().toString();
         String year = yearEditText.getText().toString();
 
+        List<Float> priceValues = priceSlider.getValues();
+        int minPrice = Collections.min(priceValues).intValue();
+        int maxPrice = Collections.max(priceValues).intValue();
 
-        SearchModel searchModel = new SearchModel(model, trim, year);
-        Log.d("CREATEACTIVITY: ", "EXECUTE");
-        WebScraper scraper = new WebScraper(model, trim, year);
+        SearchModel searchModel = new SearchModel(model, trim, year, minPrice, maxPrice);
+        WebScraper scraper = new WebScraper(this, searchModel, databaseRef, mAuth.getCurrentUser().getUid());
         scraper.execute();
+        finish();
 
 
-//        String key = databaseRef.push().getKey();
-//        databaseRef.child(key).setValue(searchModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+//        final String KEY = databaseRef.child("queries").child(mAuth.getCurrentUser().getUid()).push().getKey();
+//
+//        databaseRef.child("queries").child(mAuth.getCurrentUser().getUid()).child(KEY)
+//                .setValue(searchModel).addOnSuccessListener(this, new OnSuccessListener<Void>() {
 //            @Override
 //            public void onSuccess(Void aVoid) {
-//                Toast.makeText(CreateActivity.this,
-//                        "Query saved successfully", Toast.LENGTH_SHORT).show();
+//
+//                databaseRef.child("results").child(KEY).setValue(results);
 //            }
 //        }).addOnFailureListener(new OnFailureListener() {
 //            @Override
@@ -88,10 +98,17 @@ public class CreateActivity extends AppCompatActivity {
 //        });
     }
 
+    public void sendMessage(String text) {
+        Toast.makeText(CreateActivity.this, text, Toast.LENGTH_SHORT).show();
+    }
+
+
     private void instantiateUI() {
         modelSpinner = (Spinner) findViewById(R.id.spinner_model);
         trimEditText = (EditText) findViewById(R.id.et_trim);
         yearEditText = (EditText) findViewById(R.id.et_year);
+        priceSlider = (RangeSlider) findViewById(R.id.slider_price);
+
     }
 
     @Override
