@@ -1,4 +1,4 @@
-package com.sandboxcode.trackerappr2;
+package com.sandboxcode.trackerappr2.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,25 +8,26 @@ import android.view.View;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sandboxcode.trackerappr2.R;
+import com.sandboxcode.trackerappr2.fragments.SearchListFragment;
+import com.sandboxcode.trackerappr2.models.SearchModel;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
     private DatabaseReference databaseRef;
     private ListView mListView;
@@ -46,40 +47,11 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getDbReferences();
 
-
-        databaseRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                String model = snapshot.child("model").getValue(String.class);
-                String trim = snapshot.child("trim").getValue(String.class);
-                String year = snapshot.child("year").getValue(String.class);
-//                String minPrice = snapshot.child("minPrice").getValue(String.class);
-//                String maxPrice = snapshot.child("maxPrice").getValue(String.class);
-                SearchModel searchModel = new SearchModel(model, trim, year, 2, 2);
-                searchList.add(searchModel);
-
-                CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), searchList);
-
-                mListView = (ListView) findViewById(R.id.lv_searches);
-                mListView.setAdapter(customAdapter);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+        /* TODO: NEED TO FIX BACK STACK */
+        SearchListFragment fragment = new SearchListFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment_container, fragment);
+        transaction.commit();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_create);
@@ -90,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
