@@ -66,8 +66,6 @@ A
 gradlew,5\b\5bbfa66edb4db3c7c33c5181f43510990d3307f9
 ;
 gradlew.bat,2\a\2a45a911a8f1836b0b6c5b758962572012d8f8c3
-Y
-)app/src/main/res/navigation/nav_graph.xml,b\a\baffce053da291d96fb575a09f2bbe9aaa9c4be9
 q
 Aapp/src/main/java/com/sandboxcode/trackerappr2/CustomAdapter.java,2\c\2cb8eba5c819b8411caa943ea2589bfa5652cd81
 p
@@ -80,8 +78,6 @@ b
 2app/src/main/res/drawable/ic_create_foreground.xml,6\b\6b672f9b75244291451f70a663175d5493dcc7ca
 ^
 .app/src/main/res/drawable-anydpi/ic_create.xml,5\e\5ef47dcd3a51bc212f6f8442d22f6a1028947e1f
-\
-,app/src/main/res/layout/search_list_item.xml,8\0\80b63c85b2e8a41dbc252603abfdcb4242dfc2c8
 `
 0app/src/main/res/mipmap-anydpi-v26/ic_create.xml,b\4\b4dfac9291e6b0fe0f3487acb1c885fb604ac651
 f
@@ -90,7 +86,5 @@ n
 >app/src/main/java/com/sandboxcode/trackerappr2/WebScraper.java,9\b\9b1821e2d5bb472243a75c80f99fc8b1deeba02b
 @
 local.properties,0\7\0712df971a99ac4d2fccb8e0fb19f377f3374cca
-Y
-)app/src/main/res/layout/activity_main.xml,7\6\76b07e40f24cce093536731477540f12e7da3cb6
 u
 Eapp/src/main/java/com/sandboxcode/trackerappr2/SearchResultModel.java,d\a\da82db0037a6ebf795782f7571148b98f1f54dbd

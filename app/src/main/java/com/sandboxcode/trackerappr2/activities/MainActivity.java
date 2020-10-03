@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,52 +15,35 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.sandboxcode.trackerappr2.R;
-import com.sandboxcode.trackerappr2.fragments.SearchListFragment;
-import com.sandboxcode.trackerappr2.models.SearchModel;
-
-import java.util.ArrayList;
+import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
-    private FirebaseAuth mAuth;
-    private DatabaseReference databaseRef;
-    private ListView mListView;
-    private ArrayList<SearchModel> searchList = new ArrayList<>();
+        private static final String TAG = "MainActivity";
 
-    private void getDbReferences() {
-        mAuth = FirebaseAuth.getInstance();
-        databaseRef = FirebaseDatabase.getInstance().getReference().child("queries")
-                .child(mAuth.getCurrentUser().getUid());
-    }
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getDbReferences();
+            SearchesFragment fragment = new SearchesFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.main_fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
 
-        /* TODO: NEED TO FIX BACK STACK */
-        SearchListFragment fragment = new SearchListFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_fragment_container, fragment);
-        transaction.commit();
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setImageResource(R.drawable.ic_create);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, CreateActivity.class));
-            }
-        });
-    }
+            FloatingActionButton fab = findViewById(R.id.fab);
+            fab.setImageResource(R.drawable.ic_create);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(MainActivity.this, CreateActivity.class));
+                }
+            });
+        }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,4 +76,13 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+//            this.finish();
+//        } else {
+//            getSupportFragmentManager().popBackStack();
+//        }
+//    }
 }

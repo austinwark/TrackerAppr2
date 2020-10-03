@@ -1,4 +1,4 @@
-package com.sandboxcode.trackerappr2;
+package com.sandboxcode.trackerappr2.utils;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.sandboxcode.trackerappr2.activities.CreateActivity;
+import com.sandboxcode.trackerappr2.models.SearchModel;
+import com.sandboxcode.trackerappr2.models.SearchResultModel;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -49,9 +52,11 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
                 queryString.append(search.getTrim());
             }
         }
-        if (!search.getYear().isEmpty())
+        if (!search.getYear().isEmpty()) {
             queryString.append(UrlBits.YEAR.getVal());
-        queryString.append(search.getYear());
+            queryString.append(search.getYear());
+
+        }
 
         queryString.append(UrlBits.PRICERANGE.getVal());
         queryString.append(search.getMinPrice());
@@ -66,8 +71,9 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
         Log.d(TAG, queryString.toString());
         try {
             doc = Jsoup.connect(queryString.toString()).get();
-            Elements content = doc.select("div[data-vin]");
-            parseElements(content);
+            Elements mainContent = doc.select("div[data-vin]");
+            Elements dealerNames = doc.select(".dealershipDisplay");
+            parseElements(mainContent, dealerNames);
 
         } catch (IOException e) {
             Log.e(TAG, e.toString());
@@ -75,7 +81,7 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
         return title;
     }
 
-    private void parseElements(Elements content) {
+    private void parseElements(Elements content, Elements dealerNames) {
         ArrayList<SearchResultModel> results = new ArrayList<>();
 
         for (Element vehicle : content) {
@@ -90,10 +96,11 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
             details.put("price", vehicle.attr("data-price"));
             details.put("stock", vehicle.attr("data-stocknum"));
             details.put("miles", vehicle.select(".mileageDisplay").first().text().substring(8).trim());
+            details.put("dealer", vehicle.select("li.dealershipDisplay").first().text().substring(11).trim());
 
             SearchResultModel resultModel = new SearchResultModel(details);
             results.add(resultModel);
-            //            Log.d(TAG, "\t" + resultModel + "\n");
+            Log.d(TAG, "\t" + resultModel.toString() + "\n");
         }
 
         updateDatabase(results);
@@ -101,13 +108,16 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
 
     private void updateDatabase(ArrayList<SearchResultModel> searchResults) {
         final ArrayList<SearchResultModel> results = searchResults;
-        final String KEY = ref.child("queries").child(userUid).push().getKey();
-        ref.child("queries").child(userUid).child(KEY)
+//        final String KEY = ref.child("queries").child(userUid).push().getKey();
+        ref.child("queries").child(userUid).child(search.getId())
                 .setValue(search).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
 
-                ref.child("results").child(KEY).setValue(results);
+//                ref.child("results").child(search.getId()).setValue(results);
+                for (SearchResultModel result : results) {
+                    ref.child("results").child(search.getId()).child(result.getVin()).setValue(result);
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -123,7 +133,7 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
         YEAR("&Year="),
         TRIM("&f=trim%3A"),
         PRICERANGE("&Pricerange="),
-        MILEAGERANGE("&Mileagerange=");
+        MILEAGERANGE("&Mileagerange="); // TODO: add mileage range parameter to search
         private String val;
         private UrlBits(String val) {
             this.val = val;

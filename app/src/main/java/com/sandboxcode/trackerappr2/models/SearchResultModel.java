@@ -1,19 +1,28 @@
-package com.sandboxcode.trackerappr2;
+package com.sandboxcode.trackerappr2.models;
+
+import org.parceler.Parcel;
 
 import java.util.Map;
 
+// TODO - add engine, transmission, and dealer to model
+@Parcel
 public class SearchResultModel {
 
-    private String stock;
-    private String make;
-    private String model;
-    private String year;
-    private String trim;
-    private String extColor;
-    private String price;
-    private String vin;
-    private String miles;
-    private String intColor;
+    String stock;
+    String make;
+    String model;
+    String year;
+    String trim;
+    String extColor;
+    String intColor;
+    String price;
+    String vin;
+    String miles;
+    String dealer;
+
+    public SearchResultModel(){
+
+    }
 
     public SearchResultModel(Map<String, String> details) {
 
@@ -23,19 +32,36 @@ public class SearchResultModel {
         year = details.get("year");
         trim = details.get("trim");
         extColor = details.get("extColor");
+        intColor = details.get("intColor");
         price = details.get("price");
         vin = details.get("vin");
         miles = details.get("miles");
-        intColor = details.get("intColor");
+        dealer = details.get("dealer");
     }
 
-    public SearchResultModel() {
+    public SearchResultModel(String stock, String make, String model, String year, String trim,
+                             String extColor, String intColor, String price, String vin, String miles, String dealer) {
+        this.stock = stock;
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.trim = trim;
+        this.extColor = extColor;
+        this.intColor = intColor;
+        this.price = price;
+        this.vin = vin;
+        this.miles = miles;
+        this.dealer = dealer;
     }
 
     @Override
     public String toString() {
-        return String.format("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
-                stock, make, model, year, trim, extColor, price, miles, intColor, vin);
+        return String.format("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
+                stock, make, model, year, trim, extColor, price, miles, intColor, vin, dealer);
+    }
+
+    public String getTitle() {
+        return getYear() + " " + getMake() + " " + getModel() + " " + getTrim();
     }
 
     public String getStock() {
@@ -117,5 +143,9 @@ public class SearchResultModel {
     public void setIntColor(String intColor) {
         this.intColor = intColor;
     }
+
+    public String getDealer() { return dealer; }
+
+    public void setDealer(String dealer) { this.dealer = dealer; }
 
 }

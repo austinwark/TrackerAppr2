@@ -1,4 +1,4 @@
-package com.sandboxcode.trackerappr2;
+package com.sandboxcode.trackerappr2.activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -14,8 +14,10 @@ import com.google.android.material.slider.RangeSlider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sandboxcode.trackerappr2.R;
+import com.sandboxcode.trackerappr2.models.SearchModel;
+import com.sandboxcode.trackerappr2.utils.WebScraper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,11 +34,11 @@ public class CreateActivity extends AppCompatActivity {
     private static final String TAG = "CreateActivity";
     private DatabaseReference databaseRef;
     private FirebaseAuth mAuth;
+    private EditText searchNameEditText;
     private Spinner modelSpinner;
     private EditText yearEditText;
     private EditText trimEditText;
     RangeSlider priceSlider;
-    ArrayList<SearchResultModel> results;
 
 
     private static final ArrayList<String> modelList = new ArrayList<>(Arrays.asList(models));
@@ -64,23 +66,24 @@ public class CreateActivity extends AppCompatActivity {
 
     }
 
-    public void createNewSearch(View v) throws IOException {
+    public void createNewSearch(View v) {
 
+        String searchName = searchNameEditText.getText().toString();
         String model = modelSpinner.getSelectedItem().toString();
         String trim = trimEditText.getText().toString();
         String year = yearEditText.getText().toString();
 
         List<Float> priceValues = priceSlider.getValues();
-        int minPrice = Collections.min(priceValues).intValue();
-        int maxPrice = Collections.max(priceValues).intValue();
+        String minPrice = Collections.min(priceValues).toString();
+        String maxPrice = Collections.max(priceValues).toString();
 
-        SearchModel searchModel = new SearchModel(model, trim, year, minPrice, maxPrice);
+        final String KEY = databaseRef.child("queries").child(mAuth.getCurrentUser().getUid()).push().getKey();
+        SearchModel searchModel = new SearchModel(KEY, searchName, model, trim, year, minPrice, maxPrice);
         WebScraper scraper = new WebScraper(this, searchModel, databaseRef, mAuth.getCurrentUser().getUid());
         scraper.execute();
         finish();
-
-
-//        final String KEY = databaseRef.child("queries").child(mAuth.getCurrentUser().getUid()).push().getKey();
+//
+//
 //
 //        databaseRef.child("queries").child(mAuth.getCurrentUser().getUid()).child(KEY)
 //                .setValue(searchModel).addOnSuccessListener(this, new OnSuccessListener<Void>() {
@@ -96,6 +99,7 @@ public class CreateActivity extends AppCompatActivity {
 //                        "Query failed to save", Toast.LENGTH_SHORT).show();
 //            }
 //        });
+//        finish();
     }
 
     public void sendMessage(String text) {
@@ -104,11 +108,11 @@ public class CreateActivity extends AppCompatActivity {
 
 
     private void instantiateUI() {
+        searchNameEditText = (EditText) findViewById(R.id.et_search_name);
         modelSpinner = (Spinner) findViewById(R.id.spinner_model);
         trimEditText = (EditText) findViewById(R.id.et_trim);
         yearEditText = (EditText) findViewById(R.id.et_year);
         priceSlider = (RangeSlider) findViewById(R.id.slider_price);
-
     }
 
     @Override
