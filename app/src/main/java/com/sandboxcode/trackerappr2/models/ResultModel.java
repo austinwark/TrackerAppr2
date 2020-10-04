@@ -6,7 +6,7 @@ import java.util.Map;
 
 // TODO - add engine, transmission, and dealer to model
 @Parcel
-public class SearchResultModel {
+public class ResultModel {
 
     private String stock;
     private String make;
@@ -22,11 +22,11 @@ public class SearchResultModel {
     private String transmission;
     private String dealer;
 
-    public SearchResultModel(){
+    public ResultModel(){
 
     }
 
-    public SearchResultModel(Map<String, String> details) {
+    public ResultModel(Map<String, String> details) {
 
         stock = details.get("stock");
         make = details.get("make");
@@ -43,7 +43,7 @@ public class SearchResultModel {
         dealer = details.get("dealer");
     }
 
-//    public SearchResultModel(String stock, String make, String model, String year, String trim,
+//    public ResultModel(String stock, String make, String model, String year, String trim,
 //                             String extColor, String intColor, String price, String vin, String miles, String dealer) {
 //        this.stock = stock;
 //        this.make = make;

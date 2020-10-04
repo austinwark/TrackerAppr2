@@ -10,14 +10,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,10 +29,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
-import com.sandboxcode.trackerappr2.adapters.SearchAdapter;
+import com.sandboxcode.trackerappr2.adapters.Search.SearchesAdapter;
+import com.sandboxcode.trackerappr2.adapters.ShadowVerticalSpaceItemDecorator;
+import com.sandboxcode.trackerappr2.adapters.VerticalSpaceItemDecorator;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,11 +46,14 @@ public class SearchesFragment extends Fragment {
 
     private static final String TAG = "SearchesFragment";
     private Context activityContext;
-    private ListView mListView;
+
+    private RecyclerView searchListView;
+    private List<SearchModel> searchList = new ArrayList<>();
+
     private DatabaseReference databaseRef;
     private FirebaseAuth mAuth;
-    private ArrayList<SearchModel> searchList = new ArrayList<>();
-    private SearchAdapter adapter;
+    private SearchesAdapter adapter;
+    private int searchCount;
 
     public SearchesFragment() {
         // Required empty public constructor
@@ -64,20 +71,26 @@ public class SearchesFragment extends Fragment {
 
         getDbReferences();
         activityContext = getActivity().getApplicationContext();
-        adapter = new SearchAdapter(activityContext, searchList);
+        FragmentManager fragmentManager = getParentFragmentManager();
+
+        adapter = new SearchesAdapter(activityContext, R.layout.search_list_item, searchList, fragmentManager);
+//        adapter = new SearchAdapter(activityContext, searchList);
+        searchCount = 0;
         databaseRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                String key = snapshot.child("id").getValue(String.class);
-                String searchName = snapshot.child("searchName").getValue(String.class);
-                String model = snapshot.child("model").getValue(String.class);
-                String trim = snapshot.child("trim").getValue(String.class);
-                String year = snapshot.child("year").getValue(String.class);
-                String minPrice = snapshot.child("minPrice").getValue(String.class);
-                String maxPrice = snapshot.child("maxPrice").getValue(String.class);
-                SearchModel searchModel = new SearchModel(key, searchName, model, trim, year, minPrice, maxPrice);
+//                String key = snapshot.child("id").getValue(String.class);
+//                String searchName = snapshot.child("searchName").getValue(String.class);
+//                String model = snapshot.child("model").getValue(String.class);
+//                String trim = snapshot.child("trim").getValue(String.class);
+//                String year = snapshot.child("year").getValue(String.class);
+//                String minPrice = snapshot.child("minPrice").getValue(String.class);
+//                String maxPrice = snapshot.child("maxPrice").getValue(String.class);
+//                SearchModel searchModel = new SearchModel(key, searchName, model, trim, year, minPrice, maxPrice);
+                SearchModel searchModel = snapshot.getValue(SearchModel.class);
                 searchList.add(searchModel);
-                adapter.notifyDataSetChanged();
+                searchCount++;
+                adapter.notifyItemInserted(searchCount);
                 Log.d(TAG, String.valueOf(searchList.size()));
             }
 
@@ -139,18 +152,30 @@ public class SearchesFragment extends Fragment {
             }
         });
 
-        mListView = view.findViewById(R.id.lv_searches);
-        mListView.setAdapter(adapter);
+        // 3
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SearchModel searchModel = (SearchModel) parent.getItemAtPosition(position);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
 
-                viewResults(searchModel);
-            }
-        });
+        int verticalSpacing = 20;
+        VerticalSpaceItemDecorator itemDecorator = new VerticalSpaceItemDecorator(verticalSpacing);
+        ShadowVerticalSpaceItemDecorator shadowItemDecorator = new ShadowVerticalSpaceItemDecorator(activityContext, R.drawable.drop_shadow);
+
+        // 5
+        searchListView = (RecyclerView) view.findViewById(R.id.searches_view);
+
+        // 6
+        searchListView.setHasFixedSize(true);
+
+        searchListView.setLayoutManager(layoutManager);
+
+        searchListView.addItemDecoration(shadowItemDecorator);
+        searchListView.addItemDecoration(itemDecorator);
+
+        // 9
+        searchListView.setAdapter(adapter);
+
     }
+
 
     public void viewResults(SearchModel search) {
         Bundle args = new Bundle();

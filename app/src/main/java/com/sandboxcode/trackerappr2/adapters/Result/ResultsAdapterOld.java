@@ -1,4 +1,4 @@
-package com.sandboxcode.trackerappr2.adapters;
+package com.sandboxcode.trackerappr2.adapters.Result;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.DetailFragment;
-import com.sandboxcode.trackerappr2.models.SearchResultModel;
+import com.sandboxcode.trackerappr2.models.ResultModel;
 
 import org.parceler.Parcels;
 
@@ -25,11 +25,11 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class ResultsAdapter extends BaseAdapter {
+public class ResultsAdapterOld extends BaseAdapter {
 
     private final String TAG = "ResultAdapter";
-    private static ArrayList<SearchResultModel> resultArrayList;
-    private SearchResultModel currentResult;
+    private static ArrayList<ResultModel> resultArrayList;
+    private ResultModel currentResult;
     private LayoutInflater mInflater;
     private Context mContext;
     FragmentManager fm;
@@ -47,7 +47,7 @@ public class ResultsAdapter extends BaseAdapter {
         Button details;
     }
 
-    public ResultsAdapter(Context context, ArrayList<SearchResultModel> results, FragmentManager fm, String searchId) {
+    public ResultsAdapterOld(Context context, ArrayList<ResultModel> results, FragmentManager fm, String searchId) {
         resultArrayList = results;
         mContext = context;
         this.fm = fm;
@@ -118,7 +118,7 @@ public class ResultsAdapter extends BaseAdapter {
             View parentRow = (View) v.getParent();
             ListView listView = (ListView) parentRow.getParent().getParent();
             final int position = listView.getPositionForView(parentRow);
-            SearchResultModel result = resultArrayList.get(position);
+            ResultModel result = resultArrayList.get(position);
 
             Bundle args = new Bundle();
             args.putParcelable("RESULT", Parcels.wrap(result));

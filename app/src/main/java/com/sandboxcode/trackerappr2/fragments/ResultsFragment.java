@@ -6,27 +6,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sandboxcode.trackerappr2.R;
-import com.sandboxcode.trackerappr2.adapters.ResultsAdapter;
-import com.sandboxcode.trackerappr2.models.SearchResultModel;
+import com.sandboxcode.trackerappr2.adapters.Result.ResultsAdapter;
+import com.sandboxcode.trackerappr2.adapters.ShadowVerticalSpaceItemDecorator;
+import com.sandboxcode.trackerappr2.adapters.VerticalSpaceItemDecorator;
+import com.sandboxcode.trackerappr2.models.ResultModel;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,12 +40,14 @@ public class ResultsFragment extends Fragment {
 
     private static final String TAG = "ResultsFragment";
     private Context activityContext;
-    private FirebaseAuth mAuth;
+
+    private RecyclerView resultListView;
+    private List<ResultModel> resultList = new ArrayList<>();
+
     private DatabaseReference databaseRef;
     private String searchId;
-    private ListView mListView;
     private ResultsAdapter adapter;
-    private ArrayList<SearchResultModel> resultList = new ArrayList<>();
+    private int resultCount;
 
     public ResultsFragment() {
         // Required empty public constructor
@@ -55,7 +60,6 @@ public class ResultsFragment extends Fragment {
     }
 
     private void getDbReferences() {
-        mAuth = FirebaseAuth.getInstance();
         databaseRef = FirebaseDatabase.getInstance().getReference().child("results")
                 .child(searchId);
     }
@@ -64,21 +68,27 @@ public class ResultsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             searchId = getArguments().getString("ID");
         }
-        activityContext = getActivity().getApplicationContext();
-        FragmentManager fm = getParentFragmentManager();
-        adapter = new ResultsAdapter(activityContext, resultList, fm, searchId);
+
         getDbReferences();
+        activityContext = getActivity().getApplicationContext();
+        FragmentManager fragmentManager = getParentFragmentManager();
+        // TODO - add searchID
+        adapter = new ResultsAdapter(activityContext, R.layout.result_list_item, resultList, fragmentManager, searchId);
+        resultCount = 0;
+//        adapter = new ResultsAdapterOld(activityContext, resultList, fm, searchId);
 
         databaseRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                SearchResultModel result = snapshot.getValue(SearchResultModel.class);
-
+                ResultModel result = snapshot.getValue(ResultModel.class);
                 resultList.add(result);
-                adapter.notifyDataSetChanged();
+                resultCount++;
+                adapter.notifyItemInserted(resultCount);
+                Log.d(TAG, String.valueOf(resultList.size()));
             }
 
             @Override
@@ -111,10 +121,21 @@ public class ResultsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Results");
-        mListView = view.findViewById(R.id.lv_results);
-        mListView.setAdapter(adapter);
 
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
 
+        int verticalSpacing = 20;
+        VerticalSpaceItemDecorator itemDecorator = new VerticalSpaceItemDecorator(verticalSpacing);
+        ShadowVerticalSpaceItemDecorator shadowItemDecorator = new ShadowVerticalSpaceItemDecorator(activityContext, R.drawable.drop_shadow);
+
+        resultListView = (RecyclerView) view.findViewById(R.id.results_view);
+
+        resultListView.setHasFixedSize(true);
+        resultListView.setLayoutManager(layoutManager);
+        resultListView.addItemDecoration(shadowItemDecorator);
+        resultListView.addItemDecoration(itemDecorator);
+
+        resultListView.setAdapter(adapter);
     }
 
     private View.OnClickListener detailClickListener = new View.OnClickListener() {

@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sandboxcode.trackerappr2.R;
-import com.sandboxcode.trackerappr2.models.SearchResultModel;
+import com.sandboxcode.trackerappr2.models.ResultModel;
 
 import org.parceler.Parcels;
 
@@ -31,7 +31,7 @@ public class DetailFragment extends Fragment {
     private Context activityContext;
     private DatabaseReference databaseRef;
     private String searchId;
-    private SearchResultModel result;
+    private ResultModel result;
 
 
     public DetailFragment() {

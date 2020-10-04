@@ -9,8 +9,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
+import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
-import com.sandboxcode.trackerappr2.models.SearchResultModel;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -81,7 +81,7 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
     }
 
     private void parseElements(Elements content, Elements dealerNames) {
-        ArrayList<SearchResultModel> results = new ArrayList<>();
+        ArrayList<ResultModel> results = new ArrayList<>();
 
         for (Element vehicle : content) {
             Map<String, String> details = new HashMap<>();
@@ -99,7 +99,7 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
             details.put("miles", vehicle.select(".mileageDisplay").first().text().substring(8).trim());
             details.put("dealer", vehicle.select("li.dealershipDisplay").first().text().substring(11).trim());
 
-            SearchResultModel resultModel = new SearchResultModel(details);
+            ResultModel resultModel = new ResultModel(details);
             results.add(resultModel);
             Log.d(TAG, "\t" + resultModel.toString() + "\n");
         }
@@ -107,8 +107,8 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
         updateDatabase(results);
     }
 
-    private void updateDatabase(ArrayList<SearchResultModel> searchResults) {
-        final ArrayList<SearchResultModel> results = searchResults;
+    private void updateDatabase(ArrayList<ResultModel> searchResults) {
+        final ArrayList<ResultModel> results = searchResults;
 //        final String KEY = ref.child("queries").child(userUid).push().getKey();
         ref.child("queries").child(userUid).child(search.getId())
                 .setValue(search).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -116,7 +116,7 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
             public void onSuccess(Void aVoid) {
 
 //                ref.child("results").child(search.getId()).setValue(results);
-                for (SearchResultModel result : results) {
+                for (ResultModel result : results) {
                     ref.child("results").child(search.getId()).child(result.getVin()).setValue(result);
                 }
             }
