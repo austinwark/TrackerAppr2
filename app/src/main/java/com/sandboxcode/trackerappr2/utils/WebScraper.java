@@ -58,15 +58,14 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
 
         }
 
-        queryString.append(UrlBits.PRICERANGE.getVal());
+        queryString.append(UrlBits.PRICE_RANGE.getVal());
         queryString.append(search.getMinPrice());
         queryString.append("-");
         queryString.append(search.getMaxPrice());
     }
 
-    @Override
+    // TODO - ask StackOverflow how to return Elements
     protected String doInBackground(Void... params) {
-        String title = "";
         Document doc;
         Log.d(TAG, queryString.toString());
         try {
@@ -78,7 +77,7 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
         } catch (IOException e) {
             Log.e(TAG, e.toString());
         }
-        return title;
+        return null;
     }
 
     private void parseElements(Elements content, Elements dealerNames) {
@@ -95,6 +94,8 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
             details.put("intColor", vehicle.attr("data-intcolor"));
             details.put("price", vehicle.attr("data-price"));
             details.put("stock", vehicle.attr("data-stocknum"));
+            details.put("engine", vehicle.attr("data-engine"));
+            details.put("transmission", vehicle.attr("data-trans"));
             details.put("miles", vehicle.select(".mileageDisplay").first().text().substring(8).trim());
             details.put("dealer", vehicle.select("li.dealershipDisplay").first().text().substring(11).trim());
 
@@ -132,7 +133,7 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
         MODEL("&Model="),
         YEAR("&Year="),
         TRIM("&f=trim%3A"),
-        PRICERANGE("&Pricerange="),
+        PRICE_RANGE("&Pricerange="),
         MILEAGERANGE("&Mileagerange="); // TODO: add mileage range parameter to search
         private String val;
         private UrlBits(String val) {

@@ -72,6 +72,10 @@ public class DetailFragment extends Fragment {
         vin.setText(result.getVin());
         TextView dealer = v.findViewById(R.id.tv_details_dealer);
         dealer.setText(result.getDealer());
+        TextView engine = v.findViewById(R.id.tv_details_engine);
+        engine.setText(result.getEngine());
+        TextView transmission = v.findViewById(R.id.tv_details_transmission);
+        transmission.setText(result.getTransmission());
     }
 
     @Override

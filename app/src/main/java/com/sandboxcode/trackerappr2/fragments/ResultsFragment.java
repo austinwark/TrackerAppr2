@@ -24,6 +24,8 @@ import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.adapters.ResultsAdapter;
 import com.sandboxcode.trackerappr2.models.SearchResultModel;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 
 /**
@@ -46,11 +48,18 @@ public class ResultsFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("ARRAY1", Parcels.wrap(resultList));
+    }
+
     private void getDbReferences() {
         mAuth = FirebaseAuth.getInstance();
         databaseRef = FirebaseDatabase.getInstance().getReference().child("results")
                 .child(searchId);
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

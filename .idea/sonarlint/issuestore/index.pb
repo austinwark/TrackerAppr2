@@ -23,8 +23,6 @@ Z
 *app/src/main/res/layout/fragment_first.xml,7\4\7450ec056feedbcd56d68c55c2435f3494e87faf
 [
 +app/src/main/res/layout/fragment_second.xml,7\9\794c8279c6e87420aa0d12af0d178fd28bf60e1f
-S
-#app/src/main/res/menu/menu_main.xml,c\3\c3a80566aac3130f1ff9cc134a0739807a4ee7fa
 b
 2app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml,8\e\8e27ba16c655f421171956147d0fde89b7d25d17
 h

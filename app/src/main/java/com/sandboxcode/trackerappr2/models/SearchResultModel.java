@@ -8,17 +8,19 @@ import java.util.Map;
 @Parcel
 public class SearchResultModel {
 
-    String stock;
-    String make;
-    String model;
-    String year;
-    String trim;
-    String extColor;
-    String intColor;
-    String price;
-    String vin;
-    String miles;
-    String dealer;
+    private String stock;
+    private String make;
+    private String model;
+    private String year;
+    private String trim;
+    private String extColor;
+    private String intColor;
+    private String price;
+    private String vin;
+    private String miles;
+    private String engine;
+    private String transmission;
+    private String dealer;
 
     public SearchResultModel(){
 
@@ -36,23 +38,25 @@ public class SearchResultModel {
         price = details.get("price");
         vin = details.get("vin");
         miles = details.get("miles");
+        engine = details.get("engine");
+        transmission = details.get("transmission");
         dealer = details.get("dealer");
     }
 
-    public SearchResultModel(String stock, String make, String model, String year, String trim,
-                             String extColor, String intColor, String price, String vin, String miles, String dealer) {
-        this.stock = stock;
-        this.make = make;
-        this.model = model;
-        this.year = year;
-        this.trim = trim;
-        this.extColor = extColor;
-        this.intColor = intColor;
-        this.price = price;
-        this.vin = vin;
-        this.miles = miles;
-        this.dealer = dealer;
-    }
+//    public SearchResultModel(String stock, String make, String model, String year, String trim,
+//                             String extColor, String intColor, String price, String vin, String miles, String dealer) {
+//        this.stock = stock;
+//        this.make = make;
+//        this.model = model;
+//        this.year = year;
+//        this.trim = trim;
+//        this.extColor = extColor;
+//        this.intColor = intColor;
+//        this.price = price;
+//        this.vin = vin;
+//        this.miles = miles;
+//        this.dealer = dealer;
+//    }
 
     @Override
     public String toString() {
@@ -148,4 +152,19 @@ public class SearchResultModel {
 
     public void setDealer(String dealer) { this.dealer = dealer; }
 
+    public String getEngine() {
+        return engine;
+    }
+
+    public void setEngine(String engine) {
+        this.engine = engine;
+    }
+
+    public String getTransmission() {
+        return transmission;
+    }
+
+    public void setTransmission(String transmission) {
+        this.transmission = transmission;
+    }
 }

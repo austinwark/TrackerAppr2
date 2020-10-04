@@ -1,9 +1,13 @@
 package com.sandboxcode.trackerappr2.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sandboxcode.trackerappr2.R;
+import com.sandboxcode.trackerappr2.activities.CreateActivity;
 import com.sandboxcode.trackerappr2.adapters.SearchAdapter;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 
@@ -29,7 +35,7 @@ import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SearchesFragment#newInstance} factory method to
+ * Use the {@link SearchesFragment #newInstance} factory method to
  * create an instance of this fragment.
  */
 public class SearchesFragment extends Fragment {
@@ -97,12 +103,41 @@ public class SearchesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_searches, container, false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_searches, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_edit:
+                Log.d(TAG, "Action Edit");
+                return true;
+            default:
+                Log.d(TAG, "Default");
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Queries");
+
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.ic_create);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), CreateActivity.class));
+            }
+        });
 
         mListView = view.findViewById(R.id.lv_searches);
         mListView.setAdapter(adapter);
