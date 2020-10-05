@@ -1,4 +1,4 @@
-package com.sandboxcode.trackerappr2.adapters;
+package com.sandboxcode.trackerappr2.adapters.decorators;
 
 import android.graphics.Rect;
 import android.view.View;

@@ -23,4 +23,12 @@
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/toolbar_bottom"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/menu_edit"
+        android:layout_gravity="bottom"/>
+
 </FrameLayout>

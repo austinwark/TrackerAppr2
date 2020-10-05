@@ -1,9 +1,9 @@
-package com.sandboxcode.trackerappr2.adapters.Search;
+package com.sandboxcode.trackerappr2.adapters.search;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentManager;
@@ -12,21 +12,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
+import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 
 public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private final TextView name;
+    private final CheckBox checkBox;
     private SearchModel searchModel;
     private Context context;
+    private SearchesFragment fragment;
     private FragmentManager fragmentManager;
 
-    public SearchesHolder(Context context, View itemView, FragmentManager fragmentManager) {
+    public SearchesHolder(Context context, View itemView, SearchesFragment fragment) {
         super(itemView);
 
         this.context = context;
-        this.fragmentManager = fragmentManager;
+        this.fragment = fragment;
+        this.fragmentManager = fragment.getParentFragmentManager();
         this.name = (TextView) itemView.findViewById(R.id.tv_search_item_name);
+        this.checkBox = (CheckBox) itemView.findViewById(R.id.checkBox_edit);
 
         itemView.setOnClickListener(this);
     }
@@ -34,8 +39,8 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
     public void bindSearch(SearchModel search) {
         this.searchModel = search;
         this.name.setText(search.getSearchName());
-        Log.d("SearchesHolder", search.getSearchName());
     }
+
 
     @Override
     public void onClick(View v) {
@@ -46,6 +51,10 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
     public void viewResults(SearchModel search) {
         Bundle args = new Bundle();
         args.putString("ID", search.getId());
+
+        if (fragmentManager.findFragmentById(R.id.main_fragment_container) instanceof SearchesFragment)
+            ((SearchesFragment) fragmentManager.findFragmentById(R.id.main_fragment_container)).toggleEdit(false);
+
         ResultsFragment fragment = new ResultsFragment();
         fragment.setArguments(args);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -53,4 +62,18 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+    public void setCheckBoxVisibility(boolean newState) {
+        if (newState) {
+            this.checkBox.setVisibility(View.VISIBLE);
+        } else {
+            this.checkBox.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public CheckBox getCheckBox() {
+        return this.checkBox;
+    }
+
+
 }

@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.DetailFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
@@ -22,61 +23,56 @@ import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-        private static final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
+    private BottomNavigationView toolbarBottom;
 
-        @Override
-        protected void onSaveInstanceState(Bundle savedInstanceState) {
-            super.onSaveInstanceState(savedInstanceState);
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
 
-            if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
-                if (fragment instanceof SearchesFragment) {
-                    Log.d(TAG, "Searches Fragment Open");
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
+            if (fragment instanceof SearchesFragment) {
+                Log.d(TAG, "Searches Fragment Open onSaveInstance");
 //                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 //                    transaction.replace(R.id.main_fragment_container, fragment);
-                }
-                if (fragment instanceof ResultsFragment) {
-                    Log.d(TAG, "Result Fragment Open");
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.main_fragment_container, fragment);
-                }
-                if (fragment instanceof DetailFragment) {
-                    Log.d(TAG, "Detail Fragment Open");
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.main_fragment_container, fragment);
-                }
             }
-        }
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-            if (savedInstanceState == null) {
-                SearchesFragment fragment = new SearchesFragment();
+            if (fragment instanceof ResultsFragment) {
+                Log.d(TAG, "Result Fragment Open");
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.main_fragment_container, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
             }
-
-//            FloatingActionButton fab = findViewById(R.id.fab);
-//            fab.setImageResource(R.drawable.ic_create);
-//            fab.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    startActivity(new Intent(MainActivity.this, CreateActivity.class));
-//                }
-//            });
+            if (fragment instanceof DetailFragment) {
+                Log.d(TAG, "Detail Fragment Open");
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_fragment_container, fragment);
+            }
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbarTop = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbarTop);
+
+        if (savedInstanceState == null) {
+            SearchesFragment fragment = new SearchesFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.main_fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        toolbarBottom = findViewById(R.id.toolbar_bottom);
         return true;
     }
 
@@ -106,12 +102,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-//            this.finish();
-//        } else {
-//            getSupportFragmentManager().popBackStack();
-//        }
-//    }
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
+        if (fragment instanceof SearchesFragment) {
+            Log.d(TAG, "Searches Fragment Open onBackPressed");
+            if (((SearchesFragment) fragment).getEditActive()) {
+                ((SearchesFragment) fragment).toggleEdit(false);
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
 }

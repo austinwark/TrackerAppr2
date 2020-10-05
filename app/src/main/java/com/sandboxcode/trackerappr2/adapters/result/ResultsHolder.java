@@ -1,9 +1,9 @@
-package com.sandboxcode.trackerappr2.adapters.Result;
+package com.sandboxcode.trackerappr2.adapters.result;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentManager;
@@ -16,11 +16,12 @@ import com.sandboxcode.trackerappr2.models.ResultModel;
 
 import org.parceler.Parcels;
 
-public class ResultsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class ResultsHolder extends RecyclerView.ViewHolder {
 
     private final TextView title;
     private final TextView stock;
     private final TextView price;
+    private final Button detailsButton;
     private ResultModel resultModel;
     private Context context;
     private FragmentManager fragmentManager;
@@ -34,10 +35,10 @@ public class ResultsHolder extends RecyclerView.ViewHolder implements View.OnCli
         this.title = (TextView) itemView.findViewById(R.id.tv_result_item_title);
         this.stock = (TextView) itemView.findViewById(R.id.tv_result_item_stock);
         this.price = (TextView) itemView.findViewById(R.id.tv_result_item_price);
+        this.detailsButton = (Button) itemView.findViewById(R.id.button_view_details);
         this.fragmentManager = fragmentManager;
         this.searchId = searchId;
 
-        itemView.setOnClickListener(this);
     }
 
     public void bindResult(ResultModel result) {
@@ -45,17 +46,16 @@ public class ResultsHolder extends RecyclerView.ViewHolder implements View.OnCli
         this.title.setText(result.getTitle());
         this.stock.setText(result.getStock());
         this.price.setText(result.getPrice());
-
-        Log.d("ResultsHolder", result.getTitle());
+        this.detailsButton.setOnClickListener(buttonClickListener);
     }
 
-    @Override
-    public void onClick(View v) {
-        if (this.resultModel != null)
-            viewDetails(this.resultModel, this.searchId);
-    }
+    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            viewDetails(resultModel, searchId);
+        }
+    };
 
-    // TODO - Change from view click to button click
     public void viewDetails(ResultModel result, String searchId) {
 
         Bundle args = new Bundle();

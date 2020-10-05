@@ -21,9 +21,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sandboxcode.trackerappr2.R;
-import com.sandboxcode.trackerappr2.adapters.Result.ResultsAdapter;
-import com.sandboxcode.trackerappr2.adapters.ShadowVerticalSpaceItemDecorator;
-import com.sandboxcode.trackerappr2.adapters.VerticalSpaceItemDecorator;
+import com.sandboxcode.trackerappr2.adapters.decorators.ShadowVerticalSpaceItemDecorator;
+import com.sandboxcode.trackerappr2.adapters.decorators.VerticalSpaceItemDecorator;
+import com.sandboxcode.trackerappr2.adapters.result.ResultsAdapter;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 
 import org.parceler.Parcels;

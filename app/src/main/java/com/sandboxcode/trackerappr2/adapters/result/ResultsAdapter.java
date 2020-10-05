@@ -1,4 +1,4 @@
-package com.sandboxcode.trackerappr2.adapters.Result;
+package com.sandboxcode.trackerappr2.adapters.result;
 
 import android.content.Context;
 import android.util.Log;
