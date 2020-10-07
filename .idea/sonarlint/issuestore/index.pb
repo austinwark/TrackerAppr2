@@ -126,3 +126,7 @@ Rapp/src/main/java/com/sandboxcode/trackerappr2/adapters/search/SearchesHolder.j
 Rapp/src/main/java/com/sandboxcode/trackerappr2/adapters/result/ResultsAdapter.java,f\6\f608f09b3871c3cf8e83bf370251db24ef390457
 ƒ
 Sapp/src/main/java/com/sandboxcode/trackerappr2/adapters/search/SearchesAdapter.java,0\e\0ebd0981a913c3aa345a75754389788d57e2db96
+^
+.app/src/main/res/drawable-anydpi/ic_delete.xml,1\9\193a1ab8249aa9c706aa7440b9702b1cdbf9b93d
+\
+,app/src/main/res/layout/search_list_item.xml,8\0\80b63c85b2e8a41dbc252603abfdcb4242dfc2c8
