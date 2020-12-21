@@ -12,33 +12,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
 import com.sandboxcode.trackerappr2.adapters.decorators.ShadowVerticalSpaceItemDecorator;
 import com.sandboxcode.trackerappr2.adapters.decorators.VerticalSpaceItemDecorator;
 import com.sandboxcode.trackerappr2.adapters.search.SearchesAdapter;
 import com.sandboxcode.trackerappr2.models.SearchModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.sandboxcode.trackerappr2.viewmodels.SearchViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,63 +41,31 @@ public class SearchesFragment extends Fragment {
     private Context activityContext;
 
     private RecyclerView searchListView;
-    private List<SearchModel> searchList = new ArrayList<>();
+    private SearchViewModel searchViewModel;
     private BottomNavigationView toolbarBottom;
-
-    private DatabaseReference databaseRef;
-    private FirebaseAuth mAuth;
-    private SearchesAdapter adapter;
-    private int searchCount;
-
     private MenuItem deleteMenuItem;
-    private ArrayList<String> checkedItems;
+    private SearchesAdapter adapter;
 
     public SearchesFragment() {
         // Required empty public constructor
     }
 
-    private void getDbReferences() {
-        mAuth = FirebaseAuth.getInstance();
-        databaseRef = FirebaseDatabase.getInstance().getReference().child("queries")
-                .child(mAuth.getCurrentUser().getUid());
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getDbReferences();
         activityContext = getActivity().getApplicationContext();
-        checkedItems = new ArrayList<>();
+        adapter = new SearchesAdapter(activityContext, R.layout.search_list_item, this);
 
-        adapter = new SearchesAdapter(activityContext, R.layout.search_list_item, searchList, this);
-        searchCount = 0;
-        databaseRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                SearchModel searchModel = snapshot.getValue(SearchModel.class);
-                searchList.add(searchModel);
-                searchCount++;
-                adapter.notifyItemInserted(searchCount);
-                Log.d(TAG, String.valueOf(searchList.size()));
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
+        searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+        searchViewModel.getAllSearches().observe(this, searches -> {
+            Log.d(TAG, "onChanged");
+            adapter.setSearches(searches);
+        });
+        searchViewModel.getEditMenuOpen().observe(this, editMenuToggle -> {
+            this.toolbarBottom.setVisibility(editMenuToggle.getVisible());
+            this.adapter.setCheckboxVisible(editMenuToggle.getCheckboxVisible());
         });
     }
 
@@ -127,40 +85,33 @@ public class SearchesFragment extends Fragment {
         Menu bottomMenu = toolbarBottom.getMenu();
         deleteMenuItem = bottomMenu.findItem(R.id.action_delete);
 
+        // returns the onOptionsItemSelected method for each MenuItem
         for (int itemIndex = 0; itemIndex < bottomMenu.size(); itemIndex++) {
-            bottomMenu.getItem(itemIndex).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    return onOptionsItemSelected(item);
-                }
-            });
+            bottomMenu.getItem(itemIndex).setOnMenuItemClickListener(this::onOptionsItemSelected);
         }
     }
 
     public void onItemCheckedChange(String searchId, boolean isChecked) {
-//        Log.d(TAG, "Checked: " + checkedItems.indexOf(String.valueOf(searchId)));
-        if (isChecked) {
-            checkedItems.add(searchId);
-        } else {
-            checkedItems.remove(String.valueOf(searchId));
-        }
+
+        searchViewModel.updateCheckedSearchesList(searchId, isChecked);
         getActivity().invalidateOptionsMenu();
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        if (!checkedItems.isEmpty()) {
-            deleteMenuItem.setEnabled(true);
-            deleteMenuItem.getIcon().mutate().setAlpha(255);
-            deleteMenuItem.getIcon().setAlpha(255);
-        } else {
-            deleteMenuItem.setEnabled(false);
-            deleteMenuItem.getIcon().mutate().setAlpha(5);
-            deleteMenuItem.getIcon().setAlpha(5);
-        }
-    }
+    /* Disables delete button if checked list is empty */
+//    @Override
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        super.onPrepareOptionsMenu(menu);
+//
+//        if (!checkedItems.isEmpty()) {
+//            deleteMenuItem.setEnabled(true);
+//            deleteMenuItem.getIcon().mutate().setAlpha(255);
+//            deleteMenuItem.getIcon().setAlpha(255);
+//        } else {
+//            deleteMenuItem.setEnabled(false);
+//            deleteMenuItem.getIcon().mutate().setAlpha(5);
+//            deleteMenuItem.getIcon().setAlpha(5);
+//        }
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -187,13 +138,13 @@ public class SearchesFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        Log.d(TAG, String.valueOf(item.getItemId()));
         switch (item.getItemId()) {
             case R.id.action_edit:
-                Log.d(TAG, "Action Edit");
-                toggleEdit(true);
+                searchViewModel.toggleEdit(true);
                 return true;
             case R.id.action_delete:
+                Log.d(TAG, "delete Search");
                 deleteSearch();
                 return true;
             default:
@@ -203,39 +154,9 @@ public class SearchesFragment extends Fragment {
     }
 
     public void deleteSearch() {
-
-        if (checkedItems.isEmpty())
-            Toast.makeText(getActivity(), "A search must be selected before deletion", Toast.LENGTH_SHORT).show();
-        else if (checkedItems.size() > 1)
-            Toast.makeText(getActivity(), "Only one search can be deleted at a time", Toast.LENGTH_SHORT).show();
-        else if (checkedItems.get(0) != null) {
-            final String searchId = checkedItems.get(0);
-            Toast.makeText(getActivity(), "Deleting " + searchId, Toast.LENGTH_SHORT).show();
-            databaseRef.child(searchId).removeValue().addOnCompleteListener(onDeleteListener);
-        }
+        String message = searchViewModel.deleteSearch();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
-
-    private OnCompleteListener<Void> onDeleteListener = new OnCompleteListener<Void>() {
-        @Override
-        public void onComplete(@NonNull Task task) {
-            final String searchId = checkedItems.get(0);
-            int searchIndexToDelete = -1;
-            if (task.isSuccessful()) {
-                for (int searchIndex = 0; searchIndex < searchList.size(); searchIndex++) {
-                    if (searchList.get(searchIndex).getId().equals(searchId)) {
-                        searchIndexToDelete = searchIndex;
-                    }
-                }
-                if (searchIndexToDelete != -1) {
-                    searchList.remove(searchIndexToDelete);
-                    adapter.notifyItemRemoved(searchIndexToDelete);
-                    checkedItems.remove(0);
-                    toggleEdit(false);
-                    Toast.makeText(getActivity(), "Search deleted successfully", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    };
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -247,12 +168,7 @@ public class SearchesFragment extends Fragment {
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_create);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), CreateActivity.class));
-            }
-        });
+        fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), CreateActivity.class)));
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
 
@@ -260,7 +176,7 @@ public class SearchesFragment extends Fragment {
         VerticalSpaceItemDecorator itemDecorator = new VerticalSpaceItemDecorator(verticalSpacing);
         ShadowVerticalSpaceItemDecorator shadowItemDecorator = new ShadowVerticalSpaceItemDecorator(activityContext, R.drawable.drop_shadow);
 
-        searchListView = (RecyclerView) view.findViewById(R.id.searches_view);
+        searchListView = view.findViewById(R.id.searches_view);
 
         searchListView.setHasFixedSize(true);
 
@@ -271,6 +187,7 @@ public class SearchesFragment extends Fragment {
 
         searchListView.setAdapter(adapter);
 
+        //TODO - REMOVE LOGIC
         if (savedInstanceState != null) {
             toggleEdit(savedInstanceState.getBoolean("EDIT_ACTIVE"));
         } else {
@@ -278,6 +195,11 @@ public class SearchesFragment extends Fragment {
             toolbarBottom.setVisibility(View.INVISIBLE);
         }
 
+    }
+
+    public void makeToastMessage(String message, int length) {
+        if (length == 1 || length == 2)
+            Toast.makeText(getActivity(), message, length).show();
     }
 
     public void viewResults(SearchModel search) {

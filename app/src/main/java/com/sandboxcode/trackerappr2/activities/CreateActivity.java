@@ -9,14 +9,14 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.slider.RangeSlider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sandboxcode.trackerappr2.R;
-import com.sandboxcode.trackerappr2.models.SearchModel;
-import com.sandboxcode.trackerappr2.utils.WebScraper;
+import com.sandboxcode.trackerappr2.viewmodels.SearchViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +39,7 @@ public class CreateActivity extends AppCompatActivity {
     private EditText yearEditText;
     private EditText trimEditText;
     RangeSlider priceSlider;
+    private SearchViewModel searchViewModel;
 
 
     private static final ArrayList<String> modelList = new ArrayList<>(Arrays.asList(models));
@@ -64,6 +65,8 @@ public class CreateActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         modelSpinner.setAdapter(adapter);
 
+        searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+
     }
 
     public void createNewSearch(View v) {
@@ -77,10 +80,11 @@ public class CreateActivity extends AppCompatActivity {
         String minPrice = Collections.min(priceValues).toString();
         String maxPrice = Collections.max(priceValues).toString();
 
-        final String KEY = databaseRef.child("queries").child(mAuth.getCurrentUser().getUid()).push().getKey();
-        SearchModel searchModel = new SearchModel(KEY, searchName, model, trim, year, minPrice, maxPrice);
-        WebScraper scraper = new WebScraper(this, searchModel, databaseRef, mAuth.getCurrentUser().getUid());
-        scraper.execute();
+//        final String KEY = databaseRef.child("queries").child(mAuth.getCurrentUser().getUid()).push().getKey();
+//        SearchModel searchModel = new SearchModel(KEY, searchName, model, trim, year, minPrice, maxPrice);
+//        WebScraper scraper = new WebScraper(this, searchModel, databaseRef, mAuth.getCurrentUser().getUid());
+//        scraper.execute();
+        searchViewModel.create(searchName, model, trim, year, minPrice, maxPrice);
         finish();
 //
 //

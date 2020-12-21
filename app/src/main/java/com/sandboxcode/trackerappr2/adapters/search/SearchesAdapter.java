@@ -12,11 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
 
-    private final List<SearchModel> searchList;
+    private List<SearchModel> searchList = new ArrayList<>();
     private Context context;
     private int itemResource;
     private SearchesFragment fragment;
@@ -26,10 +27,8 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
 
     public SearchesAdapter(Context context,
                            int itemResource,
-                           List<SearchModel> searchList,
                            SearchesFragment fragment) {
 
-        this.searchList = searchList;
         this.context = context;
         this.itemResource = itemResource;
         this.fragment = fragment;
@@ -61,6 +60,11 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
 
     public void setCheckboxVisible(boolean checkboxVisible) {
         this.editActive = checkboxVisible;
+        notifyDataSetChanged();
+    }
+
+    public void setSearches(List<SearchModel> searches) {
+        searchList = searches;
         notifyDataSetChanged();
     }
 

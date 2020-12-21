@@ -3,12 +3,8 @@ package com.sandboxcode.trackerappr2.utils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
-import com.sandboxcode.trackerappr2.activities.CreateActivity;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 
@@ -26,15 +22,13 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
 
 
     private static final String TAG = "WebScraper";
-    private CreateActivity createActivity;
     private SearchModel search;
     private DatabaseReference ref;
     private String userUid;
     private StringBuilder queryString;
 
-    public WebScraper(CreateActivity createActivity, SearchModel search, DatabaseReference ref, String userUid) {
+    public WebScraper(SearchModel search, DatabaseReference ref, String userUid) {
 
-        this.createActivity = createActivity;
         this.search = search;
         this.ref = ref;
         this.userUid = userUid;
@@ -119,11 +113,6 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
                 for (ResultModel result : results) {
                     ref.child("results").child(search.getId()).child(result.getVin()).setValue(result);
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                createActivity.sendMessage("Error saving query: " + e);
             }
         });
     }

@@ -66,8 +66,6 @@ f
 6app/src/main/res/mipmap-anydpi-v26/ic_create_round.xml,a\f\af7852327f0c40ee1c0c20c4b3266fbc5aaec1dd
 @
 local.properties,0\7\0712df971a99ac4d2fccb8e0fb19f377f3374cca
-[
-+app/src/main/res/layout/activity_create.xml,3\d\3d270fde443b843ace2860e03d9e2ff0b8569093
 X
 (app/src/main/res/layout/content_main.xml,7\c\7c023c74a9bce7eb3587d0708a1c0350f6266748
 Y
@@ -86,8 +84,6 @@ Fapp/src/main/java/com/sandboxcode/trackerappr2/models/SearchModel.java,1\9\19c
 Mapp/src/main/java/com/sandboxcode/trackerappr2/activities/CreateActivity.java,3\c\3cb6a004499dca0c480ebc5ea561d02a54c7e121
 [
 +app/src/main/res/layout/fragment_detail.xml,1\2\124e27a664a59bdc0958fb6899fe7332369da4ef
-W
-'app/src/main/res/menu/menu_searches.xml,2\e\2ecf948cc856db5ff9ba48ce876b8bc402cf8ff4
 S
 #app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e
 t
@@ -128,5 +124,13 @@ Rapp/src/main/java/com/sandboxcode/trackerappr2/adapters/result/ResultsAdapter.j
 Sapp/src/main/java/com/sandboxcode/trackerappr2/adapters/search/SearchesAdapter.java,0\e\0ebd0981a913c3aa345a75754389788d57e2db96
 ^
 .app/src/main/res/drawable-anydpi/ic_delete.xml,1\9\193a1ab8249aa9c706aa7440b9702b1cdbf9b93d
-\
-,app/src/main/res/layout/search_list_item.xml,8\0\80b63c85b2e8a41dbc252603abfdcb4242dfc2c8
+Ü
+Vapp/src/main/java/com/sandboxcode/trackerappr2/livedata/FirebaseQueryLiveDataList.java,9\a\9a5fbfa03b48ea20af26889a74ff80ba587c8d34
+Ç
+Rapp/src/main/java/com/sandboxcode/trackerappr2/livedata/FirebaseQueryLiveData.java,a\3\a3f45618edc5cf92bce4706eb2c26c2a8652cd8c
+Å
+Qapp/src/main/java/com/sandboxcode/trackerappr2/repositories/SearchRepository.java,1\1\11d93fd68a269e80ed7214279368f11e0fa1ab11
+|
+Lapp/src/main/java/com/sandboxcode/trackerappr2/livedata/SingleLiveEvent.java,0\0\000b5b154ad011853b281824731a2829240ae9ac
+~
+Napp/src/main/java/com/sandboxcode/trackerappr2/viewmodels/SearchViewModel.java,d\d\ddcf9b904cb8cdd10988c85640c6c8fc6675ceb6

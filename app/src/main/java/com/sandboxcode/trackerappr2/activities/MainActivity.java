@@ -20,11 +20,13 @@ import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.DetailFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
+import com.sandboxcode.trackerappr2.viewmodels.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private BottomNavigationView toolbarBottom;
+    private MainViewModel mainViewModel;
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
