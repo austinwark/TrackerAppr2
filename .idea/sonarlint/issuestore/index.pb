@@ -130,7 +130,5 @@ Vapp/src/main/java/com/sandboxcode/trackerappr2/livedata/FirebaseQueryLiveDataLi
 Rapp/src/main/java/com/sandboxcode/trackerappr2/livedata/FirebaseQueryLiveData.java,a\3\a3f45618edc5cf92bce4706eb2c26c2a8652cd8c
 Å
 Qapp/src/main/java/com/sandboxcode/trackerappr2/repositories/SearchRepository.java,1\1\11d93fd68a269e80ed7214279368f11e0fa1ab11
-|
-Lapp/src/main/java/com/sandboxcode/trackerappr2/livedata/SingleLiveEvent.java,0\0\000b5b154ad011853b281824731a2829240ae9ac
 ~
 Napp/src/main/java/com/sandboxcode/trackerappr2/viewmodels/SearchViewModel.java,d\d\ddcf9b904cb8cdd10988c85640c6c8fc6675ceb6

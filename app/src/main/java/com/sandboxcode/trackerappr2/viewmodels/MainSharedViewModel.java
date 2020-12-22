@@ -17,21 +17,24 @@ import com.sandboxcode.trackerappr2.repositories.SearchRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchViewModel extends AndroidViewModel {
+public class MainSharedViewModel extends AndroidViewModel {
 
     private static final String TAG = "SearchViewModel";
     private SearchRepository repository;
 
+    private MutableLiveData<Boolean> userSignedOut;
     private MutableLiveData<List<SearchModel>> allSearches;
-    private MutableLiveData<ArrayList<String>> checkedItems = new MutableLiveData<>();
-    private MutableLiveData<EditMenuToggle> editMenuOpen = new MutableLiveData<>();
+    private MutableLiveData<String> toastMessage;
+    private MutableLiveData<ArrayList<String>> checkedItems;
+    // View.Visible = 0 and View.INVISIBLE = 4
+    private MutableLiveData<Integer> editMenuOpen;
 
-    public SearchViewModel(Application application) {
+    public MainSharedViewModel(Application application) {
         super(application);
         repository = new SearchRepository();
         allSearches = repository.getAllSearches();
-        checkedItems.postValue(new ArrayList<>());
-        editMenuOpen.postValue(new EditMenuToggle(View.INVISIBLE, false));
+//        checkedItems.postValue(new ArrayList<>());
+//        editMenuOpen.postValue(View.INVISIBLE);
     }
 
     public MutableLiveData<List<SearchModel>> getAllSearches() {
@@ -42,7 +45,14 @@ public class SearchViewModel extends AndroidViewModel {
 
     // TODO - RESET LIST WHEN NAVIGATING AWAY FROM SCREEN
     public void updateCheckedSearchesList(String searchId, boolean isChecked) {
-        ArrayList<String> localCheckedItems = checkedItems.getValue();
+        ArrayList<String> localCheckedItems;
+
+        if (checkedItems == null) {
+            checkedItems = new MutableLiveData<>();
+            localCheckedItems = new ArrayList<>();
+        } else {
+            localCheckedItems = checkedItems.getValue();
+        }
 
         if (isChecked)
             localCheckedItems.add(searchId);
@@ -52,19 +62,19 @@ public class SearchViewModel extends AndroidViewModel {
         checkedItems.postValue(localCheckedItems);
     }
 
-    public String deleteSearch() {
+    public void deleteSearch() {
         ArrayList<String> localCheckedItems = checkedItems.getValue();
         String searchId;
 
         if (localCheckedItems.isEmpty())
-            return "A search must be selected before deletion";
+            setToastMessage("A search must be selected before deletion.");
         else if (localCheckedItems.size() > 1)
-            return "Only one search can be deleted at a time";
+            setToastMessage("Only one search can be deleted at a time.");
         else {
             searchId = localCheckedItems.get(0);
 
             repository.delete(searchId, onDeleteListener);
-            return "Deleting item";
+            setToastMessage("Deleting search.");
         }
     }
 
@@ -98,12 +108,26 @@ public class SearchViewModel extends AndroidViewModel {
         repository.create(name, model, trim, year, minPrice, maxPrice);
     }
 
-    public void handleOnOptionsItemSelected(int itemId) {
+    public void handleTopOnOptionsItemSelected(int itemId) {
+
+        switch (itemId) {
+            case R.id.action_settings:
+                Log.d(TAG, "Action Settings");
+                break;
+            case R.id.action_logout:
+                setUserSignedOut(true);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void handleBottomOnOptionsItemSelected(int itemId) {
 
         switch (itemId) {
             case R.id.action_edit:
-                Log.D(TAG, "action edit");
-                toggleEdit(true);
+                Log.d(TAG, "action edit");
+                toggleEdit();
                 break;
             case R.id.action_delete:
                 Log.d(TAG, "action delete");
@@ -115,33 +139,51 @@ public class SearchViewModel extends AndroidViewModel {
         }
     }
 
-    public void toggleEdit(boolean newState) {
-        if (newState)
-            editMenuOpen.postValue(new EditMenuToggle(View.VISIBLE, true));
+    public void toggleEdit() {
+
+        if (getEditMenuOpen().getValue() == View.VISIBLE)
+            editMenuOpen.postValue(View.INVISIBLE);
         else
-            editMenuOpen.postValue(new EditMenuToggle(View.INVISIBLE, false));
+            editMenuOpen.postValue(View.VISIBLE);
+
     }
 
-    public MutableLiveData<EditMenuToggle> getEditMenuOpen() {
+    public MutableLiveData<String> getToastMessage() {
+        if (toastMessage == null) {
+            Log.d(TAG, "NEW TOIAST");
+            toastMessage = new MutableLiveData<>();
+        }
+        return toastMessage;
+    }
+
+    public void setToastMessage(String message) {
+        toastMessage.postValue(message);
+    }
+
+    public MutableLiveData<Integer> getEditMenuOpen() {
+        if (editMenuOpen == null) {
+            editMenuOpen = new MutableLiveData<>();
+            editMenuOpen.postValue(View.INVISIBLE);
+        }
         return editMenuOpen;
     }
 
-    /* Static class used to wrap data for toggling the bottom menu */
-    public static class EditMenuToggle {
-        private int visible;
-        private boolean checkboxVisible;
-
-        public EditMenuToggle(int v, boolean c) {
-            visible = v;
-            checkboxVisible = c;
+    public MutableLiveData<ArrayList<String>> getCheckedItems() {
+        if (checkedItems == null) {
+            checkedItems = new MutableLiveData<>();
+            checkedItems.postValue(new ArrayList<>());
         }
+        return checkedItems;
+    }
 
-        public int getVisible() {
-            return visible;
+    public MutableLiveData<Boolean> getUserSignedOut() {
+        if (userSignedOut == null) {
+            userSignedOut = new MutableLiveData<>();
         }
+        return userSignedOut;
+    }
 
-        public boolean getCheckboxVisible() {
-            return checkboxVisible;
-        }
+    public void setUserSignedOut(boolean signedOut) {
+        userSignedOut.postValue(signedOut);
     }
 }

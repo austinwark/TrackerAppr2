@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sandboxcode.trackerappr2.R;
-import com.sandboxcode.trackerappr2.viewmodels.SearchViewModel;
+import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public class CreateActivity extends AppCompatActivity {
     private EditText yearEditText;
     private EditText trimEditText;
     RangeSlider priceSlider;
-    private SearchViewModel searchViewModel;
+    private MainSharedViewModel mainSharedViewModel;
 
 
     private static final ArrayList<String> modelList = new ArrayList<>(Arrays.asList(models));
@@ -65,7 +65,7 @@ public class CreateActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         modelSpinner.setAdapter(adapter);
 
-        searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+        mainSharedViewModel = new ViewModelProvider(this).get(MainSharedViewModel.class);
 
     }
 
@@ -84,7 +84,7 @@ public class CreateActivity extends AppCompatActivity {
 //        SearchModel searchModel = new SearchModel(KEY, searchName, model, trim, year, minPrice, maxPrice);
 //        WebScraper scraper = new WebScraper(this, searchModel, databaseRef, mAuth.getCurrentUser().getUid());
 //        scraper.execute();
-        searchViewModel.create(searchName, model, trim, year, minPrice, maxPrice);
+        mainSharedViewModel.create(searchName, model, trim, year, minPrice, maxPrice);
         finish();
 //
 //

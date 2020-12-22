@@ -1,6 +1,5 @@
 package com.sandboxcode.trackerappr2.adapters.search;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -20,15 +19,11 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
     private final TextView name;
     private final CheckBox checkBox;
     private SearchModel searchModel;
-    private Context context;
-    private SearchesFragment fragment;
     private FragmentManager fragmentManager;
 
-    public SearchesHolder(Context context, View itemView, SearchesFragment fragment) {
+    public SearchesHolder(View itemView, SearchesFragment fragment) {
         super(itemView);
 
-        this.context = context;
-        this.fragment = fragment;
         this.fragmentManager = fragment.getParentFragmentManager();
         this.name = (TextView) itemView.findViewById(R.id.tv_search_item_name);
         this.checkBox = (CheckBox) itemView.findViewById(R.id.checkBox_edit);
@@ -52,8 +47,8 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
         Bundle args = new Bundle();
         args.putString("ID", search.getId());
 
-        if (fragmentManager.findFragmentById(R.id.main_fragment_container) instanceof SearchesFragment)
-            ((SearchesFragment) fragmentManager.findFragmentById(R.id.main_fragment_container)).toggleEdit(false);
+//        if (fragmentManager.findFragmentById(R.id.main_fragment_container) instanceof SearchesFragment)
+//            ((SearchesFragment) fragmentManager.findFragmentById(R.id.main_fragment_container)).toggleEdit(false);
 
         ResultsFragment fragment = new ResultsFragment();
         fragment.setArguments(args);
@@ -63,12 +58,13 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
         transaction.commit();
     }
 
-    public void setCheckBoxVisibility(boolean newState) {
-        if (newState) {
-            this.checkBox.setVisibility(View.VISIBLE);
-        } else {
-            this.checkBox.setVisibility(View.INVISIBLE);
-        }
+    public void setCheckBoxVisibility(int visible) {
+        this.checkBox.setVisibility(visible);
+        //        if (newState) {
+//            this.checkBox.setVisibility(View.VISIBLE);
+//        } else {
+//            this.checkBox.setVisibility(View.INVISIBLE);
+//        }
     }
 
     public CheckBox getCheckBox() {

@@ -22,7 +22,7 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
     private int itemResource;
     private SearchesFragment fragment;
     private FragmentManager fragmentManager;
-    private boolean editActive;
+    private int editActive;
 
 
     public SearchesAdapter(Context context,
@@ -33,7 +33,7 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
         this.itemResource = itemResource;
         this.fragment = fragment;
         this.fragmentManager = fragment.getParentFragmentManager();
-        this.editActive = false;
+        this.editActive = View.INVISIBLE;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(this.itemResource, parent, false);
-        return new SearchesHolder(this.context, view, fragment);
+        return new SearchesHolder(view, fragment);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
         holder.bindSearch(SEARCH);
     }
 
-    public void setCheckboxVisible(boolean checkboxVisible) {
+    public void setCheckboxVisible(int checkboxVisible) {
         this.editActive = checkboxVisible;
         notifyDataSetChanged();
     }

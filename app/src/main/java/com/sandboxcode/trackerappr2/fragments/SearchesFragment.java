@@ -28,7 +28,7 @@ import com.sandboxcode.trackerappr2.adapters.decorators.ShadowVerticalSpaceItemD
 import com.sandboxcode.trackerappr2.adapters.decorators.VerticalSpaceItemDecorator;
 import com.sandboxcode.trackerappr2.adapters.search.SearchesAdapter;
 import com.sandboxcode.trackerappr2.models.SearchModel;
-import com.sandboxcode.trackerappr2.viewmodels.SearchViewModel;
+import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,7 +41,7 @@ public class SearchesFragment extends Fragment {
     private Context activityContext;
 
     private RecyclerView searchListView;
-    private SearchViewModel searchViewModel;
+    private MainSharedViewModel mainSharedViewModel;
     private BottomNavigationView toolbarBottom;
     private MenuItem deleteMenuItem;
     private SearchesAdapter adapter;
@@ -58,14 +58,21 @@ public class SearchesFragment extends Fragment {
         activityContext = getActivity().getApplicationContext();
         adapter = new SearchesAdapter(activityContext, R.layout.search_list_item, this);
 
-        searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
-        searchViewModel.getAllSearches().observe(this, searches -> {
+        mainSharedViewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
+        mainSharedViewModel.getAllSearches().observe(this, searches -> {
             Log.d(TAG, "onChanged");
             adapter.setSearches(searches);
         });
-        searchViewModel.getEditMenuOpen().observe(this, editMenuToggle -> {
-            this.toolbarBottom.setVisibility(editMenuToggle.getVisible());
-            this.adapter.setCheckboxVisible(editMenuToggle.getCheckboxVisible());
+        mainSharedViewModel.getEditMenuOpen().observe(this, editMenuOpen -> {
+            this.toolbarBottom.setVisibility(editMenuOpen);
+            this.adapter.setCheckboxVisible(editMenuOpen);
+        });
+        mainSharedViewModel.getToastMessage().observe(this, message -> {
+            Log.d(TAG, "TOAST");
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        });
+        mainSharedViewModel.getCheckedItems().observe(this, checkedItems -> {
+
         });
     }
 
@@ -91,45 +98,11 @@ public class SearchesFragment extends Fragment {
         }
     }
 
+    // TODO -- save checked status after orientation change
     public void onItemCheckedChange(String searchId, boolean isChecked) {
 
-        searchViewModel.updateCheckedSearchesList(searchId, isChecked);
+        mainSharedViewModel.updateCheckedSearchesList(searchId, isChecked);
         getActivity().invalidateOptionsMenu();
-    }
-
-    /* Disables delete button if checked list is empty */
-//    @Override
-//    public void onPrepareOptionsMenu(Menu menu) {
-//        super.onPrepareOptionsMenu(menu);
-//
-//        if (!checkedItems.isEmpty()) {
-//            deleteMenuItem.setEnabled(true);
-//            deleteMenuItem.getIcon().mutate().setAlpha(255);
-//            deleteMenuItem.getIcon().setAlpha(255);
-//        } else {
-//            deleteMenuItem.setEnabled(false);
-//            deleteMenuItem.getIcon().mutate().setAlpha(5);
-//            deleteMenuItem.getIcon().setAlpha(5);
-//        }
-//    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (getEditActive())
-            outState.putBoolean("EDIT_ACTIVE", getEditActive());
-
-        super.onSaveInstanceState(outState);
-    }
-
-    public void toggleEdit(boolean newState) {
-        if (newState) {
-            this.toolbarBottom.setVisibility(View.VISIBLE);
-            this.adapter.setCheckboxVisible(true);
-        } else {
-            this.toolbarBottom.setVisibility(View.INVISIBLE);
-            this.adapter.setCheckboxVisible(false);
-        }
-        this.adapter.notifyDataSetChanged();
     }
 
     public boolean getEditActive() {
@@ -138,24 +111,9 @@ public class SearchesFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(TAG, String.valueOf(item.getItemId()));
-        switch (item.getItemId()) {
-            case R.id.action_edit:
-                searchViewModel.toggleEdit(true);
-                return true;
-            case R.id.action_delete:
-                Log.d(TAG, "delete Search");
-                deleteSearch();
-                return true;
-            default:
-                Log.d(TAG, "Default");
-        }
-        return super.onOptionsItemSelected(item);
-    }
+        mainSharedViewModel.handleBottomOnOptionsItemSelected(item.getItemId());
 
-    public void deleteSearch() {
-        String message = searchViewModel.deleteSearch();
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -187,19 +145,6 @@ public class SearchesFragment extends Fragment {
 
         searchListView.setAdapter(adapter);
 
-        //TODO - REMOVE LOGIC
-        if (savedInstanceState != null) {
-            toggleEdit(savedInstanceState.getBoolean("EDIT_ACTIVE"));
-        } else {
-            // no need to call adapter.notifyDataSetChanged
-            toolbarBottom.setVisibility(View.INVISIBLE);
-        }
-
-    }
-
-    public void makeToastMessage(String message, int length) {
-        if (length == 1 || length == 2)
-            Toast.makeText(getActivity(), message, length).show();
     }
 
     public void viewResults(SearchModel search) {

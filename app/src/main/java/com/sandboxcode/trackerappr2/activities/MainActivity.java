@@ -5,21 +5,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.DetailFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
+import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 import com.sandboxcode.trackerappr2.viewmodels.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private BottomNavigationView toolbarBottom;
     private MainViewModel mainViewModel;
+    private MainSharedViewModel mainSharedViewModel;
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
@@ -59,6 +60,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbarTop = findViewById(R.id.toolbar);
         setSupportActionBar(toolbarTop);
 
+        mainSharedViewModel = new ViewModelProvider(this).get(MainSharedViewModel.class);
+
+        mainSharedViewModel.getUserSignedOut().observe(this, userSignedOut ->
+                AuthUI.getInstance().signOut(this)
+                        .addOnCompleteListener(task -> {
+                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            finish();
+                        })
+        );
+
         if (savedInstanceState == null) {
             SearchesFragment fragment = new SearchesFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -83,23 +94,9 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        int itemId = item.getItemId();
+        mainSharedViewModel.handleTopOnOptionsItemSelected(itemId);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Log.d(TAG, "Action Settings");
-            return true;
-        } else if (id == R.id.action_logout) {
-            AuthUI.getInstance()
-                    .signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                            finish();
-                        }
-                    });
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -108,9 +105,8 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
         if (fragment instanceof SearchesFragment) {
-            Log.d(TAG, "Searches Fragment Open onBackPressed");
-            if (((SearchesFragment) fragment).getEditActive()) {
-                ((SearchesFragment) fragment).toggleEdit(false);
+            if (mainSharedViewModel.getEditMenuOpen().getValue() == View.VISIBLE) {
+                mainSharedViewModel.toggleEdit();
                 return;
             }
         }
