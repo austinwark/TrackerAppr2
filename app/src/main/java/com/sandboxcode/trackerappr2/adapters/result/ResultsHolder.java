@@ -32,10 +32,10 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
 
         this.context = context;
 
-        this.title = (TextView) itemView.findViewById(R.id.tv_result_item_title);
-        this.stock = (TextView) itemView.findViewById(R.id.tv_result_item_stock);
-        this.price = (TextView) itemView.findViewById(R.id.tv_result_item_price);
-        this.detailsButton = (Button) itemView.findViewById(R.id.button_view_details);
+        this.title = itemView.findViewById(R.id.tv_result_item_title);
+        this.stock = itemView.findViewById(R.id.tv_result_item_stock);
+        this.price = itemView.findViewById(R.id.tv_result_item_price);
+        this.detailsButton = itemView.findViewById(R.id.button_view_details);
         this.fragmentManager = fragmentManager;
         this.searchId = searchId;
 

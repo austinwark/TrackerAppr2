@@ -12,6 +12,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 import com.sandboxcode.trackerappr2.utils.WebScraper;
 
@@ -23,22 +24,20 @@ public class SearchRepository {
     private static final String TAG = "SearchRepository";
     private static final FirebaseAuth AUTH_REF = FirebaseAuth.getInstance();
     private static final DatabaseReference DATABASE_REF = FirebaseDatabase.getInstance().getReference();
-//    private static final DatabaseReference DATABASE_REF = FirebaseDatabase.getInstance()
-//            .getReference().child("queries").child(AUTH_REF.getCurrentUser().getUid());
 
-    private final MyValueEventListener listener = new MyValueEventListener();
+
+    private final SearchesListener searchesListener = new SearchesListener();
     private MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
-    private MutableLiveData<ArrayList<String>> checkedItems = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<ResultModel>> searchResults = new MutableLiveData<>();
 
     public SearchRepository() {
         setListeners();
-//        allSearches.postValue(new ArrayList<SearchModel>());
     }
 
     private void setListeners() {
         Log.d(TAG, "setListeners");
         DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
-                .addValueEventListener(listener);
+                .addValueEventListener(searchesListener);
     }
 
     @NonNull
@@ -47,13 +46,12 @@ public class SearchRepository {
     }
 
     // TODO - Change to ChildEventListener
-    private class MyValueEventListener implements ValueEventListener {
+    private class SearchesListener implements ValueEventListener {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             List<SearchModel> searchList = new ArrayList<>();
             for (DataSnapshot child : dataSnapshot.getChildren()) {
                 searchList.add(child.getValue(SearchModel.class));
-                Log.d(TAG, "searchList.add");
             }
 
             // TODO - setValue?
@@ -62,7 +60,7 @@ public class SearchRepository {
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            Log.d(TAG, "Can't listen to query " + DATABASE_REF, databaseError.toException());
+            Log.d(TAG, "Can't listen to search query: ", databaseError.toException());
         }
     }
 
@@ -72,6 +70,31 @@ public class SearchRepository {
 
         DATABASE_REF.child("results").child(searchId).removeValue();
 
+    }
+
+    public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
+        DATABASE_REF.child("results").child(searchId)
+                .addListenerForSingleValueEvent(new ResultsListener());
+
+        return searchResults;
+    }
+
+    private class ResultsListener implements ValueEventListener {
+
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            ArrayList<ResultModel> results = new ArrayList<>();
+            for (DataSnapshot child : snapshot.getChildren()) {
+                results.add(child.getValue(ResultModel.class));
+            }
+
+            searchResults.postValue(results);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Log.d(TAG, "Can't listen to results query: ", error.toException());
+        }
     }
 
     public void create(String name, String model, String trim, String year, String minPrice, String maxPrice) {

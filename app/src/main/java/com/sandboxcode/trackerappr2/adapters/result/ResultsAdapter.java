@@ -11,11 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sandboxcode.trackerappr2.models.ResultModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
 
-    private final List<ResultModel> resultsList;
+    private List<ResultModel> resultsList = new ArrayList<>();
     private Context context;
     private int itemResource;
     private FragmentManager fragmentManager;
@@ -23,11 +24,9 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
 
     public ResultsAdapter(Context context,
                           int itemResource,
-                          List<ResultModel> resultsList,
                           FragmentManager fragmentManager,
                           String searchId) {
 
-        this.resultsList = resultsList;
         this.context = context;
         this.itemResource = itemResource;
         this.fragmentManager = fragmentManager;
@@ -49,6 +48,11 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
         Log.d("ResultsAdapter", result.getTitle());
 
         holder.bindResult(result);
+    }
+
+    public void setResults(List<ResultModel> results) {
+        resultsList = results;
+        notifyDataSetChanged();
     }
 
     @Override

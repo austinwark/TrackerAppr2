@@ -2,87 +2,62 @@ package com.sandboxcode.trackerappr2.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.sandboxcode.trackerappr2.R;
+import com.sandboxcode.trackerappr2.viewmodels.AuthViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText loginEmail, loginPassword;
-    private Button loginButton, registerButton, newPassButton;
-    private static final int RC_SIGN_IN = 9001;
-    private SignInButton signInButton;
-    FirebaseAuth firebaseAuth;
+    private EditText email;
+    private EditText password;
+    private Button loginButton;
+    private Button registerButton;
+    private Button newPassButton;
+    private AuthViewModel authViewModel;
+
+    public void instantiateUI() {
+        email = findViewById(R.id.et_login_email);
+        password = findViewById(R.id.et_login_password);
+        loginButton = findViewById(R.id.button_login_login);
+        registerButton = findViewById(R.id.button_login_register);
+        newPassButton = findViewById(R.id.button_login_forgot);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        loginEmail = (EditText) findViewById(R.id.et_login_email);
-        loginPassword = (EditText) findViewById(R.id.et_login_password);
-        loginButton = (Button) findViewById(R.id.button_login_login);
-        registerButton = (Button) findViewById(R.id.button_login_register);
-        newPassButton = (Button) findViewById(R.id.button_login_forgot);
+        instantiateUI();
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                String emailText = loginEmail.getText().toString();
-                String passwordText = loginPassword.getText().toString();
-
-                if (TextUtils.isEmpty(emailText) || TextUtils.isEmpty(passwordText)) {
-                    Toast.makeText(getApplicationContext(),
-                            "Please fill in the required fields",
-                            Toast.LENGTH_SHORT).show();
-                }
-
-                firebaseAuth.signInWithEmailAndPassword(emailText, passwordText)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    startActivity(new Intent(getApplicationContext(),
-                                            MainActivity.class));
-                                    finish();
-                                } else {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Email or password is incorrect",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-
-            }
-        });
-
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-            }
-        });
-
-        if (firebaseAuth.getCurrentUser() != null)
+        authViewModel.getUserSignedIn().observe(this, isUserSignedIn -> {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+        });
 
+        authViewModel.getToastMessage().observe(this, message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show());
+
+        loginButton.setOnClickListener(v -> {
+            String emailText = email.getText().toString();
+            String passwordText = password.getText().toString();
+            Log.d("LoginActivity", emailText + " " + passwordText);
+            authViewModel.loginUser(emailText, passwordText);
+        });
+
+        registerButton.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+            finish();
+        });
 
     }
 }

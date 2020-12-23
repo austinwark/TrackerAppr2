@@ -1,6 +1,5 @@
 package com.sandboxcode.trackerappr2.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,8 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 
@@ -28,28 +25,19 @@ import org.parceler.Parcels;
 public class DetailFragment extends Fragment {
 
     private static final String TAG = "DetailFragment";
-    private Context activityContext;
-    private DatabaseReference databaseRef;
-    private String searchId;
     private ResultModel result;
 
 
     public DetailFragment() {
     }
 
-    private void getDbReferences() {
-        databaseRef = FirebaseDatabase.getInstance().getReference().child("results")
-                .child(searchId);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 
-            searchId = getArguments().getString("SEARCH_ID");
             result = Parcels.unwrap(getArguments().getParcelable("RESULT"));
-            getDbReferences();
             Log.d(TAG, result.toString());
         } else
             Log.d(TAG, "NULL");

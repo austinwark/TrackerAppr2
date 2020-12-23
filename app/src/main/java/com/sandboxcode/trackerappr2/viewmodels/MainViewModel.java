@@ -17,7 +17,7 @@ public class MainViewModel extends AndroidViewModel {
 
         private final Class route;
 
-        private MainActivityActions(Class route) {
+        MainActivityActions(Class route) {
             this.route = route;
         }
     }

@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private BottomNavigationView toolbarBottom;
     private MainViewModel mainViewModel;
-    private MainSharedViewModel mainSharedViewModel;
+    private MainSharedViewModel viewModel;
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
@@ -60,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbarTop = findViewById(R.id.toolbar);
         setSupportActionBar(toolbarTop);
 
-        mainSharedViewModel = new ViewModelProvider(this).get(MainSharedViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainSharedViewModel.class);
 
-        mainSharedViewModel.getUserSignedOut().observe(this, userSignedOut ->
+        viewModel.getUserSignedOut().observe(this, userSignedOut ->
                 AuthUI.getInstance().signOut(this)
                         .addOnCompleteListener(task -> {
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int itemId = item.getItemId();
-        mainSharedViewModel.handleTopOnOptionsItemSelected(itemId);
+        viewModel.handleTopOnOptionsItemSelected(itemId);
 
 
         return super.onOptionsItemSelected(item);
@@ -105,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
         if (fragment instanceof SearchesFragment) {
-            if (mainSharedViewModel.getEditMenuOpen().getValue() == View.VISIBLE) {
-                mainSharedViewModel.toggleEdit();
+            if (viewModel.getEditMenuOpen().getValue() == View.VISIBLE) {
+                viewModel.toggleEdit();
                 return;
             }
         }

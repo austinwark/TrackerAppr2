@@ -41,7 +41,7 @@ public class SearchesFragment extends Fragment {
     private Context activityContext;
 
     private RecyclerView searchListView;
-    private MainSharedViewModel mainSharedViewModel;
+    private MainSharedViewModel viewModel;
     private BottomNavigationView toolbarBottom;
     private MenuItem deleteMenuItem;
     private SearchesAdapter adapter;
@@ -58,20 +58,19 @@ public class SearchesFragment extends Fragment {
         activityContext = getActivity().getApplicationContext();
         adapter = new SearchesAdapter(activityContext, R.layout.search_list_item, this);
 
-        mainSharedViewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
-        mainSharedViewModel.getAllSearches().observe(this, searches -> {
+        viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
+        viewModel.getAllSearches().observe(this, searches -> {
             Log.d(TAG, "onChanged");
             adapter.setSearches(searches);
         });
-        mainSharedViewModel.getEditMenuOpen().observe(this, editMenuOpen -> {
+        viewModel.getEditMenuOpen().observe(this, editMenuOpen -> {
             this.toolbarBottom.setVisibility(editMenuOpen);
             this.adapter.setCheckboxVisible(editMenuOpen);
         });
-        mainSharedViewModel.getToastMessage().observe(this, message -> {
-            Log.d(TAG, "TOAST");
-            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-        });
-        mainSharedViewModel.getCheckedItems().observe(this, checkedItems -> {
+        viewModel.getToastMessage().observe(this, message ->
+                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show());
+
+        viewModel.getCheckedItems().observe(this, checkedItems -> {
 
         });
     }
@@ -101,7 +100,7 @@ public class SearchesFragment extends Fragment {
     // TODO -- save checked status after orientation change
     public void onItemCheckedChange(String searchId, boolean isChecked) {
 
-        mainSharedViewModel.updateCheckedSearchesList(searchId, isChecked);
+        viewModel.updateCheckedSearchesList(searchId, isChecked);
         getActivity().invalidateOptionsMenu();
     }
 
@@ -111,7 +110,7 @@ public class SearchesFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        mainSharedViewModel.handleBottomOnOptionsItemSelected(item.getItemId());
+        viewModel.handleBottomOnOptionsItemSelected(item.getItemId());
 
         return super.onOptionsItemSelected(item);
     }
@@ -150,12 +149,15 @@ public class SearchesFragment extends Fragment {
     public void viewResults(SearchModel search) {
         Bundle args = new Bundle();
         args.putString("ID", search.getId());
+        viewModel.setSearch(search);
+
         ResultsFragment fragment = new ResultsFragment();
         fragment.setArguments(args);
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+
     }
 
 

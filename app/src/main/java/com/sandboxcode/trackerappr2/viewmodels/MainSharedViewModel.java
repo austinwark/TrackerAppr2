@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.sandboxcode.trackerappr2.R;
+import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 import com.sandboxcode.trackerappr2.repositories.SearchRepository;
 
@@ -26,8 +27,9 @@ public class MainSharedViewModel extends AndroidViewModel {
     private MutableLiveData<List<SearchModel>> allSearches;
     private MutableLiveData<String> toastMessage;
     private MutableLiveData<ArrayList<String>> checkedItems;
-    // View.Visible = 0 and View.INVISIBLE = 4
     private MutableLiveData<Integer> editMenuOpen;
+    private MutableLiveData<SearchModel> search;
+    private MutableLiveData<ArrayList<ResultModel>> searchResults;
 
     public MainSharedViewModel(Application application) {
         super(application);
@@ -78,50 +80,6 @@ public class MainSharedViewModel extends AndroidViewModel {
         }
     }
 
-    private OnCompleteListener<Void> onDeleteListener = new OnCompleteListener<Void>() {
-        @Override
-        public void onComplete(@NonNull Task<Void> task) {
-            List<SearchModel> localAllSearches = allSearches.getValue();
-            ArrayList<String> localCheckedItems = checkedItems.getValue();
-            String searchId = localCheckedItems.get(0);
-
-            if (task.isSuccessful()) {
-                Log.d(TAG, "Delete Result: SUCCESS");
-                int searchIndexToDelete = -1;
-                // Confirm the search is deleted from list
-                for (int itemIndex = 0; itemIndex < localAllSearches.size(); itemIndex++) {
-                    if (localAllSearches.get(itemIndex).getId().equals(searchId)) {
-                        searchIndexToDelete = itemIndex;
-                    }
-                }
-                if (searchIndexToDelete == -1) {
-                    localCheckedItems.remove(0);
-                    checkedItems.postValue(localCheckedItems);
-                }
-            } else
-                Log.d(TAG, "Delete Result: FAILURE");
-        }
-    };
-
-    // TODO - CREATE
-    public void create(String name, String model, String trim, String year, String minPrice, String maxPrice) {
-        repository.create(name, model, trim, year, minPrice, maxPrice);
-    }
-
-    public void handleTopOnOptionsItemSelected(int itemId) {
-
-        switch (itemId) {
-            case R.id.action_settings:
-                Log.d(TAG, "Action Settings");
-                break;
-            case R.id.action_logout:
-                setUserSignedOut(true);
-                break;
-            default:
-                break;
-        }
-    }
-
     public void handleBottomOnOptionsItemSelected(int itemId) {
 
         switch (itemId) {
@@ -150,7 +108,6 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     public MutableLiveData<String> getToastMessage() {
         if (toastMessage == null) {
-            Log.d(TAG, "NEW TOIAST");
             toastMessage = new MutableLiveData<>();
         }
         return toastMessage;
@@ -186,4 +143,43 @@ public class MainSharedViewModel extends AndroidViewModel {
     public void setUserSignedOut(boolean signedOut) {
         userSignedOut.postValue(signedOut);
     }
+
+    public void setSearch(SearchModel search) {
+        if (this.search == null)
+            this.search = new MutableLiveData<>();
+
+        this.search.postValue(search);
+    }
+
+    public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
+        if (searchResults == null)
+            searchResults = repository.getSearchResults(searchId);
+        return searchResults;
+    }
+
+    private OnCompleteListener<Void> onDeleteListener = new OnCompleteListener<Void>() {
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            List<SearchModel> localAllSearches = allSearches.getValue();
+            ArrayList<String> localCheckedItems = checkedItems.getValue();
+            String searchId = localCheckedItems.get(0);
+
+            if (task.isSuccessful()) {
+                Log.d(TAG, "Delete Result: SUCCESS");
+                int searchIndexToDelete = -1;
+                // Confirm the search is deleted from list
+                for (int itemIndex = 0; itemIndex < localAllSearches.size(); itemIndex++) {
+                    if (localAllSearches.get(itemIndex).getId().equals(searchId)) {
+                        searchIndexToDelete = itemIndex;
+                    }
+                }
+                if (searchIndexToDelete == -1) {
+                    localCheckedItems.remove(0);
+                    checkedItems.postValue(localCheckedItems);
+                }
+            } else
+                Log.d(TAG, "Delete Result: FAILURE");
+        }
+    };
+
 }

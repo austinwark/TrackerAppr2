@@ -19,14 +19,16 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
     private final TextView name;
     private final CheckBox checkBox;
     private SearchModel searchModel;
+    private SearchesFragment fragment;
     private FragmentManager fragmentManager;
 
     public SearchesHolder(View itemView, SearchesFragment fragment) {
         super(itemView);
 
+        this.fragment = fragment;
         this.fragmentManager = fragment.getParentFragmentManager();
-        this.name = (TextView) itemView.findViewById(R.id.tv_search_item_name);
-        this.checkBox = (CheckBox) itemView.findViewById(R.id.checkBox_edit);
+        this.name = itemView.findViewById(R.id.tv_search_item_name);
+        this.checkBox = itemView.findViewById(R.id.checkBox_edit);
 
         itemView.setOnClickListener(this);
     }
@@ -47,13 +49,10 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
         Bundle args = new Bundle();
         args.putString("ID", search.getId());
 
-//        if (fragmentManager.findFragmentById(R.id.main_fragment_container) instanceof SearchesFragment)
-//            ((SearchesFragment) fragmentManager.findFragmentById(R.id.main_fragment_container)).toggleEdit(false);
-
-        ResultsFragment fragment = new ResultsFragment();
-        fragment.setArguments(args);
+        ResultsFragment resultsFragment = new ResultsFragment();
+        resultsFragment.setArguments(args);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.main_fragment_container, fragment);
+        transaction.replace(R.id.main_fragment_container, resultsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

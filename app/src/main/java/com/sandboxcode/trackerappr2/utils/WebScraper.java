@@ -125,9 +125,10 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
         PRICE_RANGE("&Pricerange="),
         MILEAGERANGE("&Mileagerange="); // TODO: add mileage range parameter to search
         private String val;
-        private UrlBits(String val) {
+        UrlBits(String val) {
             this.val = val;
         }
+
         public String getVal() {
             return val;
         }
