@@ -64,6 +64,7 @@ public class SearchesFragment extends Fragment {
             adapter.setSearches(searches);
         });
         viewModel.getEditMenuOpen().observe(this, editMenuOpen -> {
+            Log.d(TAG, "editOpen observer");
             this.toolbarBottom.setVisibility(editMenuOpen);
             this.adapter.setCheckboxVisible(editMenuOpen);
         });
@@ -86,9 +87,10 @@ public class SearchesFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_searches, menu);
-
+        inflater.inflate(R.menu.menu_main, menu);
+        Log.d(TAG, "onCreateOptionsMenu");
         Menu bottomMenu = toolbarBottom.getMenu();
+        toolbarBottom.setVisibility(View.INVISIBLE);
         deleteMenuItem = bottomMenu.findItem(R.id.action_delete);
 
         // returns the onOptionsItemSelected method for each MenuItem
@@ -101,7 +103,7 @@ public class SearchesFragment extends Fragment {
     public void onItemCheckedChange(String searchId, boolean isChecked) {
 
         viewModel.updateCheckedSearchesList(searchId, isChecked);
-        getActivity().invalidateOptionsMenu();
+//        getActivity().invalidateOptionsMenu();
     }
 
     public boolean getEditActive() {

@@ -40,8 +40,10 @@ public class LoginActivity extends AppCompatActivity {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         authViewModel.getUserSignedIn().observe(this, isUserSignedIn -> {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
+            if (isUserSignedIn) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+            }
         });
 
         authViewModel.getToastMessage().observe(this, message ->

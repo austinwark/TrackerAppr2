@@ -10,9 +10,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
+import com.sandboxcode.trackerappr2.repositories.AuthRepository;
 import com.sandboxcode.trackerappr2.repositories.SearchRepository;
 
 import java.util.ArrayList;
@@ -21,9 +23,11 @@ import java.util.List;
 public class MainSharedViewModel extends AndroidViewModel {
 
     private static final String TAG = "SearchViewModel";
-    private SearchRepository repository;
+    private SearchRepository searchRepository;
+    private AuthRepository authRepository;
+    private FirebaseAuth firebaseAuth;
 
-    private MutableLiveData<Boolean> userSignedOut;
+    private MutableLiveData<Boolean> userSignedIn;
     private MutableLiveData<List<SearchModel>> allSearches;
     private MutableLiveData<String> toastMessage;
     private MutableLiveData<ArrayList<String>> checkedItems;
@@ -33,15 +37,21 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     public MainSharedViewModel(Application application) {
         super(application);
-        repository = new SearchRepository();
-        allSearches = repository.getAllSearches();
-//        checkedItems.postValue(new ArrayList<>());
-//        editMenuOpen.postValue(View.INVISIBLE);
+        searchRepository = new SearchRepository();
+        authRepository = new AuthRepository();
+        allSearches = searchRepository.getAllSearches();
+        firebaseAuth = FirebaseAuth.getInstance();
+    }
+
+    public MutableLiveData<Boolean> getUserSignedIn() {
+        if (userSignedIn == null)
+            userSignedIn = authRepository.getUserSignedIn();
+        return userSignedIn;
     }
 
     public MutableLiveData<List<SearchModel>> getAllSearches() {
         if (allSearches == null)
-            allSearches = repository.getAllSearches();
+            allSearches = searchRepository.getAllSearches();
         return allSearches;
     }
 
@@ -56,36 +66,55 @@ public class MainSharedViewModel extends AndroidViewModel {
             localCheckedItems = checkedItems.getValue();
         }
 
-        if (isChecked)
+        if (isChecked) {
             localCheckedItems.add(searchId);
-        else
+            Log.d(TAG, "is checked");
+        } else {
             localCheckedItems.remove(searchId);
+            Log.d(TAG, "is not checked");
+
+        }
 
         checkedItems.postValue(localCheckedItems);
     }
 
-    public void deleteSearch() {
-        ArrayList<String> localCheckedItems = checkedItems.getValue();
-        String searchId;
 
-        if (localCheckedItems.isEmpty())
-            setToastMessage("A search must be selected before deletion.");
-        else if (localCheckedItems.size() > 1)
-            setToastMessage("Only one search can be deleted at a time.");
-        else {
-            searchId = localCheckedItems.get(0);
+    public void handleTopOnOptionsItemSelected(int itemId) {
 
-            repository.delete(searchId, onDeleteListener);
-            setToastMessage("Deleting search.");
+        switch (itemId) {
+            case R.id.action_edit:
+                Log.d(TAG, "action edit");
+                toggleEdit();
+                break;
+            case R.id.action_settings:
+                break;
+            case R.id.action_logout:
+                firebaseAuth.signOut();
+                authRepository.setUserSignedIn();
+                break;
+            default:
+                break;
         }
     }
 
     public void handleBottomOnOptionsItemSelected(int itemId) {
 
         switch (itemId) {
+            /* ----- Top Toolbar Menu ----- */
             case R.id.action_edit:
                 Log.d(TAG, "action edit");
                 toggleEdit();
+                break;
+            case R.id.action_settings:
+                break;
+            case R.id.action_logout:
+                firebaseAuth.signOut();
+                authRepository.setUserSignedIn();
+                break;
+
+            /* ----- Bottom Toolbar Menu ----- */
+            case R.id.action_search_edit:
+                Log.d(TAG, "action search edit");
                 break;
             case R.id.action_delete:
                 Log.d(TAG, "action delete");
@@ -104,6 +133,22 @@ public class MainSharedViewModel extends AndroidViewModel {
         else
             editMenuOpen.postValue(View.VISIBLE);
 
+    }
+
+    public void deleteSearch() {
+        ArrayList<String> localCheckedItems = checkedItems.getValue();
+        String searchId;
+
+        if (localCheckedItems.isEmpty())
+            setToastMessage("A search must be selected before deletion.");
+        else if (localCheckedItems.size() > 1)
+            setToastMessage("Only one search can be deleted at a time.");
+        else {
+            searchId = localCheckedItems.get(0);
+
+            searchRepository.delete(searchId, onDeleteListener);
+            setToastMessage("Deleting search.");
+        }
     }
 
     public MutableLiveData<String> getToastMessage() {
@@ -133,17 +178,6 @@ public class MainSharedViewModel extends AndroidViewModel {
         return checkedItems;
     }
 
-    public MutableLiveData<Boolean> getUserSignedOut() {
-        if (userSignedOut == null) {
-            userSignedOut = new MutableLiveData<>();
-        }
-        return userSignedOut;
-    }
-
-    public void setUserSignedOut(boolean signedOut) {
-        userSignedOut.postValue(signedOut);
-    }
-
     public void setSearch(SearchModel search) {
         if (this.search == null)
             this.search = new MutableLiveData<>();
@@ -153,7 +187,7 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
         if (searchResults == null)
-            searchResults = repository.getSearchResults(searchId);
+            searchResults = searchRepository.getSearchResults(searchId);
         return searchResults;
     }
 

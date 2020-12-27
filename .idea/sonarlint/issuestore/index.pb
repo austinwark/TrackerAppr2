@@ -84,8 +84,6 @@ Fapp/src/main/java/com/sandboxcode/trackerappr2/models/SearchModel.java,1\9\19c
 Mapp/src/main/java/com/sandboxcode/trackerappr2/activities/CreateActivity.java,3\c\3cb6a004499dca0c480ebc5ea561d02a54c7e121
 [
 +app/src/main/res/layout/fragment_detail.xml,1\2\124e27a664a59bdc0958fb6899fe7332369da4ef
-S
-#app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e
 t
 Dapp/src/main/java/com/sandboxcode/trackerappr2/utils/WebScraper.java,7\7\77e698f4e78e5c074f1d429204681c82be317dbf
 {
@@ -130,5 +128,3 @@ Vapp/src/main/java/com/sandboxcode/trackerappr2/livedata/FirebaseQueryLiveDataLi
 Rapp/src/main/java/com/sandboxcode/trackerappr2/livedata/FirebaseQueryLiveData.java,a\3\a3f45618edc5cf92bce4706eb2c26c2a8652cd8c
 Å
 Qapp/src/main/java/com/sandboxcode/trackerappr2/repositories/SearchRepository.java,1\1\11d93fd68a269e80ed7214279368f11e0fa1ab11
-~
-Napp/src/main/java/com/sandboxcode/trackerappr2/viewmodels/SearchViewModel.java,d\d\ddcf9b904cb8cdd10988c85640c6c8fc6675ceb6

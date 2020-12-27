@@ -7,23 +7,20 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.sandboxcode.trackerappr2.repositories.AuthRepository;
 
 public class AuthViewModel extends AndroidViewModel {
+
+    private AuthRepository authRepository;
     private FirebaseAuth firebaseAuth;
     private MutableLiveData<String> toastMessage;
     private MutableLiveData<Boolean> userSignedIn;
 
     public AuthViewModel(Application application) {
         super(application);
+        authRepository = new AuthRepository();
         firebaseAuth = FirebaseAuth.getInstance();
         toastMessage = new MutableLiveData<>();
-        userSignedIn = new MutableLiveData<>();
-        if (isUserSignedIn())
-            userSignedIn.postValue(true);
-    }
-
-    public boolean isUserSignedIn() {
-        return firebaseAuth.getCurrentUser() != null;
     }
 
     public MutableLiveData<String> getToastMessage() {
@@ -31,6 +28,8 @@ public class AuthViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<Boolean> getUserSignedIn() {
+        if (userSignedIn == null)
+            userSignedIn = authRepository.getUserSignedIn();
         return userSignedIn;
     }
 
@@ -42,7 +41,7 @@ public class AuthViewModel extends AndroidViewModel {
             firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
                 if (task.isSuccessful())
-                    userSignedIn.postValue(true);
+                    authRepository.setUserSignedIn();
                 else
                     toastMessage.postValue("Email or password is incorrect.");
             });
@@ -62,7 +61,7 @@ public class AuthViewModel extends AndroidViewModel {
                     .addOnCompleteListener(task -> {
 
                         if (task.isSuccessful())
-                            userSignedIn.postValue(true);
+                            authRepository.setUserSignedIn();
                         else
                             toastMessage.postValue("Error creating user. Please try again.");
                     });

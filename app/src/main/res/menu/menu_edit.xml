@@ -12,7 +12,7 @@
         />
 
     <item
-        android:id="@+id/action_edit_search"
+        android:id="@+id/action_search_edit"
         android:orderInCategory="9"
         android:title="Edit"
         android:icon="@drawable/ic_create"

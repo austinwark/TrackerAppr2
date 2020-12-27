@@ -3,8 +3,6 @@ package com.sandboxcode.trackerappr2.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,19 +12,15 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.DetailFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
 import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
-import com.sandboxcode.trackerappr2.viewmodels.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private BottomNavigationView toolbarBottom;
-    private MainViewModel mainViewModel;
     private MainSharedViewModel viewModel;
 
     @Override
@@ -57,18 +51,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbarTop = findViewById(R.id.toolbar);
+        Toolbar toolbarTop = findViewById(R.id.toolbar_top);
         setSupportActionBar(toolbarTop);
 
         viewModel = new ViewModelProvider(this).get(MainSharedViewModel.class);
 
-        viewModel.getUserSignedOut().observe(this, userSignedOut ->
+        viewModel.getUserSignedIn().observe(this, userSignedIn -> {
+            if (!userSignedIn)
                 AuthUI.getInstance().signOut(this)
                         .addOnCompleteListener(task -> {
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             finish();
-                        })
-        );
+                        });
+        });
 
         if (savedInstanceState == null) {
             SearchesFragment fragment = new SearchesFragment();
@@ -78,27 +73,6 @@ public class MainActivity extends AppCompatActivity {
             transaction.commit();
         }
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        toolbarBottom = findViewById(R.id.toolbar_bottom);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int itemId = item.getItemId();
-        viewModel.handleTopOnOptionsItemSelected(itemId);
-
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

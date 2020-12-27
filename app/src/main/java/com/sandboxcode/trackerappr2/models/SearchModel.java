@@ -9,16 +9,18 @@ public class SearchModel implements Parcelable {
     private String searchName;
     private String model;
     private String trim;
-    private String year;
+    private String minYear;
+    private String maxYear;
     private String minPrice;
     private String maxPrice;
 
-    public SearchModel(String key, String searchName, String model, String trim, String year, String minPrice, String maxPrice) {
+    public SearchModel(String key, String searchName, String model, String trim, String minYear, String maxYear, String minPrice, String maxPrice) {
         this.id = key;
         this.searchName = searchName;
         this.model = model;
         this.trim = trim;
-        this.year = year;
+        this.minYear = minYear;
+        this.maxYear = maxYear;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
     }
@@ -38,7 +40,8 @@ public class SearchModel implements Parcelable {
         searchName = in.readString();
         model = in.readString();
         trim = in.readString();
-        year = in.readString();
+        minYear = in.readString();
+        maxYear = in.readString();
         minPrice = in.readString();
         maxPrice = in.readString();
     }
@@ -71,12 +74,20 @@ public class SearchModel implements Parcelable {
         this.trim = trim;
     }
 
-    public String getYear() {
-        return year;
+    public String getMinYear() {
+        return minYear;
     }
 
-    public void setYear(String year) {
-        this.year = year;
+    public void setMinYear(String minYear) {
+        this.minYear = minYear;
+    }
+
+    public String getMaxYear() {
+        return maxYear;
+    }
+
+    public void setMaxYear(String maxYear) {
+        this.maxYear = maxYear;
     }
 
     public String getMinPrice() {
@@ -113,7 +124,8 @@ public class SearchModel implements Parcelable {
         dest.writeString(id);
         dest.writeString(model);
         dest.writeString(trim);
-        dest.writeString(year);
+        dest.writeString(minYear);
+        dest.writeString(maxYear);
         dest.writeString(minPrice);
         dest.writeString(maxPrice);
     }

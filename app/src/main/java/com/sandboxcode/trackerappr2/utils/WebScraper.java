@@ -46,11 +46,11 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
                 queryString.append(search.getTrim());
             }
         }
-        if (!search.getYear().isEmpty()) {
-            queryString.append(UrlBits.YEAR.getVal());
-            queryString.append(search.getYear());
-
-        }
+//        if (!search.getYear().isEmpty()) {
+//            queryString.append(UrlBits.YEAR.getVal());
+//            queryString.append(search.getYear());
+//
+//        }
 
         queryString.append(UrlBits.PRICE_RANGE.getVal());
         queryString.append(search.getMinPrice());
@@ -78,24 +78,31 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
         ArrayList<ResultModel> results = new ArrayList<>();
 
         for (Element vehicle : content) {
-            Map<String, String> details = new HashMap<>();
-            details.put("vin", vehicle.attr("data-vin"));
-            details.put("make", vehicle.attr("data-make"));
-            details.put("model", vehicle.attr("data-model"));
-            details.put("year", vehicle.attr("data-year"));
-            details.put("trim", vehicle.attr("data-trim"));
-            details.put("extColor", vehicle.attr("data-extcolor"));
-            details.put("intColor", vehicle.attr("data-intcolor"));
-            details.put("price", vehicle.attr("data-price"));
-            details.put("stock", vehicle.attr("data-stocknum"));
-            details.put("engine", vehicle.attr("data-engine"));
-            details.put("transmission", vehicle.attr("data-trans"));
-            details.put("miles", vehicle.select(".mileageDisplay").first().text().substring(8).trim());
-            details.put("dealer", vehicle.select("li.dealershipDisplay").first().text().substring(11).trim());
+            float minYear = Float.parseFloat(search.getMinYear());
+            float maxYear = Float.parseFloat(search.getMaxYear());
+            float vehicleYear = Float.parseFloat(vehicle.attr("data-year"));
+            if (vehicleYear >= minYear && vehicleYear <= maxYear) {
 
-            ResultModel resultModel = new ResultModel(details);
-            results.add(resultModel);
-            Log.d(TAG, "\t" + resultModel.toString() + "\n");
+                Map<String, String> details = new HashMap<>();
+                details.put("vin", vehicle.attr("data-vin"));
+                details.put("make", vehicle.attr("data-make"));
+                details.put("model", vehicle.attr("data-model"));
+                details.put("year", vehicle.attr("data-year"));
+                details.put("trim", vehicle.attr("data-trim"));
+                details.put("extColor", vehicle.attr("data-extcolor"));
+                details.put("intColor", vehicle.attr("data-intcolor"));
+                details.put("price", vehicle.attr("data-price"));
+                details.put("stock", vehicle.attr("data-stocknum"));
+                details.put("engine", vehicle.attr("data-engine"));
+                details.put("transmission", vehicle.attr("data-trans"));
+                details.put("miles", vehicle.select(".mileageDisplay").first().text().substring(8).trim());
+                details.put("dealer", vehicle.select("li.dealershipDisplay").first().text().substring(11).trim());
+
+                ResultModel resultModel = new ResultModel(details);
+                results.add(resultModel);
+                Log.d(TAG, "\t" + resultModel.toString() + "\n");
+            } else
+                Log.d(TAG, "not in year range");
         }
 
         updateDatabase(results);
@@ -121,10 +128,11 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
         BASE("https://www.liatoyotaofcolonie.com/searchused.aspx?Dealership=Lia%20Toyota%20of%20Colonie"),
         MODEL("&Model="),
         YEAR("&Year="),
-        TRIM("&f=trim%3A"),
+        TRIM("&Trim="),
         PRICE_RANGE("&Pricerange="),
         MILEAGERANGE("&Mileagerange="); // TODO: add mileage range parameter to search
         private String val;
+
         UrlBits(String val) {
             this.val = val;
         }

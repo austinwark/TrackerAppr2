@@ -11,9 +11,21 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="action_logout">Logout</string>
 
-    <string-array name="models__array">
+    <string-array name="models_array">
+        <item>4Runner</item>
+        <item>Avalon</item>
         <item>Camry</item>
+        <item>Camry Hybrid</item>
+        <item>C-HR</item>
         <item>Corolla</item>
+        <item>Highlander</item>
+        <item>Prius</item>
+        <item>RAV4</item>
+        <item>RAV4 Hybrid</item>
+        <item>Sienna</item>
+        <item>Tacoma</item>
+        <item>Tundra</item>
+        <item>Venza</item>
         <item>Corolla Hatchback</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->

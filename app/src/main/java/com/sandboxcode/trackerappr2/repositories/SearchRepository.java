@@ -25,7 +25,6 @@ public class SearchRepository {
     private static final FirebaseAuth AUTH_REF = FirebaseAuth.getInstance();
     private static final DatabaseReference DATABASE_REF = FirebaseDatabase.getInstance().getReference();
 
-
     private final SearchesListener searchesListener = new SearchesListener();
     private MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
     private MutableLiveData<ArrayList<ResultModel>> searchResults = new MutableLiveData<>();
@@ -97,10 +96,10 @@ public class SearchRepository {
         }
     }
 
-    public void create(String name, String model, String trim, String year, String minPrice, String maxPrice) {
+    public void create(String name, String model, String trim, String minYear, String maxYear, String minPrice, String maxPrice) {
         //TODO-- Add completed check and return boolean to confirm success
         final String KEY = DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).push().getKey();
-        SearchModel searchModel = new SearchModel(KEY, name, model, trim, year, minPrice, maxPrice);
+        SearchModel searchModel = new SearchModel(KEY, name, model, trim, minYear, maxYear, minPrice, maxPrice);
         WebScraper scraper = new WebScraper(searchModel, DATABASE_REF, AUTH_REF.getCurrentUser().getUid());
         scraper.execute();
     }
