@@ -34,6 +34,7 @@ public class MainSharedViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> editMenuOpen;
     private MutableLiveData<SearchModel> search;
     private MutableLiveData<ArrayList<ResultModel>> searchResults;
+    private MutableLiveData<String> startEditActivity;
 
     public MainSharedViewModel(Application application) {
         super(application);
@@ -41,6 +42,8 @@ public class MainSharedViewModel extends AndroidViewModel {
         authRepository = new AuthRepository();
         allSearches = searchRepository.getAllSearches();
         firebaseAuth = FirebaseAuth.getInstance();
+
+        searchRepository.setListeners();
     }
 
     public MutableLiveData<Boolean> getUserSignedIn() {
@@ -97,7 +100,7 @@ public class MainSharedViewModel extends AndroidViewModel {
         }
     }
 
-    public void handleBottomOnOptionsItemSelected(int itemId) {
+    public void handleOnOptionsItemSelected(int itemId) {
 
         switch (itemId) {
             /* ----- Top Toolbar Menu ----- */
@@ -115,6 +118,7 @@ public class MainSharedViewModel extends AndroidViewModel {
             /* ----- Bottom Toolbar Menu ----- */
             case R.id.action_search_edit:
                 Log.d(TAG, "action search edit");
+                editSearch();
                 break;
             case R.id.action_delete:
                 Log.d(TAG, "action delete");
@@ -189,6 +193,35 @@ public class MainSharedViewModel extends AndroidViewModel {
         if (searchResults == null)
             searchResults = searchRepository.getSearchResults(searchId);
         return searchResults;
+    }
+
+    public void editSearch() {
+        String searchId;
+        ArrayList<String> localCheckedItems = checkedItems.getValue();
+        List<SearchModel> localAllSearches = allSearches.getValue();
+        if (localCheckedItems.isEmpty())
+            setToastMessage("A search must be selected before editing.");
+        else if (localCheckedItems.size() > 1)
+            setToastMessage("Only one search can be edited at a time");
+        else {
+            searchId = localCheckedItems.get(0);
+            setStartEditActivity(searchId);
+        }
+
+    }
+
+    public MutableLiveData<String> getStartEditActivity() {
+        if (startEditActivity == null)
+            startEditActivity = new MutableLiveData<>();
+        return startEditActivity;
+    }
+
+    public void setStartEditActivity(String searchId) {
+        startEditActivity.postValue(searchId);
+    }
+
+    public void refreshSearches() {
+        searchRepository.getAllSearches();
     }
 
     private OnCompleteListener<Void> onDeleteListener = new OnCompleteListener<Void>() {

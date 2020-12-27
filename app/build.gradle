@@ -54,6 +54,8 @@ dependencies {
     annotationProcessor 'org.parceler:parceler:1.1.12'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     def lifecycle_version = "2.2.0"
+    def activity_version = "1.2.0-rc01"
+    def fragment_version = "1.3.0-rc01"
     def arch_version = "2.1.0"
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
@@ -63,4 +65,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     // Saved state module for ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+    // Latest Activity APIs
+    implementation "androidx.activity:activity:$activity_version"
+    // Latest Fragment APIs
+    implementation "androidx.fragment:fragment:$fragment_version"
 }

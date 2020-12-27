@@ -20,7 +20,8 @@ public class CreateViewModel extends AndroidViewModel {
         createCancelled = new MutableLiveData<>();
     }
 
-    public void create(String name, String model, String trim, String minYear, String maxYear, String minPrice, String maxPrice) {
+    public void create(String name, String model, String trim, String minYear,
+                       String maxYear, String minPrice, String maxPrice) {
         repository.create(name, model, trim, minYear, maxYear, minPrice, maxPrice);
     }
 

@@ -14,7 +14,8 @@ public class SearchModel implements Parcelable {
     private String minPrice;
     private String maxPrice;
 
-    public SearchModel(String key, String searchName, String model, String trim, String minYear, String maxYear, String minPrice, String maxPrice) {
+    public SearchModel(String key, String searchName, String model, String trim, String minYear,
+                       String maxYear, String minPrice, String maxPrice) {
         this.id = key;
         this.searchName = searchName;
         this.model = model;

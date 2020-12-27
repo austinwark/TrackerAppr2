@@ -25,23 +25,119 @@ public class SearchRepository {
     private static final FirebaseAuth AUTH_REF = FirebaseAuth.getInstance();
     private static final DatabaseReference DATABASE_REF = FirebaseDatabase.getInstance().getReference();
 
+    /* Fragment Searches */
     private final SearchesListener searchesListener = new SearchesListener();
     private MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
     private MutableLiveData<ArrayList<ResultModel>> searchResults = new MutableLiveData<>();
 
+    /* Activity Edit */
+    private MutableLiveData<SearchModel> singleSearch = new MutableLiveData<>();
+    private MutableLiveData<Boolean> changesSaved = new MutableLiveData<>();
+
+    /* Both */
+    private MutableLiveData<String> errorMessage = new MutableLiveData<>();
+
     public SearchRepository() {
-        setListeners();
+
     }
 
-    private void setListeners() {
+    public void setListeners() {
         Log.d(TAG, "setListeners");
         DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
                 .addValueEventListener(searchesListener);
     }
 
+    public void retrieveSearch(String searchId) {
+
+        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
+                .child(searchId).addListenerForSingleValueEvent(new SingleSearchListener());
+    }
+
     @NonNull
     public MutableLiveData<List<SearchModel>> getAllSearches() {
         return allSearches;
+    }
+
+    public MutableLiveData<SearchModel> getSingleSearch() {
+        return singleSearch;
+    }
+
+    public void delete(String searchId, OnCompleteListener<Void> onCompleteListener) {
+        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
+                .child(searchId).removeValue().addOnCompleteListener(onCompleteListener);
+
+        DATABASE_REF.child("results").child(searchId).removeValue();
+
+    }
+
+    public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
+        DATABASE_REF.child("results").child(searchId)
+                .addListenerForSingleValueEvent(new ResultsListener());
+
+        return searchResults;
+    }
+
+    public void create(String name, String model, String trim, String minYear,
+                       String maxYear, String minPrice, String maxPrice) {
+
+        //TODO-- Add completed check and return boolean to confirm success
+        final String KEY = DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).push().getKey();
+        SearchModel searchModel = new SearchModel(KEY, name, model, trim, minYear, maxYear, minPrice, maxPrice);
+        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).child(KEY)
+                .setValue(searchModel).addOnSuccessListener(aVoid -> {
+
+            WebScraper scraper = new WebScraper(searchModel,
+                    DATABASE_REF, AUTH_REF.getCurrentUser().getUid());
+            scraper.execute();
+        });
+    }
+
+    public void saveChanges(SearchModel search) {
+        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
+                .child(search.getId()).setValue(search)
+                .addOnCompleteListener(task -> {
+
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "Task is successful");
+                        setChangesSaved(true);
+                        WebScraper scraper = new WebScraper(search,
+                                DATABASE_REF, AUTH_REF.getCurrentUser().getUid());
+                        scraper.execute();
+
+                    } else {
+                        setErrorMessage("Error saving changes.");
+                    }
+                });
+    }
+
+    public MutableLiveData<Boolean> getChangesSaved() {
+        return changesSaved;
+    }
+
+    public void setChangesSaved(boolean saved) {
+        changesSaved.postValue(saved);
+    }
+
+    public MutableLiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String message) {
+        errorMessage.postValue(message);
+    }
+
+    private class SingleSearchListener implements ValueEventListener {
+
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            SearchModel search = snapshot.getValue(SearchModel.class);
+            singleSearch.postValue(search);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Log.d(TAG, "Can't listen to search query: ", error.toException());
+        }
     }
 
     // TODO - Change to ChildEventListener
@@ -63,21 +159,6 @@ public class SearchRepository {
         }
     }
 
-    public void delete(String searchId, OnCompleteListener<Void> onCompleteListener) {
-        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
-                .child(searchId).removeValue().addOnCompleteListener(onCompleteListener);
-
-        DATABASE_REF.child("results").child(searchId).removeValue();
-
-    }
-
-    public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
-        DATABASE_REF.child("results").child(searchId)
-                .addListenerForSingleValueEvent(new ResultsListener());
-
-        return searchResults;
-    }
-
     private class ResultsListener implements ValueEventListener {
 
         @Override
@@ -96,11 +177,8 @@ public class SearchRepository {
         }
     }
 
-    public void create(String name, String model, String trim, String minYear, String maxYear, String minPrice, String maxPrice) {
-        //TODO-- Add completed check and return boolean to confirm success
-        final String KEY = DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).push().getKey();
-        SearchModel searchModel = new SearchModel(KEY, name, model, trim, minYear, maxYear, minPrice, maxPrice);
-        WebScraper scraper = new WebScraper(searchModel, DATABASE_REF, AUTH_REF.getCurrentUser().getUid());
-        scraper.execute();
+    public interface SimpleCallback<T> {
+        void callback(T data);
     }
+
 }

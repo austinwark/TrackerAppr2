@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.slider.RangeSlider;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textfield.TextInputEditText;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.viewmodels.CreateViewModel;
 
@@ -26,14 +26,15 @@ import java.util.List;
 public class CreateActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateActivity";
-    private AutoCompleteTextView modelSpinner;
-    private TextInputLayout searchNameEditText;
-    private TextInputLayout trimEditText;
-    private RangeSlider yearSlider;
-    private RangeSlider priceSlider;
     private CreateViewModel createViewModel;
 
+    private AutoCompleteTextView modelSpinner;
+    private TextInputEditText searchNameEditText;
+    private TextInputEditText trimEditText;
+    private RangeSlider yearSlider;
+    private RangeSlider priceSlider;
     private ArrayAdapter<CharSequence> modelAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +55,9 @@ public class CreateActivity extends AppCompatActivity {
 
     public void createNewSearch(View v) {
 
-        String searchName = searchNameEditText.getEditText().getText().toString();
+        String searchName = searchNameEditText.getText().toString();
         String model = modelSpinner.getText().toString();
-        String trim = trimEditText.getEditText().getText().toString();
+        String trim = trimEditText.getText().toString();
         List<Float> yearValues = yearSlider.getValues();
         String minYear = Collections.min(yearValues).toString();
         String maxYear = Collections.max(yearValues).toString();
@@ -84,7 +85,8 @@ public class CreateActivity extends AppCompatActivity {
         });
 
         Resources res = getResources();
-        ArrayList<CharSequence> models = new ArrayList<>(Arrays.asList(res.getStringArray(R.array.models_array)));
+        ArrayList<CharSequence> models =
+                new ArrayList<>(Arrays.asList(res.getStringArray(R.array.models_array)));
         modelAdapter = new ArrayAdapter<>(this, R.layout.models_list_item, models);
         modelSpinner.setAdapter(modelAdapter);
 

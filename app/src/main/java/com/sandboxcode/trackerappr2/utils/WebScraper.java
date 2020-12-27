@@ -3,7 +3,6 @@ package com.sandboxcode.trackerappr2.utils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
@@ -110,18 +109,23 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
 
     private void updateDatabase(ArrayList<ResultModel> searchResults) {
         final ArrayList<ResultModel> results = searchResults;
-//        final String KEY = ref.child("queries").child(userUid).push().getKey();
-        ref.child("queries").child(userUid).child(search.getId())
-                .setValue(search).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
 
-//                ref.child("results").child(search.getId()).setValue(results);
-                for (ResultModel result : results) {
-                    ref.child("results").child(search.getId()).child(result.getVin()).setValue(result);
-                }
-            }
-        });
+        /* INSTEAD -- SearchRepository handles it as of 12/26/2020 */
+//        final String KEY = ref.child("queries").child(userUid).push().getKey();
+//        ref.child("queries").child(userUid).child(search.getId())
+//                .setValue(search).addOnSuccessListener(aVoid -> {
+//
+//    //                ref.child("results").child(search.getId()).setValue(results);
+//                    for (ResultModel result : results) {
+//                        ref.child("results").child(search.getId()).child(result.getVin()).setValue(result);
+//                    }
+//                });
+
+        // delete old contents in search results (there's nothing there if creating new search)
+        ref.child("results").child(search.getId()).removeValue();
+        for (ResultModel result : results) {
+            ref.child("results").child(search.getId()).child(result.getVin()).setValue(result);
+        }
     }
 
     private enum UrlBits {

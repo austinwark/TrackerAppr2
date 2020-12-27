@@ -17,4 +17,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="CancelButton" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">#FFFFFF</item>
+    </style>
+
 </resources>

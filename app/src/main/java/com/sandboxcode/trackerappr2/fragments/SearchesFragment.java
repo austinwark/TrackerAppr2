@@ -1,5 +1,6 @@
 package com.sandboxcode.trackerappr2.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -24,6 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
+import com.sandboxcode.trackerappr2.activities.EditActivity;
 import com.sandboxcode.trackerappr2.adapters.decorators.ShadowVerticalSpaceItemDecorator;
 import com.sandboxcode.trackerappr2.adapters.decorators.VerticalSpaceItemDecorator;
 import com.sandboxcode.trackerappr2.adapters.search.SearchesAdapter;
@@ -46,6 +50,17 @@ public class SearchesFragment extends Fragment {
     private MenuItem deleteMenuItem;
     private SearchesAdapter adapter;
 
+    ActivityResultLauncher<Intent> startForResult =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(), result -> {
+                        if (result.getResultCode() == Activity.RESULT_OK)
+                            viewModel.refreshSearches();
+
+                        Toast.makeText(getActivity(), result.getData()
+                                .getStringExtra("result_message"), Toast.LENGTH_LONG)
+                                .show();
+                    });
+
     public SearchesFragment() {
         // Required empty public constructor
     }
@@ -54,7 +69,7 @@ public class SearchesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d(TAG, "onCreate called");
         activityContext = getActivity().getApplicationContext();
         adapter = new SearchesAdapter(activityContext, R.layout.search_list_item, this);
 
@@ -70,10 +85,12 @@ public class SearchesFragment extends Fragment {
         });
         viewModel.getToastMessage().observe(this, message ->
                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show());
-
-        viewModel.getCheckedItems().observe(this, checkedItems -> {
-
+        viewModel.getStartEditActivity().observe(this, searchId -> {
+            Intent intent = new Intent(getActivity(), EditActivity.class);
+            intent.putExtra("searchId", searchId);
+            startForResult.launch(intent);
         });
+
     }
 
     @Override
@@ -112,7 +129,7 @@ public class SearchesFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        viewModel.handleBottomOnOptionsItemSelected(item.getItemId());
+        viewModel.handleOnOptionsItemSelected(item.getItemId());
 
         return super.onOptionsItemSelected(item);
     }
