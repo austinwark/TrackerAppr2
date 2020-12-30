@@ -26,15 +26,16 @@ public class MainSharedViewModel extends AndroidViewModel {
     private SearchRepository searchRepository;
     private AuthRepository authRepository;
     private FirebaseAuth firebaseAuth;
-
+    /* MainActivity */
     private MutableLiveData<Boolean> userSignedIn;
+    /* SearchesFragment */
     private MutableLiveData<List<SearchModel>> allSearches;
-    private MutableLiveData<String> toastMessage;
-    private MutableLiveData<ArrayList<String>> checkedItems;
-    private MutableLiveData<Integer> editMenuOpen;
-    private MutableLiveData<SearchModel> search;
+    private MutableLiveData<String> toastMessage = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<String>> checkedItems = new MutableLiveData<>();
+    private MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
+    private MutableLiveData<String> startEditActivity = new MutableLiveData<>();
+    /* ResultsFragment */
     private MutableLiveData<ArrayList<ResultModel>> searchResults;
-    private MutableLiveData<String> startEditActivity;
 
     public MainSharedViewModel(Application application) {
         super(application);
@@ -44,6 +45,9 @@ public class MainSharedViewModel extends AndroidViewModel {
         firebaseAuth = FirebaseAuth.getInstance();
 
         searchRepository.setListeners();
+
+        checkedItems.setValue(new ArrayList<>());
+        editMenuOpen.setValue(View.INVISIBLE);
     }
 
     public MutableLiveData<Boolean> getUserSignedIn() {
@@ -60,14 +64,7 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     // TODO - RESET LIST WHEN NAVIGATING AWAY FROM SCREEN
     public void updateCheckedSearchesList(String searchId, boolean isChecked) {
-        ArrayList<String> localCheckedItems;
-
-        if (checkedItems == null) {
-            checkedItems = new MutableLiveData<>();
-            localCheckedItems = new ArrayList<>();
-        } else {
-            localCheckedItems = checkedItems.getValue();
-        }
+        ArrayList<String> localCheckedItems = checkedItems.getValue();
 
         if (isChecked) {
             localCheckedItems.add(searchId);
@@ -75,29 +72,9 @@ public class MainSharedViewModel extends AndroidViewModel {
         } else {
             localCheckedItems.remove(searchId);
             Log.d(TAG, "is not checked");
-
         }
 
         checkedItems.postValue(localCheckedItems);
-    }
-
-
-    public void handleTopOnOptionsItemSelected(int itemId) {
-
-        switch (itemId) {
-            case R.id.action_edit:
-                Log.d(TAG, "action edit");
-                toggleEdit();
-                break;
-            case R.id.action_settings:
-                break;
-            case R.id.action_logout:
-                firebaseAuth.signOut();
-                authRepository.setUserSignedIn();
-                break;
-            default:
-                break;
-        }
     }
 
     public void handleOnOptionsItemSelected(int itemId) {
@@ -156,9 +133,6 @@ public class MainSharedViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<String> getToastMessage() {
-        if (toastMessage == null) {
-            toastMessage = new MutableLiveData<>();
-        }
         return toastMessage;
     }
 
@@ -167,38 +141,23 @@ public class MainSharedViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<Integer> getEditMenuOpen() {
-        if (editMenuOpen == null) {
-            editMenuOpen = new MutableLiveData<>();
-            editMenuOpen.postValue(View.INVISIBLE);
-        }
         return editMenuOpen;
     }
 
     public MutableLiveData<ArrayList<String>> getCheckedItems() {
-        if (checkedItems == null) {
-            checkedItems = new MutableLiveData<>();
-            checkedItems.postValue(new ArrayList<>());
-        }
         return checkedItems;
     }
 
-    public void setSearch(SearchModel search) {
-        if (this.search == null)
-            this.search = new MutableLiveData<>();
-
-        this.search.postValue(search);
-    }
-
+    // TODO -- Call SearchResults every time? OR only when null and nothing has changed?
     public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
-        if (searchResults == null)
-            searchResults = searchRepository.getSearchResults(searchId);
+        searchResults = searchRepository.getSearchResults(searchId);
         return searchResults;
     }
 
     public void editSearch() {
         String searchId;
-        ArrayList<String> localCheckedItems = checkedItems.getValue();
-        List<SearchModel> localAllSearches = allSearches.getValue();
+        ArrayList<String> localCheckedItems = getCheckedItems().getValue();
+
         if (localCheckedItems.isEmpty())
             setToastMessage("A search must be selected before editing.");
         else if (localCheckedItems.size() > 1)
@@ -211,8 +170,6 @@ public class MainSharedViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<String> getStartEditActivity() {
-        if (startEditActivity == null)
-            startEditActivity = new MutableLiveData<>();
         return startEditActivity;
     }
 
@@ -222,28 +179,21 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     public void refreshSearches() {
         searchRepository.getAllSearches();
+        toggleEdit(); // hide edit menu
+        checkedItems.postValue(new ArrayList<>()); // Reset checked items
+    }
+
+    public void refreshResults(String searchId) {
+        searchRepository.getSearchResults(searchId);
     }
 
     private OnCompleteListener<Void> onDeleteListener = new OnCompleteListener<Void>() {
         @Override
         public void onComplete(@NonNull Task<Void> task) {
-            List<SearchModel> localAllSearches = allSearches.getValue();
-            ArrayList<String> localCheckedItems = checkedItems.getValue();
-            String searchId = localCheckedItems.get(0);
 
             if (task.isSuccessful()) {
                 Log.d(TAG, "Delete Result: SUCCESS");
-                int searchIndexToDelete = -1;
-                // Confirm the search is deleted from list
-                for (int itemIndex = 0; itemIndex < localAllSearches.size(); itemIndex++) {
-                    if (localAllSearches.get(itemIndex).getId().equals(searchId)) {
-                        searchIndexToDelete = itemIndex;
-                    }
-                }
-                if (searchIndexToDelete == -1) {
-                    localCheckedItems.remove(0);
-                    checkedItems.postValue(localCheckedItems);
-                }
+                toggleEdit();
             } else
                 Log.d(TAG, "Delete Result: FAILURE");
         }

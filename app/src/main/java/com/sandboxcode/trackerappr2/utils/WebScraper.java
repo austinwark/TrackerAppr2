@@ -45,6 +45,10 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
                 queryString.append(search.getTrim());
             }
         }
+
+        if (!Boolean.parseBoolean(search.getAllDealerships()))
+            queryString.append(UrlBits.NOT_ALL_DEALERSHIPS.getVal());
+
 //        if (!search.getYear().isEmpty()) {
 //            queryString.append(UrlBits.YEAR.getVal());
 //            queryString.append(search.getYear());
@@ -129,11 +133,12 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
     }
 
     private enum UrlBits {
-        BASE("https://www.liatoyotaofcolonie.com/searchused.aspx?Dealership=Lia%20Toyota%20of%20Colonie"),
+        BASE("https://www.liatoyotaofcolonie.com/searchused.aspx?"),
         MODEL("&Model="),
         YEAR("&Year="),
         TRIM("&Trim="),
         PRICE_RANGE("&Pricerange="),
+        NOT_ALL_DEALERSHIPS("&Dealership=Lia%20Toyota%20of%20Colonie"),
         MILEAGERANGE("&Mileagerange="); // TODO: add mileage range parameter to search
         private String val;
 

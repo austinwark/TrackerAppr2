@@ -14,13 +14,16 @@ import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 
-public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class SearchesHolder extends RecyclerView.ViewHolder {
 
     private final TextView name;
     private final CheckBox checkBox;
     private SearchModel searchModel;
     private SearchesFragment fragment;
     private FragmentManager fragmentManager;
+    private int editActive;
+
+    View itemView;
 
     public SearchesHolder(View itemView, SearchesFragment fragment) {
         super(itemView);
@@ -30,7 +33,7 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
         this.name = itemView.findViewById(R.id.tv_search_item_name);
         this.checkBox = itemView.findViewById(R.id.checkBox_edit);
 
-        itemView.setOnClickListener(this);
+        this.itemView = itemView;
     }
 
     public void bindSearch(SearchModel search) {
@@ -38,11 +41,10 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
         this.name.setText(search.getSearchName());
     }
 
-
-    @Override
-    public void onClick(View v) {
-        if (this.searchModel != null)
-            viewResults(this.searchModel);
+    public void setEditActive(int editActive) {
+        this.editActive = editActive;
+        this.checkBox.setVisibility(editActive);
+        this.checkBox.setChecked(editActive == View.VISIBLE && checkBox.isChecked());
     }
 
     public void viewResults(SearchModel search) {
@@ -58,16 +60,16 @@ public class SearchesHolder extends RecyclerView.ViewHolder implements View.OnCl
     }
 
     public void setCheckBoxVisibility(int visible) {
+
         this.checkBox.setVisibility(visible);
-        //        if (newState) {
-//            this.checkBox.setVisibility(View.VISIBLE);
-//        } else {
-//            this.checkBox.setVisibility(View.INVISIBLE);
-//        }
     }
 
     public CheckBox getCheckBox() {
         return this.checkBox;
+    }
+
+    public View getItemView() {
+        return itemView;
     }
 
 

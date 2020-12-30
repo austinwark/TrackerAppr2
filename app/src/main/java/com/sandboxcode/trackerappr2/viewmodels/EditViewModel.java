@@ -44,11 +44,11 @@ public class EditViewModel extends AndroidViewModel {
         toastMessage.postValue(message);
     }
 
-    public void saveChanges(String name, String model, String trim,
-                            String minYear, String maxYear, String minPrice, String maxPrice) {
+    public void saveChanges(String name, String model, String trim, String minYear, String maxYear,
+                            String minPrice, String maxPrice, String allDealerships) {
 
         SearchModel searchModel = new SearchModel(searchId, name, model, trim, minYear,
-                maxYear, minPrice, maxPrice);
+                maxYear, minPrice, maxPrice, allDealerships);
 
         repository.saveChanges(searchModel);
     }

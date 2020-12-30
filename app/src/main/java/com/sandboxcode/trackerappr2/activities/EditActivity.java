@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.models.SearchModel;
@@ -28,6 +29,7 @@ import java.util.List;
 public class EditActivity extends AppCompatActivity {
 
     private static final String TAG = "EditActivity";
+    private static final String RESULT_MESSAGE_TAG = "result_message";
     private EditViewModel editViewModel;
 
     private AutoCompleteTextView modelSpinner;
@@ -35,6 +37,7 @@ public class EditActivity extends AppCompatActivity {
     private TextInputEditText trimEditText;
     private RangeSlider yearSlider;
     private RangeSlider priceSlider;
+    private SwitchMaterial dealerSwitch;
     private ArrayAdapter<CharSequence> modelAdapter;
 
     @Override
@@ -57,13 +60,13 @@ public class EditActivity extends AppCompatActivity {
 
         editViewModel.getChangesSaved().observe(this, changesSaved -> {
             Intent intent = new Intent();
-            intent.putExtra("result_message", "Changes saved successfully.");
+            intent.putExtra(RESULT_MESSAGE_TAG, "Changes saved successfully.");
             setResult(RESULT_OK, intent);
             finish();
         });
         editViewModel.getErrorMessage().observe(this, message -> {
             Intent intent = new Intent();
-            intent.putExtra("result_message", message);
+            intent.putExtra(RESULT_MESSAGE_TAG, message);
             setResult(RESULT_CANCELED, intent);
             finish();
         });
@@ -71,7 +74,7 @@ public class EditActivity extends AppCompatActivity {
 
     public void cancelChanges(View view) {
         Intent intent = new Intent();
-        intent.putExtra("result_message", "Search edit cancelled successfully.");
+        intent.putExtra(RESULT_MESSAGE_TAG, "Search edit cancelled successfully.");
         setResult(RESULT_CANCELED, intent);
         finish();
     }
@@ -86,13 +89,17 @@ public class EditActivity extends AppCompatActivity {
         List<Float> priceValues = priceSlider.getValues();
         String minPrice = Collections.min(priceValues).toString();
         String maxPrice = Collections.max(priceValues).toString();
-        editViewModel.saveChanges(searchName, model, trim, minYear, maxYear, minPrice, maxPrice);
+        String allDealerships = String.valueOf(dealerSwitch.isChecked());
+
+        editViewModel.saveChanges(searchName, model, trim, minYear, maxYear,
+                minPrice, maxPrice, allDealerships);
     }
 
     public void insertCurrentSearchValues(SearchModel search) {
         searchNameEditText.setText(search.getSearchName());
         trimEditText.setText(search.getTrim());
         modelSpinner.setText(search.getModel(), false); // TODO - false or not?
+        dealerSwitch.setChecked(Boolean.parseBoolean(search.getAllDealerships()));
         yearSlider.setValues(
                 Float.parseFloat(search.getMinYear()), Float.parseFloat(search.getMaxYear()));
         priceSlider.setValues(
@@ -105,18 +112,29 @@ public class EditActivity extends AppCompatActivity {
         searchNameEditText = findViewById(R.id.edit_edit_name);
         trimEditText = findViewById(R.id.edit_edit_trim);
         modelSpinner = findViewById(R.id.edit_spin_models);
+        dealerSwitch = findViewById(R.id.edit_switch_dealerships);
         yearSlider = findViewById(R.id.edit_slider_year);
         priceSlider = findViewById(R.id.edit_slider_price);
+
         priceSlider.setLabelFormatter(value -> {
             NumberFormat format = NumberFormat.getCurrencyInstance();
             format.setMaximumFractionDigits(0);
             format.setCurrency(Currency.getInstance("USD"));
             return format.format(value);
         });
+
         Resources res = getResources();
         ArrayList<CharSequence> models =
                 new ArrayList<>(Arrays.asList(res.getStringArray(R.array.models_array)));
         modelAdapter = new ArrayAdapter<>(this, R.layout.models_list_item, models);
         modelSpinner.setAdapter(modelAdapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra(RESULT_MESSAGE_TAG, "Search edit cancelled successfully.");
+        setResult(RESULT_CANCELED, intent);
+        finish();
     }
 }

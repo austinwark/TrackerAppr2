@@ -77,12 +77,16 @@ public class SearchRepository {
         return searchResults;
     }
 
-    public void create(String name, String model, String trim, String minYear,
-                       String maxYear, String minPrice, String maxPrice) {
+    public void create(String name, String model, String trim, String minYear, String maxYear,
+                       String minPrice, String maxPrice, String allDealerships) {
 
         //TODO-- Add completed check and return boolean to confirm success
-        final String KEY = DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).push().getKey();
-        SearchModel searchModel = new SearchModel(KEY, name, model, trim, minYear, maxYear, minPrice, maxPrice);
+        final String KEY = DATABASE_REF.child("queries")
+                .child(AUTH_REF.getCurrentUser().getUid()).push().getKey();
+
+        SearchModel searchModel = new SearchModel(KEY, name, model, trim, minYear,
+                maxYear, minPrice, maxPrice, allDealerships);
+
         DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).child(KEY)
                 .setValue(searchModel).addOnSuccessListener(aVoid -> {
 

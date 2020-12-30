@@ -13,9 +13,10 @@ public class SearchModel implements Parcelable {
     private String maxYear;
     private String minPrice;
     private String maxPrice;
+    private String allDealerships;
 
     public SearchModel(String key, String searchName, String model, String trim, String minYear,
-                       String maxYear, String minPrice, String maxPrice) {
+                       String maxYear, String minPrice, String maxPrice, String allDealerships) {
         this.id = key;
         this.searchName = searchName;
         this.model = model;
@@ -24,6 +25,7 @@ public class SearchModel implements Parcelable {
         this.maxYear = maxYear;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
+        this.allDealerships = allDealerships;
     }
 
     /**
@@ -45,6 +47,7 @@ public class SearchModel implements Parcelable {
         maxYear = in.readString();
         minPrice = in.readString();
         maxPrice = in.readString();
+        allDealerships = in.readString();
     }
 
     public static final Creator<SearchModel> CREATOR = new Creator<SearchModel>() {
@@ -115,6 +118,14 @@ public class SearchModel implements Parcelable {
         this.id = id;
     }
 
+    public String getAllDealerships() {
+        return this.allDealerships;
+    }
+
+    public void setAllDealerships(String allDealerships) {
+        this.allDealerships = allDealerships;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -129,6 +140,7 @@ public class SearchModel implements Parcelable {
         dest.writeString(maxYear);
         dest.writeString(minPrice);
         dest.writeString(maxPrice);
+        dest.writeString(allDealerships);
     }
 
     public String getSearchName() {

@@ -42,6 +42,7 @@ import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 public class SearchesFragment extends Fragment {
 
     private static final String TAG = "SearchesFragment";
+    private static final String RESULT_MESSAGE_TAG = "result_message";
     private Context activityContext;
 
     private RecyclerView searchListView;
@@ -57,7 +58,7 @@ public class SearchesFragment extends Fragment {
                             viewModel.refreshSearches();
 
                         Toast.makeText(getActivity(), result.getData()
-                                .getStringExtra("result_message"), Toast.LENGTH_LONG)
+                                .getStringExtra(RESULT_MESSAGE_TAG), Toast.LENGTH_LONG)
                                 .show();
                     });
 
@@ -98,6 +99,7 @@ public class SearchesFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         setHasOptionsMenu(true);
+
         return inflater.inflate(R.layout.fragment_searches, container, false);
     }
 
@@ -105,9 +107,9 @@ public class SearchesFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_main, menu);
+
         Log.d(TAG, "onCreateOptionsMenu");
         Menu bottomMenu = toolbarBottom.getMenu();
-        toolbarBottom.setVisibility(View.INVISIBLE);
         deleteMenuItem = bottomMenu.findItem(R.id.action_delete);
 
         // returns the onOptionsItemSelected method for each MenuItem
@@ -142,6 +144,9 @@ public class SearchesFragment extends Fragment {
         toolbarBottom = view.findViewById(R.id.toolbar_bottom);
         toolbarBottom.setItemIconTintList(null);
 
+        toolbarBottom.setVisibility(View.INVISIBLE);
+        adapter.setCheckboxVisible(View.INVISIBLE);
+
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_create);
         fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), CreateActivity.class)));
@@ -168,7 +173,7 @@ public class SearchesFragment extends Fragment {
     public void viewResults(SearchModel search) {
         Bundle args = new Bundle();
         args.putString("ID", search.getId());
-        viewModel.setSearch(search);
+//        viewModel.setSearch(search);
 
         ResultsFragment fragment = new ResultsFragment();
         fragment.setArguments(args);

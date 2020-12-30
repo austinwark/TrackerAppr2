@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.viewmodels.CreateViewModel;
@@ -33,6 +34,7 @@ public class CreateActivity extends AppCompatActivity {
     private TextInputEditText trimEditText;
     private RangeSlider yearSlider;
     private RangeSlider priceSlider;
+    private SwitchMaterial dealerSwitch;
     private ArrayAdapter<CharSequence> modelAdapter;
 
 
@@ -64,9 +66,10 @@ public class CreateActivity extends AppCompatActivity {
         List<Float> priceValues = priceSlider.getValues();
         String minPrice = Collections.min(priceValues).toString();
         String maxPrice = Collections.max(priceValues).toString();
-
+        String allDealerships = String.valueOf(dealerSwitch.isChecked());
 //        Log.d(TAG, searchName + " " + model + " " + trim + " " + minYear + " " + maxYear + " " + minPrice + " " + maxPrice);
-        createViewModel.create(searchName, model, trim, minYear, maxYear, minPrice, maxPrice);
+        createViewModel.create(searchName, model, trim, minYear, maxYear,
+                minPrice, maxPrice, allDealerships);
         finish();
     }
 
@@ -75,8 +78,10 @@ public class CreateActivity extends AppCompatActivity {
         searchNameEditText = findViewById(R.id.et_search_name);
         trimEditText = findViewById(R.id.et_trim);
         modelSpinner = findViewById(R.id.spinner_models);
+        dealerSwitch = findViewById(R.id.create_switch_dealerships);
         yearSlider = findViewById(R.id.slider_year);
         priceSlider = findViewById(R.id.slider_price);
+
         priceSlider.setLabelFormatter(value -> {
             NumberFormat format = NumberFormat.getCurrencyInstance();
             format.setMaximumFractionDigits(0);

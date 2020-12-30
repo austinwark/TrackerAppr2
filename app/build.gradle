@@ -69,4 +69,6 @@ dependencies {
     implementation "androidx.activity:activity:$activity_version"
     // Latest Fragment APIs
     implementation "androidx.fragment:fragment:$fragment_version"
+
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 }
