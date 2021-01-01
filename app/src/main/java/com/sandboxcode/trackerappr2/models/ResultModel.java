@@ -21,6 +21,7 @@ public class ResultModel {
     private String engine;
     private String transmission;
     private String dealer;
+    private String imageUrl;
 
     public ResultModel(){
 
@@ -41,22 +42,8 @@ public class ResultModel {
         engine = details.get("engine");
         transmission = details.get("transmission");
         dealer = details.get("dealer");
+        imageUrl = details.get("imageUrl");
     }
-
-//    public ResultModel(String stock, String make, String model, String year, String trim,
-//                             String extColor, String intColor, String price, String vin, String miles, String dealer) {
-//        this.stock = stock;
-//        this.make = make;
-//        this.model = model;
-//        this.year = year;
-//        this.trim = trim;
-//        this.extColor = extColor;
-//        this.intColor = intColor;
-//        this.price = price;
-//        this.vin = vin;
-//        this.miles = miles;
-//        this.dealer = dealer;
-//    }
 
     @Override
     public String toString() {
@@ -65,7 +52,7 @@ public class ResultModel {
     }
 
     public String getTitle() {
-        return getYear() + " " + getMake() + " " + getModel() + " " + getTrim();
+        return getYear() + " " + getModel() + " " + getTrim();
     }
 
     public String getStock() {
@@ -166,5 +153,13 @@ public class ResultModel {
 
     public void setTransmission(String transmission) {
         this.transmission = transmission;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

@@ -28,11 +28,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
 import com.sandboxcode.trackerappr2.activities.EditActivity;
-import com.sandboxcode.trackerappr2.adapters.decorators.ShadowVerticalSpaceItemDecorator;
-import com.sandboxcode.trackerappr2.adapters.decorators.VerticalSpaceItemDecorator;
 import com.sandboxcode.trackerappr2.adapters.search.SearchesAdapter;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -92,6 +94,10 @@ public class SearchesFragment extends Fragment {
             startForResult.launch(intent);
         });
 
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        Log.d(TAG, sdf.format(cal.getTime()));
+
     }
 
     @Override
@@ -150,25 +156,14 @@ public class SearchesFragment extends Fragment {
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_create);
         fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), CreateActivity.class)));
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
 
-        int verticalSpacing = 20;
-        VerticalSpaceItemDecorator itemDecorator = new VerticalSpaceItemDecorator(verticalSpacing);
-        ShadowVerticalSpaceItemDecorator shadowItemDecorator = new ShadowVerticalSpaceItemDecorator(activityContext, R.drawable.drop_shadow);
-
         searchListView = view.findViewById(R.id.searches_view);
-
-        searchListView.setHasFixedSize(true);
-
         searchListView.setLayoutManager(layoutManager);
-
-        searchListView.addItemDecoration(shadowItemDecorator);
-        searchListView.addItemDecoration(itemDecorator);
-
         searchListView.setAdapter(adapter);
 
     }
+
 
     public void viewResults(SearchModel search) {
         Bundle args = new Bundle();

@@ -86,6 +86,8 @@ public class SearchRepository {
 
         SearchModel searchModel = new SearchModel(KEY, name, model, trim, minYear,
                 maxYear, minPrice, maxPrice, allDealerships);
+        searchModel.setCreatedDate();
+        searchModel.setLastEditedDate();
 
         DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).child(KEY)
                 .setValue(searchModel).addOnSuccessListener(aVoid -> {

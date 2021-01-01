@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sandboxcode.trackerappr2.R;
-import com.sandboxcode.trackerappr2.adapters.decorators.ShadowVerticalSpaceItemDecorator;
-import com.sandboxcode.trackerappr2.adapters.decorators.VerticalSpaceItemDecorator;
 import com.sandboxcode.trackerappr2.adapters.result.ResultsAdapter;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
@@ -61,7 +59,7 @@ public class ResultsFragment extends Fragment {
         if (getArguments() != null) {
             searchId = getArguments().getString("ID");
         }
-
+        postponeEnterTransition();
         activityContext = getActivity().getApplicationContext();
         FragmentManager fragmentManager = getParentFragmentManager();
         // TODO - add searchID
@@ -69,7 +67,10 @@ public class ResultsFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
         viewModel.getSearchResults(searchId)
-                .observe(this, results -> adapter.setResults(results));
+                .observe(this, results -> {
+                    adapter.setResults(results);
+                    startPostponedEnterTransition();
+                });
 
     }
 
@@ -84,20 +85,28 @@ public class ResultsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Results");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Results");
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
 
         int verticalSpacing = 20;
-        VerticalSpaceItemDecorator itemDecorator = new VerticalSpaceItemDecorator(verticalSpacing);
-        ShadowVerticalSpaceItemDecorator shadowItemDecorator = new ShadowVerticalSpaceItemDecorator(activityContext, R.drawable.drop_shadow);
+//        VerticalSpaceItemDecorator itemDecorator = new VerticalSpaceItemDecorator(verticalSpacing);
+//        ShadowVerticalSpaceItemDecorator shadowItemDecorator = new ShadowVerticalSpaceItemDecorator(activityContext, R.drawable.drop_shadow);
 
         resultListView = view.findViewById(R.id.results_view);
 
         resultListView.setHasFixedSize(true);
+//        resultListView.setLayoutManager(new LinearLayoutManager(this){
+//            @Override
+//            public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
+//                lp.height = getHeight() /
+//            }
+//        });
+
         resultListView.setLayoutManager(layoutManager);
-        resultListView.addItemDecoration(shadowItemDecorator);
-        resultListView.addItemDecoration(itemDecorator);
+//        resultListView.addItemDecoration(shadowItemDecorator);
+//        resultListView.addItemDecoration(itemDecorator);
+
 
         resultListView.setAdapter(adapter);
     }

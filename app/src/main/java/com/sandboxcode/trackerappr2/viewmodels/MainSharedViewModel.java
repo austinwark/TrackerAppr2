@@ -128,6 +128,7 @@ public class MainSharedViewModel extends AndroidViewModel {
             searchId = localCheckedItems.get(0);
 
             searchRepository.delete(searchId, onDeleteListener);
+            checkedItems.postValue(new ArrayList<>()); // Reset checked items
             setToastMessage("Deleting search.");
         }
     }
@@ -186,6 +187,7 @@ public class MainSharedViewModel extends AndroidViewModel {
     public void refreshResults(String searchId) {
         searchRepository.getSearchResults(searchId);
     }
+
 
     private OnCompleteListener<Void> onDeleteListener = new OnCompleteListener<Void>() {
         @Override

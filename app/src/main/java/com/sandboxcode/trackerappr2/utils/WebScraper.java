@@ -100,10 +100,16 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
                 details.put("transmission", vehicle.attr("data-trans"));
                 details.put("miles", vehicle.select(".mileageDisplay").first().text().substring(8).trim());
                 details.put("dealer", vehicle.select("li.dealershipDisplay").first().text().substring(11).trim());
-
+                String imageUrl = "https://www.liatoyotaofcolonie.com" +
+                        vehicle.select("div.vehiclePhoto").first()
+                                .select("img.vehicleImg").attr("src");
+                details.put("imageUrl", imageUrl);
                 ResultModel resultModel = new ResultModel(details);
                 results.add(resultModel);
-                Log.d(TAG, "\t" + resultModel.toString() + "\n");
+
+
+//                Log.d(TAG, "\t" + resultModel.toString() + "\n");
+                Log.d(TAG, "URL: " + imageUrl);
             } else
                 Log.d(TAG, "not in year range");
         }
@@ -112,7 +118,7 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
     }
 
     private void updateDatabase(ArrayList<ResultModel> searchResults) {
-        final ArrayList<ResultModel> results = searchResults;
+        int numberOfResults = 0;
 
         /* INSTEAD -- SearchRepository handles it as of 12/26/2020 */
 //        final String KEY = ref.child("queries").child(userUid).push().getKey();
@@ -127,9 +133,13 @@ public class WebScraper extends AsyncTask<Void, Void, String> {
 
         // delete old contents in search results (there's nothing there if creating new search)
         ref.child("results").child(search.getId()).removeValue();
-        for (ResultModel result : results) {
+        for (ResultModel result : searchResults) {
             ref.child("results").child(search.getId()).child(result.getVin()).setValue(result);
+            numberOfResults++;
         }
+        // Set number of results in search document
+        ref.child("queries").child(userUid).child(search.getId())
+                .child("numberOfResults").setValue(numberOfResults);
     }
 
     private enum UrlBits {

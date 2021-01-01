@@ -38,6 +38,9 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(this.itemResource, parent, false);
+//        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+//        layoutParams.height = (int) (parent.getHeight() * .25);
+//        view.setLayoutParams(layoutParams);
         return new ResultsHolder(this.context, view, fragmentManager, searchId);
     }
 
@@ -47,7 +50,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
         ResultModel result = this.resultsList.get(position);
         Log.d("ResultsAdapter", result.getTitle());
 
-        holder.bindResult(result);
+        holder.bindResult(result, position);
     }
 
     public void setResults(List<ResultModel> results) {

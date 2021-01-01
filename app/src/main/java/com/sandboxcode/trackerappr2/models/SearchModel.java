@@ -3,6 +3,10 @@ package com.sandboxcode.trackerappr2.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class SearchModel implements Parcelable {
 
     private String id;
@@ -14,6 +18,9 @@ public class SearchModel implements Parcelable {
     private String minPrice;
     private String maxPrice;
     private String allDealerships;
+    private int numberOfResults;
+    private String createdDate;
+    private String lastEditedDate;
 
     public SearchModel(String key, String searchName, String model, String trim, String minYear,
                        String maxYear, String minPrice, String maxPrice, String allDealerships) {
@@ -28,10 +35,36 @@ public class SearchModel implements Parcelable {
         this.allDealerships = allDealerships;
     }
 
+    public SearchModel(String key, String searchName, String model, String trim, String minYear,
+                       String maxYear, String minPrice, String maxPrice, String allDealerships, int numberOfResults) {
+        this.id = key;
+        this.searchName = searchName;
+        this.model = model;
+        this.trim = trim;
+        this.minYear = minYear;
+        this.maxYear = maxYear;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+        this.allDealerships = allDealerships;
+        this.numberOfResults = numberOfResults;
+    }
+
     /**
      * Default constructor required by Firebase
      */
     public SearchModel() {
+    }
+
+    public void setCreatedDate() {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        createdDate = sdf.format(cal.getTime());
+    }
+
+    public void setLastEditedDate() {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        lastEditedDate = sdf.format(cal.getTime());
     }
 
     public String toString() {
@@ -149,5 +182,21 @@ public class SearchModel implements Parcelable {
 
     public void setSearchName(String searchName) {
         this.searchName = searchName;
+    }
+
+    public int getNumberOfResults() {
+        return numberOfResults;
+    }
+
+    public void setNumberOfResults(int numberOfResults) {
+        this.numberOfResults = numberOfResults;
+    }
+
+    public String getCreatedDate() {
+        return createdDate;
+    }
+
+    public String getLastEditedDate() {
+        return lastEditedDate;
     }
 }

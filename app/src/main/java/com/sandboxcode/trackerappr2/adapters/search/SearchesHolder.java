@@ -16,8 +16,11 @@ import com.sandboxcode.trackerappr2.models.SearchModel;
 
 public class SearchesHolder extends RecyclerView.ViewHolder {
 
-    private final TextView name;
-    private final CheckBox checkBox;
+    private TextView name;
+    private CheckBox checkBox;
+    private TextView createdAt;
+    private TextView lastEditedAt;
+    private TextView numberOfResults;
     private SearchModel searchModel;
     private SearchesFragment fragment;
     private FragmentManager fragmentManager;
@@ -29,22 +32,28 @@ public class SearchesHolder extends RecyclerView.ViewHolder {
         super(itemView);
 
         this.fragment = fragment;
-        this.fragmentManager = fragment.getParentFragmentManager();
-        this.name = itemView.findViewById(R.id.tv_search_item_name);
-        this.checkBox = itemView.findViewById(R.id.checkBox_edit);
+        fragmentManager = fragment.getParentFragmentManager();
+        name = itemView.findViewById(R.id.search_text_name);
+        checkBox = itemView.findViewById(R.id.search_checkbox_edit);
+        createdAt = itemView.findViewById(R.id.search_text_created);
+        lastEditedAt = itemView.findViewById(R.id.search_text_edited);
+        numberOfResults = itemView.findViewById(R.id.search_text_results);
 
         this.itemView = itemView;
     }
 
     public void bindSearch(SearchModel search) {
-        this.searchModel = search;
-        this.name.setText(search.getSearchName());
+        searchModel = search;
+        name.setText(search.getSearchName());
+        createdAt.setText(search.getCreatedDate());
+        lastEditedAt.setText(search.getLastEditedDate());
+        numberOfResults.setText(search.getNumberOfResults() + " Results");
     }
 
     public void setEditActive(int editActive) {
         this.editActive = editActive;
-        this.checkBox.setVisibility(editActive);
-        this.checkBox.setChecked(editActive == View.VISIBLE && checkBox.isChecked());
+        checkBox.setVisibility(editActive);
+        checkBox.setChecked(editActive == View.VISIBLE && checkBox.isChecked());
     }
 
     public void viewResults(SearchModel search) {
@@ -61,7 +70,7 @@ public class SearchesHolder extends RecyclerView.ViewHolder {
 
     public void setCheckBoxVisibility(int visible) {
 
-        this.checkBox.setVisibility(visible);
+        checkBox.setVisibility(visible);
     }
 
     public CheckBox getCheckBox() {
