@@ -19,16 +19,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText password;
     private Button loginButton;
     private Button registerButton;
-    private Button newPassButton;
+    private Button forgotPasswordButton;
     private AuthViewModel authViewModel;
-
-    public void instantiateUI() {
-        email = findViewById(R.id.et_login_email);
-        password = findViewById(R.id.et_login_password);
-        loginButton = findViewById(R.id.button_login_login);
-        registerButton = findViewById(R.id.button_login_register);
-        newPassButton = findViewById(R.id.button_login_forgot);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,5 +53,17 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         });
 
+        forgotPasswordButton.setOnClickListener(view -> {
+
+        });
+
+    }
+
+    public void instantiateUI() {
+        email = findViewById(R.id.et_login_email);
+        password = findViewById(R.id.et_login_password);
+        loginButton = findViewById(R.id.button_login_login);
+        forgotPasswordButton = findViewById(R.id.button_login_register);
+        forgotPasswordButton = findViewById(R.id.button_login_forgot);
     }
 }

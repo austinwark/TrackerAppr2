@@ -33,4 +33,7 @@
     <string name="action_edit">Edit</string>
 
     <string name="transition_string">result_to_detail_transition</string>
+
+    <string name="password_reset_positive">Save</string>
+    <string name="password_reset_negative">Cancel</string>
 </resources>

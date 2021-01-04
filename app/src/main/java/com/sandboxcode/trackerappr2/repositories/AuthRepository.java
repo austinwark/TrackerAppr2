@@ -24,4 +24,8 @@ public class AuthRepository {
     public void setUserSignedIn() {
         this.userSignedIn.postValue(isUserSignedIn());
     }
+
+    public void resetPassword() {
+
+    }
 }

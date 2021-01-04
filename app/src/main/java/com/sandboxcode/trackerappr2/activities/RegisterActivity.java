@@ -7,12 +7,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.sandboxcode.trackerappr2.R;
+import com.sandboxcode.trackerappr2.fragments.PasswordResetFragment;
 import com.sandboxcode.trackerappr2.viewmodels.AuthViewModel;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements PasswordResetFragment.PasswordResetDialogListener {
 
     private EditText email;
     private EditText password;
@@ -58,5 +60,15 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.et_register_password);
         registerButton = findViewById(R.id.button_register_register);
         loginButton = findViewById(R.id.button_register_login);
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
     }
 }

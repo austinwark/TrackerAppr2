@@ -16,6 +16,7 @@ public class AuthViewModel extends AndroidViewModel {
     private MutableLiveData<String> toastMessage;
     private MutableLiveData<Boolean> userSignedIn;
 
+    // TODO -- Add AuthStateListener
     public AuthViewModel(Application application) {
         super(application);
         authRepository = new AuthRepository();
@@ -66,5 +67,9 @@ public class AuthViewModel extends AndroidViewModel {
                             toastMessage.postValue("Error creating user. Please try again.");
                     });
         }
+    }
+
+    public void resetPassword() {
+
     }
 }
