@@ -11,9 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.sandboxcode.trackerappr2.R;
+import com.sandboxcode.trackerappr2.fragments.PasswordResetFragment;
 import com.sandboxcode.trackerappr2.viewmodels.AuthViewModel;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements PasswordResetFragment.PasswordResetDialogListener {
 
     private EditText email;
     private EditText password;
@@ -21,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button registerButton;
     private Button forgotPasswordButton;
     private AuthViewModel authViewModel;
+    private PasswordResetFragment dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,20 @@ public class LoginActivity extends AppCompatActivity {
         authViewModel.getToastMessage().observe(this, message ->
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show());
 
+        authViewModel.getPasswordResetErrorMessage().observe(this, message -> {
+            if (dialog != null)
+                dialog.setPasswordErrorText(message);
+        });
+
+        authViewModel.getPasswordResetSuccess().observe(this, success -> {
+            if (success && dialog != null) {
+                Log.d("LOGIN", "not null");
+                dialog.dismiss();
+                Toast.makeText(this, "Password reset link sent to email.",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
         loginButton.setOnClickListener(v -> {
             String emailText = email.getText().toString();
             String passwordText = password.getText().toString();
@@ -54,16 +70,22 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         forgotPasswordButton.setOnClickListener(view -> {
-
+            dialog = new PasswordResetFragment();
+            dialog.show(getSupportFragmentManager(), "PasswordResetFragment");
         });
 
+    }
+
+    @Override
+    public void resetPassword(String email) {
+        authViewModel.resetPassword(email);
     }
 
     public void instantiateUI() {
         email = findViewById(R.id.et_login_email);
         password = findViewById(R.id.et_login_password);
         loginButton = findViewById(R.id.button_login_login);
-        forgotPasswordButton = findViewById(R.id.button_login_register);
-        forgotPasswordButton = findViewById(R.id.button_login_forgot);
+        registerButton = findViewById(R.id.button_login_register);
+        forgotPasswordButton = findViewById(R.id.login_button_forgot);
     }
 }

@@ -1,0 +1,14 @@
+
+L
+java:S1066^"/Merge this if statement with the enclosing one.(ß“•Ò8¡İüÁé.
+X	java:S110"<This class has 9 parents which is greater than 5 authorized.(²Ú±8Ùµ‚¸Ï.
+g
+java:S1128"KRemove this unused import 'com.sandboxcode.trackerappr2.utils.TestScraper'.(¦ğå<8”‹™Œë.
+F
+java:S5411@"*Use the primitive boolean expression here.(ÒÎ—m8¡İüÁé.
+]	java:S125P"<This block of commented-out lines of code should be removed.(ü¸°şÿÿÿÿ8ÂßéŒë.
+W
+java:S1128"5Remove this unused import 'android.widget.ImageView'.(ú¯ëàüÿÿÿÿ8”‹™Œë.
+h
+java:S1128"LRemove this unused import 'com.sandboxcode.trackerappr2.models.SearchModel'.(ˆôı48”‹™Œë.
+]	java:S125&"<This block of commented-out lines of code should be removed.(¸•´£şÿÿÿÿ8Ùµ‚¸Ï.

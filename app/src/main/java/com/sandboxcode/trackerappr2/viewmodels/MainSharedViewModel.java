@@ -28,6 +28,7 @@ public class MainSharedViewModel extends AndroidViewModel {
     private FirebaseAuth firebaseAuth;
     /* MainActivity */
     private MutableLiveData<Boolean> userSignedIn;
+    private MutableLiveData<Boolean> signUserOut;
     /* SearchesFragment */
     private MutableLiveData<List<SearchModel>> allSearches;
     private MutableLiveData<String> toastMessage = new MutableLiveData<>();
@@ -44,17 +45,33 @@ public class MainSharedViewModel extends AndroidViewModel {
         allSearches = searchRepository.getAllSearches();
         firebaseAuth = FirebaseAuth.getInstance();
 
-        searchRepository.setListeners();
+//        searchRepository.setListeners();
+        userSignedIn = authRepository.getUserSignedIn();
+        signUserOut = authRepository.getSignUserOut();
 
         checkedItems.setValue(new ArrayList<>());
         editMenuOpen.setValue(View.INVISIBLE);
     }
 
     public MutableLiveData<Boolean> getUserSignedIn() {
-        if (userSignedIn == null)
-            userSignedIn = authRepository.getUserSignedIn();
         return userSignedIn;
     }
+
+    public void setSearchesListener() {
+        searchRepository.setListeners();
+    }
+//    public MutableLiveData<Boolean> getUserSignedIn() {
+//        userSignedIn = authRepository.getUserSignedIn();
+//
+//        if (userSignedIn.getValue() != null && userSignedIn.getValue()) {
+//                searchRepository.setListeners();
+//                Log.d(TAG, "setListen");
+//        } else
+//            Log.d(TAG, "not setListen");
+//
+//
+//        return userSignedIn;
+//    }
 
     public MutableLiveData<List<SearchModel>> getAllSearches() {
         if (allSearches == null)
@@ -88,8 +105,8 @@ public class MainSharedViewModel extends AndroidViewModel {
             case R.id.action_settings:
                 break;
             case R.id.action_logout:
-                firebaseAuth.signOut();
-                authRepository.setUserSignedIn();
+//                authRepository.setUserSignedIn();
+                authRepository.signUserOut();
                 break;
 
             /* ----- Bottom Toolbar Menu ----- */
@@ -188,6 +205,22 @@ public class MainSharedViewModel extends AndroidViewModel {
         searchRepository.getSearchResults(searchId);
     }
 
+    public String getUserId() {
+        return searchRepository.getUserId();
+    }
+
+    public MutableLiveData<Boolean> getSignUserOut() {
+        return signUserOut;
+    }
+
+    public void setResultHasBeenViewed(String vin, String searchId) {
+        searchRepository.setResultHasBeenViewed(vin, searchId);
+    }
+
+    @Override
+    protected void onCleared() {
+        // TODO -- unsubscribe listeners in repository
+    }
 
     private OnCompleteListener<Void> onDeleteListener = new OnCompleteListener<Void>() {
         @Override

@@ -19,6 +19,7 @@ public class SearchModel implements Parcelable {
     private String maxPrice;
     private String allDealerships;
     private int numberOfResults;
+    private int numberOfNewResults;
     private String createdDate;
     private String lastEditedDate;
 
@@ -36,7 +37,8 @@ public class SearchModel implements Parcelable {
     }
 
     public SearchModel(String key, String searchName, String model, String trim, String minYear,
-                       String maxYear, String minPrice, String maxPrice, String allDealerships, int numberOfResults) {
+                       String maxYear, String minPrice, String maxPrice, String allDealerships,
+                       int numberOfResults, int numberOfNewResults) {
         this.id = key;
         this.searchName = searchName;
         this.model = model;
@@ -47,6 +49,7 @@ public class SearchModel implements Parcelable {
         this.maxPrice = maxPrice;
         this.allDealerships = allDealerships;
         this.numberOfResults = numberOfResults;
+        this.numberOfNewResults = numberOfNewResults;
     }
 
     /**
@@ -59,6 +62,10 @@ public class SearchModel implements Parcelable {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         createdDate = sdf.format(cal.getTime());
+    }
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
     }
 
     public void setLastEditedDate() {
@@ -198,5 +205,13 @@ public class SearchModel implements Parcelable {
 
     public String getLastEditedDate() {
         return lastEditedDate;
+    }
+
+    public int getNumberOfNewResults() {
+        return numberOfNewResults;
+    }
+
+    public void setNumberOfNewResults(int numberOfNewResults) {
+        this.numberOfNewResults = numberOfNewResults;
     }
 }

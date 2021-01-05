@@ -1,0 +1,22 @@
+
+X	java:S125b"<This block of commented-out lines of code should be removed.(îó­8¸Êœ³ë.
+u
+java:S1450("XRemove the "viewModel" field and declare it as a local variable in the relevant methods.(ı¯›µ8–‘Â©ê.
+]	java:S125d"<This block of commented-out lines of code should be removed.(ÙáÑûÿÿÿÿ8¸Êœ³ë.
+Y
+java:S1068q"7Remove this unused "detailClickListener" private field.(ØÕÀãúÿÿÿÿ8«¾Ï.
+y
+java:S1488Q"\Immediately return this expression instead of assigning it to the temporary variable "view".(ûƒõ‡8ëªû…Ï.
+z
+java:S1450*"]Remove the "resultListView" field and declare it as a local variable in the relevant methods.(ì€±8ï£Ï.
+T
+java:S1135C"2Complete the task associated to this TODO comment.(šÒ´³øÿÿÿÿ8ÆìªÏ.
+`
+java:S1854["CRemove this useless assignment to local variable "verticalSpacing".(’ªÅÒ8˜Ş€³ë.
+J
+java:S1604q"(Make this anonymous inner class a lambda(ØÕÀãúÿÿÿÿ8Úµ‚¸Ï.
+]	java:S125f"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ8¸Êœ³ë.
+Q
+java:S1481["4Remove this unused "verticalSpacing" local variable.(’ªÅÒ8˜Ş€³ë.
+]	java:S125\"<This block of commented-out lines of code should be removed.(Ğ¶šıÿÿÿÿ8˜Ş€³ë.
+X	java:S125j"<This block of commented-out lines of code should be removed.(Ö»‡Ş8òûœ³ë.

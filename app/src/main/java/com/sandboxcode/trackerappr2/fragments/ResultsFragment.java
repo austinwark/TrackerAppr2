@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sandboxcode.trackerappr2.R;
@@ -37,7 +38,7 @@ public class ResultsFragment extends Fragment {
 
     private MainSharedViewModel viewModel;
 
-    private RecyclerView resultListView;
+    private RecyclerView resultRecyclerView;
     private List<ResultModel> resultList = new ArrayList<>();
 
     private String searchId;
@@ -59,7 +60,7 @@ public class ResultsFragment extends Fragment {
         if (getArguments() != null) {
             searchId = getArguments().getString("ID");
         }
-        postponeEnterTransition();
+//        postponeEnterTransition();
         activityContext = getActivity().getApplicationContext();
         FragmentManager fragmentManager = getParentFragmentManager();
         // TODO - add searchID
@@ -69,7 +70,7 @@ public class ResultsFragment extends Fragment {
         viewModel.getSearchResults(searchId)
                 .observe(this, results -> {
                     adapter.setResults(results);
-                    startPostponedEnterTransition();
+//                    startPostponedEnterTransition();
                 });
 
     }
@@ -89,26 +90,15 @@ public class ResultsFragment extends Fragment {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
 
-        int verticalSpacing = 20;
-//        VerticalSpaceItemDecorator itemDecorator = new VerticalSpaceItemDecorator(verticalSpacing);
-//        ShadowVerticalSpaceItemDecorator shadowItemDecorator = new ShadowVerticalSpaceItemDecorator(activityContext, R.drawable.drop_shadow);
+        // TODO -- Why doesn't this work???
+        LinearSnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(resultRecyclerView);
 
-        resultListView = view.findViewById(R.id.results_view);
+        resultRecyclerView = view.findViewById(R.id.results_view);
+        resultRecyclerView.setHasFixedSize(true);
+        resultRecyclerView.setLayoutManager(layoutManager);
 
-        resultListView.setHasFixedSize(true);
-//        resultListView.setLayoutManager(new LinearLayoutManager(this){
-//            @Override
-//            public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
-//                lp.height = getHeight() /
-//            }
-//        });
-
-        resultListView.setLayoutManager(layoutManager);
-//        resultListView.addItemDecoration(shadowItemDecorator);
-//        resultListView.addItemDecoration(itemDecorator);
-
-
-        resultListView.setAdapter(adapter);
+        resultRecyclerView.setAdapter(adapter);
     }
 
     private View.OnClickListener detailClickListener = new View.OnClickListener() {

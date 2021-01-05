@@ -7,7 +7,6 @@ import android.transition.ChangeImageTransform;
 import android.transition.ChangeTransform;
 import android.transition.TransitionSet;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,17 +29,20 @@ import java.util.Locale;
 
 public class ResultsHolder extends RecyclerView.ViewHolder {
 
+    private FragmentManager fragmentManager;
+    private Context context;
+    private ResultModel resultModel;
+
     private TextView title;
     private TextView stock;
     private TextView price;
     private ImageView thumbnail;
     private Button detailsButton;
-    private ResultModel resultModel;
-    private Context context;
-    private FragmentManager fragmentManager;
+    private ImageView newIcon;
     private String searchId;
 
-    public ResultsHolder(Context context, View itemView, FragmentManager fragmentManager, String searchId) {
+    public ResultsHolder(Context context, View itemView, FragmentManager fragmentManager,
+                         String searchId) {
         super(itemView);
 
         this.context = context;
@@ -49,7 +51,7 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
         stock = itemView.findViewById(R.id.result_text_stock);
         price = itemView.findViewById(R.id.result_text_price);
         thumbnail = itemView.findViewById(R.id.result_image_thumbnail);
-
+        newIcon = itemView.findViewById(R.id.result_image_new);
 
         detailsButton = itemView.findViewById(R.id.result_button_details);
         this.fragmentManager = fragmentManager;
@@ -58,7 +60,6 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindResult(ResultModel result, int position) {
-        Log.d("ResultsHolder", "bindResult");
         resultModel = result;
         title.setText(result.getTitle());
         stock.setText("#" + result.getStock());
@@ -71,6 +72,8 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
         thumbnail.setTransitionName("result_to_detail_transition_" + position);
         Picasso.get().load(result.getImageUrl()).fit().into(thumbnail);
         this.detailsButton.setOnClickListener(buttonClickListener);
+
+        newIcon.setVisibility(result.getIsNewResult() ? View.VISIBLE : View.INVISIBLE);
     }
 
     private View.OnClickListener buttonClickListener = new View.OnClickListener() {

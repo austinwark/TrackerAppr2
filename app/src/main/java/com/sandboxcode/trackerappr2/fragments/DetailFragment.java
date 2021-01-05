@@ -1,19 +1,21 @@
 package com.sandboxcode.trackerappr2.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.models.ResultModel;
+import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -30,7 +32,9 @@ import java.util.Locale;
 public class DetailFragment extends Fragment {
 
     private static final String TAG = "DetailFragment";
+    private MainSharedViewModel viewModel;
     private ResultModel result;
+    private String searchId;
 
     ImageView image;
     String imageTransitionName;
@@ -44,13 +48,21 @@ public class DetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 
+            // Get result and search ID
             result = Parcels.unwrap(getArguments().getParcelable("RESULT"));
-            Log.d(TAG, result.toString());
-        } else
-            Log.d(TAG, "NULL");
+            searchId = getArguments().getString("SEARCH_ID");
 
+            // Change isNew field indicating the user has seen the result
+            viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
+            viewModel.setResultHasBeenViewed(result.getVin(), searchId);
+            result.setIsNewResult(false);
+
+        } else {
+            // TODO -- restart activity? somehow go back to previous fragment?
+        }
 
     }
+
 
     private void instantiateUI(View v) {
         TextView title = v.findViewById(R.id.tv_details_title);
@@ -79,9 +91,19 @@ public class DetailFragment extends Fragment {
         TextView transmission = v.findViewById(R.id.tv_details_transmission);
         transmission.setText(result.getTransmission());
         image = v.findViewById(R.id.result_image_thumbnail);
-        Picasso.get().setLoggingEnabled(true);
+//        Picasso.get().setLoggingEnabled(true);
         Picasso.get().load(result.getImageUrl()).fit().into(image);
-        Log.d(TAG, "IMAGEURL: " + result.getImageUrl());
+
+        Button test = (Button) v.findViewById(R.id.testing);
+//        test.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Calendar cal = Calendar.getInstance();
+//                int days = Calendar.SUNDAY + (7 - cal.get(Calendar.DAY_OF_WEEK));
+//                cal.set(Calendar.DAY);
+//                Log.d(TAG, "DAYS: " + days);
+//            }
+//        });
     }
 
     @Override

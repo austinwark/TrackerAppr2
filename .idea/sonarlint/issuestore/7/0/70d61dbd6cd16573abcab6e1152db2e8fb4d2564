@@ -1,0 +1,10 @@
+
+V	java:S110"<This class has 9 parents which is greater than 5 authorized.(·¡ïõøÿÿÿÿ
+L
+java:S5411+"*Use the primitive boolean expression here.(Â©‹®ùÿÿÿÿ8Íš«Œê.
+y
+java:S1450"\Remove the "authViewModel" field and declare it as a local variable in the relevant methods.(¼¢‰î8Íš«Œê.
+~
+java:S1450"\Remove the "newPassButton" field and declare it as a local variable in the relevant methods.(Ç¥¬¼ÿÿÿÿÿ8Íš«Œê.
+S
+java:S1068"1Remove this unused "newPassButton" private field.(Ç¥¬¼ÿÿÿÿÿ8Íš«Œê.

@@ -1,0 +1,11 @@
+
+R
+java:S2387"2"itemView" is the name of a field in "ViewHolder".(ƒ Èæüÿÿÿÿ8¡î¨ê.
+N
+java:S1068".Remove this unused "editActive" private field.(ÔÁŸêûÿÿÿÿ8şÃ±¨ê.
+J
+java:S1068"/Remove this unused "searchModel" private field.(»€µú8şÃ±¨ê.
+u
+java:S1450"ZRemove the "searchModel" field and declare it as a local variable in the relevant methods.(»€µú8şÃ±¨ê.
+y
+java:S1450"YRemove the "editActive" field and declare it as a local variable in the relevant methods.(ÔÁŸêûÿÿÿÿ8şÃ±¨ê.

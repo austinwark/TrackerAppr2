@@ -3,11 +3,11 @@ package com.sandboxcode.trackerappr2.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 
@@ -16,8 +16,13 @@ import com.sandboxcode.trackerappr2.R;
 
 public class PasswordResetFragment extends DialogFragment {
 
-    private TextInputEditText newPasswordEditText;
+    private TextInputEditText emailEditText;
+    private TextView passwordErrorText;
     PasswordResetDialogListener listener;
+
+    private Button positiveButton;
+    private Button negativeButton;
+    private String email;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -26,15 +31,37 @@ public class PasswordResetFragment extends DialogFragment {
 
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_password_reset, null);
+        emailEditText = view.findViewById(R.id.password_edit_email);
+        passwordErrorText = view.findViewById(R.id.password_text_error);
 
-        newPasswordEditText = view.findViewById(R.id.password_edit_new);
         builder.setView(view)
-            .setPositiveButton(R.string.password_reset_positive, (dialog, which) ->
-                    listener.onDialogPositiveClick(PasswordResetFragment.this))
-            .setNegativeButton(R.string.password_reset_negative, (dialog, which) ->
-                    listener.onDialogNegativeClick(PasswordResetFragment.this));
+                .setPositiveButton("Save", null)
+                .setNegativeButton("Cancel", null);
+
+        //        builder.setView(view)
+//            .setPositiveButton(R.string.password_reset_positive, (dialog, which) ->
+//                    listener.onDialogPositiveClick(PasswordResetFragment.this))
+//            .setNegativeButton(R.string.password_reset_negative, (dialog, which) ->
+//                    listener.onDialogNegativeClick(PasswordResetFragment.this));
 
         return builder.create();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        AlertDialog dialog = (AlertDialog) getDialog();
+        positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+        positiveButton.setOnClickListener(view -> {
+            email = emailEditText.getText().toString();
+            listener.resetPassword(email);
+        });
+        negativeButton.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
     }
 
     @Override
@@ -48,8 +75,12 @@ public class PasswordResetFragment extends DialogFragment {
         }
     }
 
-    public interface PasswordResetDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+    public void setPasswordErrorText(String message) {
+        passwordErrorText.setText(message);
     }
+
+    public interface PasswordResetDialogListener {
+        public void resetPassword(String newPassword);
+    }
+
 }

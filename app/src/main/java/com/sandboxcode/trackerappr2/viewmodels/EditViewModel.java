@@ -45,12 +45,13 @@ public class EditViewModel extends AndroidViewModel {
     }
 
     public void saveChanges(String name, String model, String trim, String minYear, String maxYear,
-                            String minPrice, String maxPrice, String allDealerships) {
+                            String minPrice, String maxPrice, String allDealerships,
+                            String createdDate) {
 
         SearchModel searchModel = new SearchModel(searchId, name, model, trim, minYear,
                 maxYear, minPrice, maxPrice, allDealerships);
         searchModel.setLastEditedDate();
-
+        searchModel.setCreatedDate(createdDate);
         repository.saveChanges(searchModel);
     }
 

@@ -56,20 +56,19 @@
             android:id="@+id/search_text_edited_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="32dp"
             android:text="Edited at:"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            app:layout_constraintStart_toEndOf="@+id/search_text_created"
+            app:layout_constraintStart_toEndOf="@+id/search_text_created_label"
             app:layout_constraintTop_toTopOf="@id/search_text_created_label" />
 
         <TextView
             android:id="@+id/search_text_edited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:text="12/31/2020"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            app:layout_constraintStart_toEndOf="@id/search_text_created"
+            app:layout_constraintStart_toStartOf="@+id/search_text_edited_label"
             app:layout_constraintTop_toBottomOf="@id/search_text_edited_label" />
 
         <TextView

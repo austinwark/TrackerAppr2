@@ -8,6 +8,7 @@ public class AuthRepository {
 
     private static final FirebaseAuth AUTH_REF = FirebaseAuth.getInstance();
     private MutableLiveData<Boolean> userSignedIn = new MutableLiveData<>();
+    private MutableLiveData<Boolean> signUserOut = new MutableLiveData<>();
 
     public AuthRepository() {
         this.userSignedIn.postValue(isUserSignedIn());
@@ -25,7 +26,12 @@ public class AuthRepository {
         this.userSignedIn.postValue(isUserSignedIn());
     }
 
-    public void resetPassword() {
+    public void signUserOut() {
+        AUTH_REF.signOut();
+        signUserOut.setValue(true);
+    }
 
+    public MutableLiveData<Boolean> getSignUserOut() {
+        return signUserOut;
     }
 }

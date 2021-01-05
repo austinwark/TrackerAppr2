@@ -22,6 +22,7 @@ public class ResultModel {
     private String transmission;
     private String dealer;
     private String imageUrl;
+    private boolean isNewResult;
 
     public ResultModel(){
 
@@ -43,6 +44,7 @@ public class ResultModel {
         transmission = details.get("transmission");
         dealer = details.get("dealer");
         imageUrl = details.get("imageUrl");
+        isNewResult = true;
     }
 
     @Override
@@ -54,6 +56,28 @@ public class ResultModel {
     public String getTitle() {
         return getYear() + " " + getModel() + " " + getTrim();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
+        if (!(o instanceof ResultModel))
+            return false;
+
+        ResultModel otherResult = (ResultModel) o;
+
+        if (otherResult.getVin() != null)
+            return otherResult.getVin().equalsIgnoreCase(getVin());
+        else
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return getVin().hashCode();
+    }
+
 
     public String getStock() {
         return stock;
@@ -161,5 +185,13 @@ public class ResultModel {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public boolean getIsNewResult() {
+        return isNewResult;
+    }
+
+    public void setIsNewResult(boolean isNewResult) {
+        this.isNewResult = isNewResult;
     }
 }
