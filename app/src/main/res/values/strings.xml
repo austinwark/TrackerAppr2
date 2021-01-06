@@ -2,13 +2,7 @@
     <string name="app_name">TrackerAppr2</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="action_logout">Logout</string>
 
     <string-array name="models_array">
@@ -29,14 +23,43 @@
         <item>Corolla Hatchback</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="action_edit">Edit</string>
 
     <string name="transition_string">result_to_detail_transition</string>
 
-    <string name="password_reset_positive">Save</string>
-    <string name="password_reset_negative">Cancel</string>
     <string name="thumbnail_content_description">Thumbnail image of vehicle</string>
     <string name="new_results_content_description">Badge indicating search has new results</string>
     <string name="search_icon_content_description">Search icon</string>
+    <string name="search_name_hint">Search Name</string>
+    <string name="model_hint">Model</string>
+    <string name="trim_level_hint">Trim Level</string>
+    <string name="year_text">Year</string>
+    <string name="price_text">Price</string>
+    <string name="all_dealerships_text">All dealerships</string>
+    <string name="create_text">Create</string>
+    <string name="save_text">Save</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="login_text">Login</string>
+    <string name="still_need_to_create_an_account_text">Still need to create an account?</string>
+    <string name="register_text">Register</string>
+    <string name="forgot_your_password_text">Forgot your password?</string>
+    <string name="already_have_an_account_text">Already have an account?</string>
+    <string name="miles_text">Miles:</string>
+    <string name="engine_text">Engine:</string>
+    <string name="transmission_text">Transmission:</string>
+    <string name="ext_color_text">Ext. Color:</string>
+    <string name="int_color_text">Int. Color:</string>
+    <string name="vin_text">Vin #:</string>
+    <string name="dealer_text">Dealer:</string>
+    <string name="reset_password_text">Reset Password</string>
+    <string name="email_address_text">Email address</string>
+    <string name="delete_title">Delete</string>
+    <string name="edit_title">Edit</string>
+    <string name="see_more_text">See more</string>
+    <string name="created_at_text">Created at:</string>
+    <string name="edited_at_text">Edited at:</string>
+    <string name="stock_text">Stock #:</string>
+    <string name="edit_activity_label">Edit Your Search</string>
 </resources>

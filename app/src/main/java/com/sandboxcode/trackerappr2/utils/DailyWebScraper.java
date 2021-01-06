@@ -3,12 +3,6 @@ package com.sandboxcode.trackerappr2.utils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 
@@ -26,18 +20,13 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
 
 
     private static final String TAG = "WebScraper";
-    private ArrayList<SearchModel> searches;
-    private DatabaseReference ref;
-    private String userUid;
+    private final ArrayList<SearchModel> searches;
 
     private DailyAsyncResponse delegate = null;
 
-    public DailyWebScraper(ArrayList<SearchModel> searches, DatabaseReference ref, String userUid) {
+    public DailyWebScraper(ArrayList<SearchModel> searches) {
 
         this.searches = searches;
-        this.ref = ref;
-        this.userUid = userUid;
-//        queryString = new StringBuilder();
     }
 
     public void setDelegate(DailyAsyncResponse delegate) {
@@ -72,14 +61,12 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
         return queryString;
     }
 
-    // TODO - ask StackOverflow how to return Elements
     protected Map<SearchModel, Elements> doInBackground(Void... params) {
         Map<SearchModel, Elements> map = new HashMap<>();
-        StringBuilder queryString = new StringBuilder();
+        StringBuilder queryString;
         for (SearchModel search : searches) {
             queryString = buildQueryString(search);
             Document doc;
-            Log.d(TAG, queryString.toString());
             try {
                 doc = Jsoup.connect(queryString.toString()).get();
                 Elements mainContent = doc.select("div[data-vin]");
@@ -91,7 +78,6 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
                 return null;
             }
         }
-        Log.d(TAG, String.valueOf(map.size()) + "-------------");
         return map;
 
     }
@@ -110,7 +96,6 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
 
             results = parseElements(search, mainContent);
             resultsMap.put(search.getId(), results);
-            Log.d(TAG, "NUM OF RESULTS: " + results.size());
         }
         delegate.processResults(resultsMap);
 
@@ -157,8 +142,7 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
                 ResultModel resultModel = new ResultModel(details);
                 results.add(resultModel);
 
-            } else
-                Log.d(TAG, "not in year range");
+            }
         }
         return results;
 
@@ -172,7 +156,7 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
         PRICE_RANGE("&Pricerange="),
         NOT_ALL_DEALERSHIPS("&Dealership=Lia%20Toyota%20of%20Colonie"),
         MILEAGERANGE("&Mileagerange="); // TODO: add mileage range parameter to search
-        private String val;
+        private final String val;
 
         UrlBits(String val) {
             this.val = val;

@@ -1,17 +1,24 @@
 
-O
-java:S1135@"2Complete the task associated to this TODO comment.(¤¬™8‹È”‹ë.
-^	java:S125€"<This block of commented-out lines of code should be removed.(’ó‘Øıÿÿÿÿ8Ü‘™‹ë.
-M
-java:S1068"+Remove this unused "userUid" private field.(‡Éíğüÿÿÿÿ8‹È”‹ë.
-X	java:S125~"<This block of commented-out lines of code should be removed.(úÁÛ€8‹È”‹ë.
-]	java:S125o"<This block of commented-out lines of code should be removed.(†æÍøÿÿÿÿ8Ü‘™‹ë.
+Ÿ
+java:S1186µ"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ô°¤¦8ü‡èÇì.
+N
+java:S1874"1Remove this use of "AsyncTask"; it is deprecated.(õ×÷“8‹È”‹ë.
+X	java:S125T"<This block of commented-out lines of code should be removed.(ËÎ¨ß8–¢¤Îì.
+Y	java:S125‰"<This block of commented-out lines of code should be removed.(ÅÎûÿ8åš•Îì.
 U
-java:S1135”"2Complete the task associated to this TODO comment.(ºŒ‡•úÿÿÿÿ8Ü‘™‹ë.
-W	java:S1254"<This block of commented-out lines of code should be removed.(««Ì8‹È”‹ë.
-]	java:S125|"<This block of commented-out lines of code should be removed.(¹ÂÓ‡ÿÿÿÿÿ8‹È”‹ë.
-]	java:S1258"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ8‹È”‹ë.
-S
-java:S1874"1Remove this use of "AsyncTask"; it is deprecated.(¾†÷Òøÿÿÿÿ8‹È”‹ë.
-T
-java:S1172P"2Remove this unused method parameter "dealerNames".(–‰·ßúÿÿÿÿ8‹È”‹ë.
+java:S1135Â"2Complete the task associated to this TODO comment.(ºŒ‡•úÿÿÿÿ8ü‡èÇì.
+[
+java:S1854R"?Remove this useless assignment to local variable "dealerNames".(¬Òº18À„¤Îì.
+p
+java:S3776Œ"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(Š³¿˜8ÂùïÇì.
+l
+java:S1874]"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(ÆÚ»ûÿÿÿÿ8×ó¤Îì.
+]	java:S125C"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ8‹È”‹ë.
+^	java:S125ƒ"<This block of commented-out lines of code should be removed.(†æÍøÿÿÿÿ8œé”¬ì.
+O
+java:S1135K"2Complete the task associated to this TODO comment.(¤¬™8‹È”‹ë.
+W	java:S125?"<This block of commented-out lines of code should be removed.(««Ì8‹È”‹ë.
+L
+java:S1481R"0Remove this unused "dealerNames" local variable.(¬Òº18–¢¤Îì.
+Q
+java:S1144Œ"3Remove this unused private "updateDatabase" method.(Š³¿˜8åš•Îì.

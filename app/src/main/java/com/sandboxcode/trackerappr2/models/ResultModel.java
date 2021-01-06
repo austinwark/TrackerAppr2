@@ -24,8 +24,10 @@ public class ResultModel {
     private String imageUrl;
     private boolean isNewResult;
 
+    /**
+     * Default constructor required by Firebase
+     */
     public ResultModel(){
-
     }
 
     public ResultModel(Map<String, String> details) {
@@ -83,108 +85,50 @@ public class ResultModel {
         return stock;
     }
 
-    public void setStock(String stock) {
-        this.stock = stock;
-    }
-
-    public String getMake() {
-        return make;
-    }
-
-    public void setMake(String make) {
-        this.make = make;
-    }
-
     public String getModel() {
         return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
     }
 
     public String getYear() {
         return year;
     }
 
-    public void setYear(String year) {
-        this.year = year;
-    }
-
     public String getTrim() {
         return trim;
-    }
-
-    public void setTrim(String trim) {
-        this.trim = trim;
     }
 
     public String getExtColor() {
         return extColor;
     }
 
-    public void setExtColor(String extColor) {
-        this.extColor = extColor;
-    }
-
     public String getPrice() {
         return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
     }
 
     public String getVin() {
         return vin;
     }
 
-    public void setVin(String vin) {
-        this.vin = vin;
-    }
-
     public String getMiles() {
         return miles;
-    }
-
-    public void setMiles(String miles) {
-        this.miles = miles;
     }
 
     public String getIntColor() {
         return intColor;
     }
 
-    public void setIntColor(String intColor) {
-        this.intColor = intColor;
-    }
-
     public String getDealer() { return dealer; }
-
-    public void setDealer(String dealer) { this.dealer = dealer; }
 
     public String getEngine() {
         return engine;
-    }
-
-    public void setEngine(String engine) {
-        this.engine = engine;
     }
 
     public String getTransmission() {
         return transmission;
     }
 
-    public void setTransmission(String transmission) {
-        this.transmission = transmission;
-    }
-
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public boolean getIsNewResult() {

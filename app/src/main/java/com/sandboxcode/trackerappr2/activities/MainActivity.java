@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
@@ -27,6 +28,7 @@ import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
+    @SuppressWarnings("unused")
     private static final String TAG = "MainActivity";
     private static final int NOTIFICATION_ID = 0;
     private static final String PRIMARY_CHANNEL_ID = "primary_notification_channel";
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private NotificationManager notificationManager;
 
     @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(notifyPendingIntent);
-        long repeatInterval = 5000;
+        long repeatInterval = 1800000; // half hour
         long triggerTime = SystemClock.elapsedRealtime();
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, repeatInterval, notifyPendingIntent);
 
@@ -146,9 +148,13 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
 
         // If fragment is not SearchesFragment or edit menu DNE or edit menu is closed
-        if (!(fragment instanceof SearchesFragment)
-                || viewModel.getEditMenuOpen().getValue() != null
-                || viewModel.getEditMenuOpen().getValue() == View.INVISIBLE)
+        if ((fragment instanceof SearchesFragment)
+                && viewModel.getEditMenuOpen().getValue() != null
+                && viewModel.getEditMenuOpen().getValue() == View.VISIBLE)
+            viewModel.toggleEdit();
+        else if ((fragment instanceof SearchesFragment))
+            finish();
+        else
             super.onBackPressed();
     }
 

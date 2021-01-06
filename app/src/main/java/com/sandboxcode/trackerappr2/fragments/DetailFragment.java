@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,26 +21,15 @@ import org.parceler.Parcels;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Objects;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DetailFragment #newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DetailFragment extends Fragment {
 
+    @SuppressWarnings("unused")
     private static final String TAG = "DetailFragment";
-    private MainSharedViewModel viewModel;
     private ResultModel result;
-    private String searchId;
 
     ImageView image;
-    String imageTransitionName;
-
-
-    public DetailFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,10 +38,10 @@ public class DetailFragment extends Fragment {
 
             // Get result and search ID
             result = Parcels.unwrap(getArguments().getParcelable("RESULT"));
-            searchId = getArguments().getString("SEARCH_ID");
+            String searchId = getArguments().getString("SEARCH_ID");
 
             // Change isNew field indicating the user has seen the result
-            viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
+            MainSharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
             viewModel.setResultHasBeenViewed(result.getVin(), searchId);
             result.setIsNewResult(false);
 
@@ -91,19 +79,8 @@ public class DetailFragment extends Fragment {
         TextView transmission = v.findViewById(R.id.tv_details_transmission);
         transmission.setText(result.getTransmission());
         image = v.findViewById(R.id.result_image_thumbnail);
-//        Picasso.get().setLoggingEnabled(true);
         Picasso.get().load(result.getImageUrl()).fit().into(image);
 
-        Button test = (Button) v.findViewById(R.id.testing);
-//        test.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Calendar cal = Calendar.getInstance();
-//                int days = Calendar.SUNDAY + (7 - cal.get(Calendar.DAY_OF_WEEK));
-//                cal.set(Calendar.DAY);
-//                Log.d(TAG, "DAYS: " + days);
-//            }
-//        });
     }
 
     @Override
@@ -116,13 +93,12 @@ public class DetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Details");
-        instantiateUI(view);
-//        Log.d("DetailFragment", imageTransitionName);
+        if (((AppCompatActivity) getActivity()) != null
+                && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
 
-    }
-
-    public void setImageTransitionName(String name) {
-        imageTransitionName = name;
+            Objects.requireNonNull(((AppCompatActivity) getActivity())
+                    .getSupportActionBar()).setTitle("Details");
+            instantiateUI(view);
+        }
     }
 }

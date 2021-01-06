@@ -39,14 +39,13 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
     private String userId;
     private int numberOfNotifications;
 
-    private ArrayList<NewNotification> newNotifications = new ArrayList<>();
+    private final ArrayList<NewNotification> newNotifications = new ArrayList<>();
 
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
         userId = intent.getStringExtra(USER_ID_EXTRA);
 
-        Log.d(TAG, "Extra: " + userId);
 
         if (userId != null && !userId.isEmpty()) {
             notificationManager =
@@ -72,7 +71,7 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
                             for (DataSnapshot child : snapshot.getChildren())
                                 searches.add(child.getValue(SearchModel.class));
 
-                            DailyWebScraper scraper = new DailyWebScraper(searches, DATABASE_REF, userId);
+                            DailyWebScraper scraper = new DailyWebScraper(searches);
                             scraper.setDelegate(ResultsReceiver.this);
                             scraper.execute();
                         }
@@ -106,6 +105,7 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
                 for (DataSnapshot searchInDb : snapshot.getChildren()) {
 
                     String searchId = searchInDb.getKey();
+
                     if (searchId == null)
                         return;
 
@@ -201,7 +201,7 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
         String contextText;
 
         bigContentTitle = totalNewNotifications + " new results from "
-                + newNotifications.size() + " searches.";
+                + newNotifications.size() + (newNotifications.size() > 1 ? " searches" : " search");
         summaryText = "New Results";
         contentTitle = totalNewNotifications
                 + (totalNewNotifications > 1 ? " new results" : "new result");
@@ -240,8 +240,8 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
     }
 
     public static class NewNotification {
-        private String searchId;
-        private int numberOfNewResults;
+        private final String searchId;
+        private final int numberOfNewResults;
 
         public NewNotification(String searchId, int numberOfNewResults) {
             this.searchId = searchId;

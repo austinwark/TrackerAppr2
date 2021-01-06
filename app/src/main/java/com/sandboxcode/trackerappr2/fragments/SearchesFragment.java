@@ -18,7 +18,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +28,6 @@ import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
 import com.sandboxcode.trackerappr2.activities.EditActivity;
 import com.sandboxcode.trackerappr2.adapters.search.SearchesAdapter;
-import com.sandboxcode.trackerappr2.models.SearchModel;
 import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 
 import java.text.SimpleDateFormat;
@@ -47,13 +45,11 @@ public class SearchesFragment extends Fragment {
     private static final String RESULT_MESSAGE_TAG = "result_message";
     private Context activityContext;
 
-    private RecyclerView searchListView;
     private MainSharedViewModel viewModel;
     private BottomNavigationView toolbarBottom;
-    private MenuItem deleteMenuItem;
     private SearchesAdapter adapter;
 
-    ActivityResultLauncher<Intent> startForResult =
+    final ActivityResultLauncher<Intent> startForResult =
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(), result -> {
                         if (result.getResultCode() == Activity.RESULT_OK)
@@ -72,17 +68,14 @@ public class SearchesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate called");
         activityContext = getActivity().getApplicationContext();
-        adapter = new SearchesAdapter(activityContext, R.layout.search_list_item, this);
+        adapter = new SearchesAdapter(R.layout.search_list_item, this);
 
         viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
         viewModel.getAllSearches().observe(this, searches -> {
-            Log.d(TAG, "onChanged");
             adapter.setSearches(searches);
         });
         viewModel.getEditMenuOpen().observe(this, editMenuOpen -> {
-            Log.d(TAG, "editOpen observer");
             this.toolbarBottom.setVisibility(editMenuOpen);
             this.adapter.setCheckboxVisible(editMenuOpen);
         });
@@ -96,7 +89,6 @@ public class SearchesFragment extends Fragment {
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-        Log.d(TAG, sdf.format(cal.getTime()));
 
     }
 
@@ -114,9 +106,7 @@ public class SearchesFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_main, menu);
 
-        Log.d(TAG, "onCreateOptionsMenu");
         Menu bottomMenu = toolbarBottom.getMenu();
-        deleteMenuItem = bottomMenu.findItem(R.id.action_delete);
 
         // returns the onOptionsItemSelected method for each MenuItem
         for (int itemIndex = 0; itemIndex < bottomMenu.size(); itemIndex++) {
@@ -131,10 +121,6 @@ public class SearchesFragment extends Fragment {
 //        getActivity().invalidateOptionsMenu();
     }
 
-    public boolean getEditActive() {
-        return this.toolbarBottom.getVisibility() == View.VISIBLE;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         viewModel.handleOnOptionsItemSelected(item.getItemId());
@@ -144,7 +130,6 @@ public class SearchesFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onViewCreated");
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Queries");
 
         toolbarBottom = view.findViewById(R.id.toolbar_bottom);
@@ -158,26 +143,12 @@ public class SearchesFragment extends Fragment {
         fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), CreateActivity.class)));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
 
-        searchListView = view.findViewById(R.id.searches_view);
+        RecyclerView searchListView = view.findViewById(R.id.searches_view);
         searchListView.setLayoutManager(layoutManager);
         searchListView.setAdapter(adapter);
 
     }
 
-
-    public void viewResults(SearchModel search) {
-        Bundle args = new Bundle();
-        args.putString("ID", search.getId());
-//        viewModel.setSearch(search);
-
-        ResultsFragment fragment = new ResultsFragment();
-        fragment.setArguments(args);
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
-    }
 
 
 }

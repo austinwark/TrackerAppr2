@@ -41,7 +41,6 @@
                         android:id="@+id/result_text_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2018 Toyota Corolla SE"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +50,6 @@
                         android:id="@+id/result_text_stock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="#626456"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +59,6 @@
                         android:id="@+id/result_text_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="$20,995"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +79,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
-                    android:id="@+id/view"
                     style="@style/Divider"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -102,82 +98,11 @@
                 android:id="@+id/result_button_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="See more"
+                android:text="@string/see_more_text"
                 style="?attr/borderlessButtonStyle" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-
-</com.google.android.material.card.MaterialCardView><!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--    android:orientation="horizontal"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:layout_height="wrap_content"-->
-    <!--    android:padding="10dp"-->
-    <!--    android:weightSum="100"-->
-    <!--    android:transitionName="@string/transition_string">-->
-
-    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_weight="60"-->
-    <!--        android:layout_margin="5dp">-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/tv_result_item_title"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:gravity="center"-->
-    <!--            android:textAlignment="center"-->
-    <!--            app:layout_constraintTop_toTopOf="parent"-->
-    <!--            app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--            app:layout_constraintBottom_toTopOf="@+id/tv_result_item_stock"-->
-    <!--            android:layout_margin="2dp"-->
-    <!--            />-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/tv_result_item_stock"-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:gravity="center"-->
-    <!--            android:textAlignment="center"-->
-    <!--            app:layout_constraintTop_toBottomOf="@+id/tv_result_item_title"-->
-    <!--            app:layout_constraintBottom_toTopOf="@+id/tv_result_item_price"-->
-    <!--            app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--            android:layout_margin="2dp"-->
-    <!--            />-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/tv_result_item_price"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:gravity="center"-->
-    <!--            android:textAlignment="center"-->
-    <!--            app:layout_constraintTop_toBottomOf="@+id/tv_result_item_stock"-->
-    <!--            app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            android:layout_margin="2dp"-->
-    <!--            />-->
-
-    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
-    <!--    -->
-    <!--<androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--    android:layout_width="0dp"-->
-    <!--    android:layout_height="match_parent"-->
-    <!--    android:layout_weight="40">-->
-
-    <!--    <Button-->
-    <!--        android:id="@+id/button_view_details"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        android:text="details"/>-->
-
-    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
-
-    <!--</LinearLayout>-->
+</com.google.android.material.card.MaterialCardView>

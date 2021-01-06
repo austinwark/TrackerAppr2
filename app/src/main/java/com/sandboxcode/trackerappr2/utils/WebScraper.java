@@ -3,12 +3,7 @@ package com.sandboxcode.trackerappr2.utils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 
@@ -26,10 +21,10 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
 
 
     private static final String TAG = "WebScraper";
-    private SearchModel search;
-    private DatabaseReference ref;
-    private String userUid;
-    private StringBuilder queryString;
+    private final SearchModel search;
+    private final DatabaseReference ref;
+    private final String userUid;
+    private final StringBuilder queryString;
 
     private AsyncResponse delegate = null;
 
@@ -75,13 +70,10 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
     // TODO - ask StackOverflow how to return Elements
     protected Elements doInBackground(Void... params) {
         Document doc;
-        Log.d(TAG, queryString.toString());
         try {
             doc = Jsoup.connect(queryString.toString()).get();
             Elements mainContent = doc.select("div[data-vin]");
-            Elements dealerNames = doc.select(".dealershipDisplay");
             return mainContent;
-//            parseElements(mainContent, dealerNames);
 
         } catch (IOException e) {
             Log.e(TAG, e.toString());
@@ -128,60 +120,9 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
                 ResultModel resultModel = new ResultModel(details);
                 results.add(resultModel);
 
-//                Log.d(TAG, "\t" + resultModel.toString() + "\n");
-                Log.d(TAG, "URL: " + imageUrl);
-            } else
-                Log.d(TAG, "not in year range");
+            }
         }
         return results;
-//        updateDatabase(results);
-    }
-
-    private void updateDatabase(ArrayList<ResultModel> searchResults) {
-        DatabaseReference resultsRef = ref.child("results").child(search.getId());
-
-        resultsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<ResultModel> currentResults = new ArrayList<>();
-                int numberOfResults = 0;
-
-                // Get the current results of the search
-                if (snapshot.hasChildren())
-                    for (DataSnapshot child : snapshot.getChildren())
-                        currentResults.add(child.getValue(ResultModel.class));
-
-                if (!currentResults.isEmpty()) {
-                    // Check each newly scraped result against each current result
-                    for (ResultModel newResult : searchResults) {
-                        for (ResultModel currentResult : currentResults) {
-                            // If newResult is in currentResults (meaning it has already been
-                            // scraped) copy the currentResult's isNew field
-                            if (newResult.equals(currentResult))
-                                newResult.setIsNewResult(currentResult.getIsNewResult());
-                        }
-                    }
-                }
-
-                // Reset the results document in firebase
-                resultsRef.setValue(null);
-
-                // Save each new result and keep track of the total count
-                for (ResultModel result : searchResults) {
-                    resultsRef.child(result.getVin()).setValue(result);
-                    numberOfResults++;
-                }
-
-                // Set number of results in search document
-                ref.child("queries").child(userUid).child(search.getId())
-                        .child("numberOfResults").setValue(numberOfResults);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
     }
 
     private enum UrlBits {
@@ -192,7 +133,7 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
         PRICE_RANGE("&Pricerange="),
         NOT_ALL_DEALERSHIPS("&Dealership=Lia%20Toyota%20of%20Colonie"),
         MILEAGERANGE("&Mileagerange="); // TODO: add mileage range parameter to search
-        private String val;
+        private final String val;
 
         UrlBits(String val) {
             this.val = val;

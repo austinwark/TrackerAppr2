@@ -9,10 +9,11 @@ import com.sandboxcode.trackerappr2.repositories.SearchRepository;
 
 public class CreateViewModel extends AndroidViewModel {
 
+    @SuppressWarnings("unused")
     private static final String TAG = "CreateViewModel";
-    private SearchRepository repository;
+    private final SearchRepository repository;
     private MutableLiveData<String> toastMessage;
-    private MutableLiveData<Boolean> createCancelled;
+    private final MutableLiveData<Boolean> createCancelled;
 
     public CreateViewModel(Application application) {
         super(application);
@@ -32,6 +33,7 @@ public class CreateViewModel extends AndroidViewModel {
         return toastMessage;
     }
 
+    @SuppressWarnings("unused")
     public void setToastMessage(String message) {
         toastMessage.postValue(message);
     }

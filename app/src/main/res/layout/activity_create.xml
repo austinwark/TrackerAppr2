@@ -16,7 +16,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search Name"
+            android:hint="@string/search_name_hint"
             android:paddingTop="8dp"
             android:paddingBottom="8dp">
 
@@ -37,7 +37,7 @@
                 android:id="@+id/spinner_models"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Model"
+                android:hint="@string/model_hint"
                 android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".25"
                 android:gravity="center"
-                android:text="Year"
+                android:text="@string/year_text"
                 android:textSize="16sp" />
 
             <com.google.android.material.slider.RangeSlider
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".25"
                 android:gravity="center"
-                android:text="Price"
+                android:text="@string/price_text"
                 android:textSize="16sp" />
 
             <com.google.android.material.slider.RangeSlider
@@ -111,7 +111,7 @@
                 android:id="@+id/et_trim"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Trim Level" />
+                android:hint="@string/trim_level_hint" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -121,8 +121,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="All dealerships"
-                android:layout_marginLeft="8dp"
+                android:text="@string/all_dealerships_text"
+                android:layout_marginStart="8dp"
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -144,8 +144,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Create"
-            app:icon="@drawable/ic_add"
+            android:text="@string/create_text"
+            app:icon="@drawable/ic_create"
             android:onClick="createNewSearch" />
 
     </LinearLayout>

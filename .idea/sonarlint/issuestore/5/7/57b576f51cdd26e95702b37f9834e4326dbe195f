@@ -1,13 +1,13 @@
 
-G
-java:S1068#"+Remove this unused "context" private field.(êİç8Ú†ĞÍë.
 Q
-java:S1481S"4Remove this unused "currentFragment" local variable.(”ÄŞ8ÙÏ¸Íë.
-`
-java:S1854S"CRemove this useless assignment to local variable "currentFragment".(”ÄŞ8ÙÏ¸Íë.
-X	java:S125B"<This block of commented-out lines of code should be removed.(¶¹â¾8Æ½„´ë.
-]	java:S125d"<This block of commented-out lines of code should be removed.(Ã×·«şÿÿÿÿ8ÙÏ¸Íë.
+java:S1481["4Remove this unused "currentFragment" local variable.(”ÄŞ8×ı€ì.
 E
-java:S1604G"(Make this anonymous inner class a lambda(Å¨£æ8Øµ‚¸Ï.
-X	java:S1251"<This block of commented-out lines of code should be removed.(ÿ¤Ò¦8¦Ï³²ë.
-X	java:S125_"<This block of commented-out lines of code should be removed.(¾‚ğé8•ğÍë.
+java:S1068"+Remove this unused "context" private field.(êİç8Û£˜µì.
+X	java:S125^"<This block of commented-out lines of code should be removed.(Ãø¨8×ı€ì.
+`
+java:S1854["CRemove this useless assignment to local variable "currentFragment".(”ÄŞ8×ı€ì.
+W
+java:S3985k"5Remove this unused private "DetailsTransition" class.(’Ç Ñûÿÿÿÿ8×ı€ì.
+E
+java:S1604O"(Make this anonymous inner class a lambda(Å¨£æ8×ı€ì.
+W	java:S125e"<This block of commented-out lines of code should be removed.(–ù³[8×ı€ì.

@@ -4,13 +4,10 @@ import android.app.Application;
 import android.util.Log;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
@@ -23,27 +20,23 @@ import java.util.List;
 public class MainSharedViewModel extends AndroidViewModel {
 
     private static final String TAG = "SearchViewModel";
-    private SearchRepository searchRepository;
-    private AuthRepository authRepository;
-    private FirebaseAuth firebaseAuth;
+    private final SearchRepository searchRepository;
+    private final AuthRepository authRepository;
     /* MainActivity */
-    private MutableLiveData<Boolean> userSignedIn;
-    private MutableLiveData<Boolean> signUserOut;
+    private final MutableLiveData<Boolean> userSignedIn;
+    private final MutableLiveData<Boolean> signUserOut;
     /* SearchesFragment */
     private MutableLiveData<List<SearchModel>> allSearches;
-    private MutableLiveData<String> toastMessage = new MutableLiveData<>();
-    private MutableLiveData<ArrayList<String>> checkedItems = new MutableLiveData<>();
-    private MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
-    private MutableLiveData<String> startEditActivity = new MutableLiveData<>();
-    /* ResultsFragment */
-    private MutableLiveData<ArrayList<ResultModel>> searchResults;
+    private final MutableLiveData<String> toastMessage = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<String>> checkedItems = new MutableLiveData<>();
+    private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
+    private final MutableLiveData<String> startEditActivity = new MutableLiveData<>();
 
     public MainSharedViewModel(Application application) {
         super(application);
         searchRepository = new SearchRepository();
         authRepository = new AuthRepository();
         allSearches = searchRepository.getAllSearches();
-        firebaseAuth = FirebaseAuth.getInstance();
 
 //        searchRepository.setListeners();
         userSignedIn = authRepository.getUserSignedIn();
@@ -60,18 +53,6 @@ public class MainSharedViewModel extends AndroidViewModel {
     public void setSearchesListener() {
         searchRepository.setListeners();
     }
-//    public MutableLiveData<Boolean> getUserSignedIn() {
-//        userSignedIn = authRepository.getUserSignedIn();
-//
-//        if (userSignedIn.getValue() != null && userSignedIn.getValue()) {
-//                searchRepository.setListeners();
-//                Log.d(TAG, "setListen");
-//        } else
-//            Log.d(TAG, "not setListen");
-//
-//
-//        return userSignedIn;
-//    }
 
     public MutableLiveData<List<SearchModel>> getAllSearches() {
         if (allSearches == null)
@@ -83,12 +64,10 @@ public class MainSharedViewModel extends AndroidViewModel {
     public void updateCheckedSearchesList(String searchId, boolean isChecked) {
         ArrayList<String> localCheckedItems = checkedItems.getValue();
 
-        if (isChecked) {
+        if (isChecked && localCheckedItems != null) {
             localCheckedItems.add(searchId);
-            Log.d(TAG, "is checked");
-        } else {
+        } else if (localCheckedItems != null) {
             localCheckedItems.remove(searchId);
-            Log.d(TAG, "is not checked");
         }
 
         checkedItems.postValue(localCheckedItems);
@@ -99,7 +78,6 @@ public class MainSharedViewModel extends AndroidViewModel {
         switch (itemId) {
             /* ----- Top Toolbar Menu ----- */
             case R.id.action_edit:
-                Log.d(TAG, "action edit");
                 toggleEdit();
                 break;
             case R.id.action_settings:
@@ -111,15 +89,12 @@ public class MainSharedViewModel extends AndroidViewModel {
 
             /* ----- Bottom Toolbar Menu ----- */
             case R.id.action_search_edit:
-                Log.d(TAG, "action search edit");
                 editSearch();
                 break;
             case R.id.action_delete:
-                Log.d(TAG, "action delete");
                 deleteSearch();
                 break;
             default:
-                Log.d(TAG, "default");
                 break;
         }
     }
@@ -168,7 +143,8 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     // TODO -- Call SearchResults every time? OR only when null and nothing has changed?
     public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
-        searchResults = searchRepository.getSearchResults(searchId);
+        /* ResultsFragment */
+        MutableLiveData<ArrayList<ResultModel>> searchResults = searchRepository.getSearchResults(searchId);
         return searchResults;
     }
 
@@ -201,10 +177,6 @@ public class MainSharedViewModel extends AndroidViewModel {
         checkedItems.postValue(new ArrayList<>()); // Reset checked items
     }
 
-    public void refreshResults(String searchId) {
-        searchRepository.getSearchResults(searchId);
-    }
-
     public String getUserId() {
         return searchRepository.getUserId();
     }
@@ -222,15 +194,10 @@ public class MainSharedViewModel extends AndroidViewModel {
         // TODO -- unsubscribe listeners in repository
     }
 
-    private OnCompleteListener<Void> onDeleteListener = new OnCompleteListener<Void>() {
-        @Override
-        public void onComplete(@NonNull Task<Void> task) {
+    private final OnCompleteListener<Void> onDeleteListener = task -> {
 
-            if (task.isSuccessful()) {
-                Log.d(TAG, "Delete Result: SUCCESS");
-                toggleEdit();
-            } else
-                Log.d(TAG, "Delete Result: FAILURE");
+        if (task.isSuccessful()) {
+            toggleEdit();
         }
     };
 

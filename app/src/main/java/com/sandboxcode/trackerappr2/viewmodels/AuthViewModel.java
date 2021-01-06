@@ -5,23 +5,20 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.sandboxcode.trackerappr2.repositories.AuthRepository;
 
 public class AuthViewModel extends AndroidViewModel {
 
-    private AuthRepository authRepository;
-    private FirebaseAuth firebaseAuth;
-    private MutableLiveData<String> toastMessage;
+    private final AuthRepository authRepository;
+    private final FirebaseAuth firebaseAuth;
+    private final MutableLiveData<String> toastMessage;
     private MutableLiveData<Boolean> userSignedIn;
-    private MutableLiveData<String> passwordResetErrorMessage;
-    private MutableLiveData<Boolean> passwordResetSuccess;
+    private final MutableLiveData<String> passwordResetErrorMessage;
+    private final MutableLiveData<Boolean> passwordResetSuccess;
 
     // TODO -- Add AuthStateListener
     public AuthViewModel(Application application) {
@@ -95,16 +92,12 @@ public class AuthViewModel extends AndroidViewModel {
         else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
             passwordResetErrorMessage.postValue("Email address must be in a correct format.");
         else {
-            Log.d("AUTHVIEWMODEL", "else");
-            firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
+            firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
 
-                    if (task.isSuccessful())
-                        passwordResetSuccess.postValue(true);
-                    else
-                        passwordResetErrorMessage.postValue("Error sending password link to " + email + ".");
-                }
+                if (task.isSuccessful())
+                    passwordResetSuccess.postValue(true);
+                else
+                    passwordResetErrorMessage.postValue("Error sending password link to " + email + ".");
             });
         }
     }

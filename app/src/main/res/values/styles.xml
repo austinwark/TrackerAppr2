@@ -20,10 +20,6 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="CancelButton" parent="Theme.MaterialComponents">
-        <item name="colorPrimary">#FFFFFF</item>
-    </style>
-
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>

@@ -1,3 +1,19 @@
 
-
-java:S1186$"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÅÂší8œ»àäÎ.
+s
+java:S1450"XRemove the "viewModel" field and declare it as a local variable in the relevant methods.(ı¯›µ8Öà´ì.
+w
+java:S1450"WRemove the "searchId" field and declare it as a local variable in the relevant methods.(·ÄÊÇüÿÿÿÿ8£ğõ³ì.
+X
+java:S1854"8Remove this useless assignment to local variable "test".(Œ³¸’øÿÿÿÿ8¿Á¶´ì.
+œ
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÅÂší8Ö×ı€ì.
+[	java:S125"<This block of commented-out lines of code should be removed.(ÎÚˆ¦ıÿÿÿÿ8¿Á¶´ì.
+I
+java:S1481")Remove this unused "test" local variable.(Œ³¸’øÿÿÿÿ8¿Á¶´ì.
+[	java:S125"<This block of commented-out lines of code should be removed.(êúÉúıÿÿÿÿ8¿Á¶´ì.
+X	java:S125y"<This block of commented-out lines of code should be removed.(˜Âàˆ8¿Á¶´ì.
+V	java:S125"<This block of commented-out lines of code should be removed.(®ƒ÷8¿Á¶´ì.
+B
+java:S1068"'Remove this unused "TAG" private field.(íˆ¢8¹¯Ş´ì.
+R
+java:S1135"2Complete the task associated to this TODO comment.(‡ùš—ùÿÿÿÿ8¹¯Ş´ì.

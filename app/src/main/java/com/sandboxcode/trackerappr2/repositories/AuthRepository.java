@@ -1,7 +1,5 @@
 package com.sandboxcode.trackerappr2.repositories;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -9,8 +7,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class AuthRepository {
 
     private static final FirebaseAuth AUTH_REF = FirebaseAuth.getInstance();
-    private MutableLiveData<Boolean> userSignedIn = new MutableLiveData<>();
-    private MutableLiveData<Boolean> signUserOut = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> userSignedIn = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> signUserOut = new MutableLiveData<>();
 
     public AuthRepository() {
     }

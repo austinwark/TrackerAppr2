@@ -1,15 +1,17 @@
 
+X	java:S1250"<This block of commented-out lines of code should be removed.(óÇöê8Ñ™¨‡í.
 O
-java:S1135D"2Complete the task associated to this TODO comment.(£· Ò8²¢ÓŠë.
-~
-java:S1450)"\Remove the "searchResults" field and declare it as a local variable in the relevant methods.(ø—áÎúÿÿÿÿ8²¢ÓŠë.
-g
-java:S1128"JRemove this unused import 'com.google.firebase.database.FirebaseDatabase'.(×Ë—8õŸÕ‹ë.
-l
-java:S1128"JRemove this unused import 'com.sandboxcode.trackerappr2.utils.WebScraper'.(îœãÇùÿÿÿÿ8õŸÕ‹ë.
-K
-java:S1604Ã"(Make this anonymous inner class a lambda(êóø¬úÿÿÿÿ8²¢ÓŠë.
-g
-java:S1128"KRemove this unused import 'com.google.firebase.database.DatabaseReference'.(ÉÓ¹8õŸÕ‹ë.
+java:S1135R"2Complete the task associated to this TODO comment.(£· Ò8Ñ™¨‡í.
+W	java:S125B"<This block of commented-out lines of code should be removed.(åÃªw8Ñ™¨‡í.
+X	java:S125F"<This block of commented-out lines of code should be removed.(¤¿Íé8Ñ™¨‡í.
 U
-java:S1135š"2Complete the task associated to this TODO comment.( œ±Ãúÿÿÿÿ8²¢ÓŠë.
+java:S1135©"2Complete the task associated to this TODO comment.( œ±Ãúÿÿÿÿ8Ñ™¨‡í.
+U
+java:S1135Ş"2Complete the task associated to this TODO comment.(İÄÉíÿÿÿÿÿ8Ñ™¨‡í.
+]	java:S125?"<This block of commented-out lines of code should be removed.(·÷Îìùÿÿÿÿ8Ñ™¨‡í.
+]	java:S125I"<This block of commented-out lines of code should be removed.(ÜŠ±øÿÿÿÿ8Ñ™¨‡í.
+~
+java:S1450'"\Remove the "searchResults" field and declare it as a local variable in the relevant methods.(ø—áÎúÿÿÿÿ8Ñ™¨‡í.
+M
+java:S1068"0Remove this unused "firebaseAuth" private field.(“ø8Ñ™¨‡í.
+W	java:S125l"<This block of commented-out lines of code should be removed.(ñ€Ú 8Ñ™¨‡í.

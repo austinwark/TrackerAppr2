@@ -50,7 +50,6 @@ public class LoginActivity extends AppCompatActivity implements PasswordResetFra
 
         authViewModel.getPasswordResetSuccess().observe(this, success -> {
             if (success && dialog != null) {
-                Log.d("LOGIN", "not null");
                 dialog.dismiss();
                 Toast.makeText(this, "Password reset link sent to email.",
                         Toast.LENGTH_LONG).show();
@@ -60,7 +59,6 @@ public class LoginActivity extends AppCompatActivity implements PasswordResetFra
         loginButton.setOnClickListener(v -> {
             String emailText = email.getText().toString();
             String passwordText = password.getText().toString();
-            Log.d("LoginActivity", emailText + " " + passwordText);
             authViewModel.loginUser(emailText, passwordText);
         });
 

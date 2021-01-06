@@ -17,10 +17,10 @@ import java.util.List;
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
 
     private List<ResultModel> resultsList = new ArrayList<>();
-    private Context context;
-    private int itemResource;
-    private FragmentManager fragmentManager;
-    private String searchId;
+    private final Context context;
+    private final int itemResource;
+    private final FragmentManager fragmentManager;
+    private final String searchId;
 
     public ResultsAdapter(Context context,
                           int itemResource,
@@ -38,17 +38,14 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(this.itemResource, parent, false);
-//        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-//        layoutParams.height = (int) (parent.getHeight() * .25);
-//        view.setLayoutParams(layoutParams);
-        return new ResultsHolder(this.context, view, fragmentManager, searchId);
+
+        return new ResultsHolder(view, fragmentManager, searchId);
     }
 
     @Override
     public void onBindViewHolder(ResultsHolder holder, int position) {
 
         ResultModel result = this.resultsList.get(position);
-        Log.d("ResultsAdapter", result.getTitle());
 
         holder.bindResult(result, position);
     }

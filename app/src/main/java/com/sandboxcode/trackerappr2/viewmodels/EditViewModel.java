@@ -10,12 +10,12 @@ import com.sandboxcode.trackerappr2.repositories.SearchRepository;
 
 public class EditViewModel extends AndroidViewModel {
 
-    private SearchRepository repository;
+    private final SearchRepository repository;
     private String searchId;
-    private MutableLiveData<SearchModel> search;
+    private final MutableLiveData<SearchModel> search;
     private MutableLiveData<String> toastMessage;
-    private MutableLiveData<Boolean> changesSaved;
-    private MutableLiveData<String> errorMessage;
+    private final MutableLiveData<Boolean> changesSaved;
+    private final MutableLiveData<String> errorMessage;
 
     public EditViewModel(Application application) {
         super(application);
@@ -40,6 +40,7 @@ public class EditViewModel extends AndroidViewModel {
         return toastMessage;
     }
 
+    @SuppressWarnings("unused")
     public void setToastMessage(String message) {
         toastMessage.postValue(message);
     }

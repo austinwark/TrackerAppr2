@@ -1,6 +1,3 @@
 
-Q	java:S110"<This class has 9 parents which is greater than 5 authorized.(Ê¨¹
-L
-java:S5411""*Use the primitive boolean expression here.(Â©‹®ùÿÿÿÿ8Íš«Œê.
 y
 java:S1450"\Remove the "authViewModel" field and declare it as a local variable in the relevant methods.(¼¢‰î8Íš«Œê.

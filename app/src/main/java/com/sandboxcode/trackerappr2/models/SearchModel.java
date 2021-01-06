@@ -58,6 +58,25 @@ public class SearchModel implements Parcelable {
     public SearchModel() {
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
+        if (!(o instanceof SearchModel))
+            return false;
+
+        SearchModel otherSearch = (SearchModel) o;
+
+        if (otherSearch.getId() != null)
+            return otherSearch.getId().equalsIgnoreCase(getId());
+        else
+            return false;
+    }
+
+    @Override
+    public int hashCode() { return getId().hashCode(); }
+
     public void setCreatedDate() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
@@ -74,6 +93,7 @@ public class SearchModel implements Parcelable {
         lastEditedDate = sdf.format(cal.getTime());
     }
 
+    @Override
     public String toString() {
         return String.format("%s | %s | %s | %s", id, searchName, model, trim);
     }
@@ -106,64 +126,32 @@ public class SearchModel implements Parcelable {
         return model;
     }
 
-    public void setModel(String model) {
-        this.model = model;
-    }
-
     public String getTrim() {
         return trim;
-    }
-
-    public void setTrim(String trim) {
-        this.trim = trim;
     }
 
     public String getMinYear() {
         return minYear;
     }
 
-    public void setMinYear(String minYear) {
-        this.minYear = minYear;
-    }
-
     public String getMaxYear() {
         return maxYear;
-    }
-
-    public void setMaxYear(String maxYear) {
-        this.maxYear = maxYear;
     }
 
     public String getMinPrice() {
         return minPrice;
     }
 
-    public void setMinPrice(String minPrice) {
-        this.minPrice = minPrice;
-    }
-
     public String getMaxPrice() {
         return maxPrice;
-    }
-
-    public void setMaxPrice(String maxPrice) {
-        this.maxPrice = maxPrice;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getAllDealerships() {
         return this.allDealerships;
-    }
-
-    public void setAllDealerships(String allDealerships) {
-        this.allDealerships = allDealerships;
     }
 
     @Override
@@ -187,16 +175,8 @@ public class SearchModel implements Parcelable {
         return searchName;
     }
 
-    public void setSearchName(String searchName) {
-        this.searchName = searchName;
-    }
-
     public int getNumberOfResults() {
         return numberOfResults;
-    }
-
-    public void setNumberOfResults(int numberOfResults) {
-        this.numberOfResults = numberOfResults;
     }
 
     public String getCreatedDate() {
@@ -207,11 +187,4 @@ public class SearchModel implements Parcelable {
         return lastEditedDate;
     }
 
-    public int getNumberOfNewResults() {
-        return numberOfNewResults;
-    }
-
-    public void setNumberOfNewResults(int numberOfNewResults) {
-        this.numberOfNewResults = numberOfNewResults;
-    }
 }

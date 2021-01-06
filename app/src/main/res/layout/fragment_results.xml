@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.ResultsFragment"
-    android:background="#E5E5E5">
+    android:background="#E5E5E5"
+    tools:ignore="Overdraw">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/results_view"

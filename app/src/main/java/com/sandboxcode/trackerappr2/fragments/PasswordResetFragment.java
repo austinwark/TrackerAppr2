@@ -20,8 +20,6 @@ public class PasswordResetFragment extends DialogFragment {
     private TextView passwordErrorText;
     PasswordResetDialogListener listener;
 
-    private Button positiveButton;
-    private Button negativeButton;
     private String email;
 
     @Override
@@ -52,16 +50,14 @@ public class PasswordResetFragment extends DialogFragment {
         super.onResume();
 
         AlertDialog dialog = (AlertDialog) getDialog();
-        positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
 
         positiveButton.setOnClickListener(view -> {
             email = emailEditText.getText().toString();
             listener.resetPassword(email);
         });
-        negativeButton.setOnClickListener(view -> {
-            dialog.dismiss();
-        });
+        negativeButton.setOnClickListener(view -> dialog.dismiss());
     }
 
     @Override
@@ -80,7 +76,7 @@ public class PasswordResetFragment extends DialogFragment {
     }
 
     public interface PasswordResetDialogListener {
-        public void resetPassword(String newPassword);
+        void resetPassword(String newPassword);
     }
 
 }

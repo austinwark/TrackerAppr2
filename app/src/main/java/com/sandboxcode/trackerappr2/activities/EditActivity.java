@@ -39,14 +39,12 @@ public class EditActivity extends AppCompatActivity {
     private RangeSlider yearSlider;
     private RangeSlider priceSlider;
     private SwitchMaterial dealerSwitch;
-    private ArrayAdapter<CharSequence> modelAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        Log.d(TAG, "Edit Activity Started");
         instantiateUI();
 
         editViewModel = new ViewModelProvider(this).get(EditViewModel.class);
@@ -127,7 +125,7 @@ public class EditActivity extends AppCompatActivity {
         Resources res = getResources();
         ArrayList<CharSequence> models =
                 new ArrayList<>(Arrays.asList(res.getStringArray(R.array.models_array)));
-        modelAdapter = new ArrayAdapter<>(this, R.layout.models_list_item, models);
+        ArrayAdapter<CharSequence> modelAdapter = new ArrayAdapter<>(this, R.layout.models_list_item, models);
         modelSpinner.setAdapter(modelAdapter);
     }
 

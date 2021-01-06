@@ -28,22 +28,21 @@ public class SearchRepository implements AsyncResponse {
 
     /* Fragment Searches */
     private final SearchesListener searchesListener = new SearchesListener();
-    private MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
-    private MutableLiveData<ArrayList<ResultModel>> searchResults = new MutableLiveData<>();
+    private final MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<ResultModel>> searchResults = new MutableLiveData<>();
 
     /* Activity Edit */
-    private MutableLiveData<SearchModel> singleSearch = new MutableLiveData<>();
-    private MutableLiveData<Boolean> changesSaved = new MutableLiveData<>();
+    private final MutableLiveData<SearchModel> singleSearch = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> changesSaved = new MutableLiveData<>();
 
     /* Both */
-    private MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
     public SearchRepository() {
 
     }
 
     public void setListeners() {
-        Log.d(TAG, "setListeners");
         DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
                 .addValueEventListener(searchesListener);
     }
@@ -106,7 +105,6 @@ public class SearchRepository implements AsyncResponse {
                 .addOnCompleteListener(task -> {
 
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "Task is successful");
                         setChangesSaved(true);
                         WebScraper scraper = new WebScraper(search,
                                 DATABASE_REF, AUTH_REF.getCurrentUser().getUid());
@@ -240,7 +238,6 @@ public class SearchRepository implements AsyncResponse {
 
         @Override
         public void onCancelled(@NonNull DatabaseError error) {
-            Log.d(TAG, "Can't listen to search query: ", error.toException());
         }
     }
 
@@ -259,7 +256,6 @@ public class SearchRepository implements AsyncResponse {
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            Log.d(TAG, "Can't listen to search query: ", databaseError.toException());
         }
     }
 
@@ -277,12 +273,7 @@ public class SearchRepository implements AsyncResponse {
 
         @Override
         public void onCancelled(@NonNull DatabaseError error) {
-            Log.d(TAG, "Can't listen to results query: ", error.toException());
         }
-    }
-
-    public interface SimpleCallback<T> {
-        void callback(T data);
     }
 
 }

@@ -26,6 +26,7 @@ import java.util.List;
 
 public class CreateActivity extends AppCompatActivity {
 
+    @SuppressWarnings("unused")
     private static final String TAG = "CreateActivity";
     private CreateViewModel createViewModel;
 
@@ -35,7 +36,6 @@ public class CreateActivity extends AppCompatActivity {
     private RangeSlider yearSlider;
     private RangeSlider priceSlider;
     private SwitchMaterial dealerSwitch;
-    private ArrayAdapter<CharSequence> modelAdapter;
 
 
     @Override
@@ -43,7 +43,9 @@ public class CreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         instantiateUI();
 
         createViewModel = new ViewModelProvider(this).get(CreateViewModel.class);
@@ -67,7 +69,6 @@ public class CreateActivity extends AppCompatActivity {
         String minPrice = Collections.min(priceValues).toString();
         String maxPrice = Collections.max(priceValues).toString();
         String allDealerships = String.valueOf(dealerSwitch.isChecked());
-//        Log.d(TAG, searchName + " " + model + " " + trim + " " + minYear + " " + maxYear + " " + minPrice + " " + maxPrice);
         createViewModel.create(searchName, model, trim, minYear, maxYear,
                 minPrice, maxPrice, allDealerships);
         finish();
@@ -92,7 +93,7 @@ public class CreateActivity extends AppCompatActivity {
         Resources res = getResources();
         ArrayList<CharSequence> models =
                 new ArrayList<>(Arrays.asList(res.getStringArray(R.array.models_array)));
-        modelAdapter = new ArrayAdapter<>(this, R.layout.models_list_item, models);
+        ArrayAdapter<CharSequence> modelAdapter = new ArrayAdapter<>(this, R.layout.models_list_item, models);
         modelSpinner.setAdapter(modelAdapter);
 
     }

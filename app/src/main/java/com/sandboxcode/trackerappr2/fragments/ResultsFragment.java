@@ -2,7 +2,6 @@ package com.sandboxcode.trackerappr2.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +35,8 @@ public class ResultsFragment extends Fragment {
     private static final String TAG = "ResultsFragment";
     private Context activityContext;
 
-    private MainSharedViewModel viewModel;
-
     private RecyclerView resultRecyclerView;
-    private List<ResultModel> resultList = new ArrayList<>();
+    private final List<ResultModel> resultList = new ArrayList<>();
 
     private String searchId;
     private ResultsAdapter adapter;
@@ -66,7 +63,7 @@ public class ResultsFragment extends Fragment {
         // TODO - add searchID
         adapter = new ResultsAdapter(activityContext, R.layout.result_list_item, fragmentManager, searchId);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
+        MainSharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
         viewModel.getSearchResults(searchId)
                 .observe(this, results -> {
                     adapter.setResults(results);
@@ -80,8 +77,7 @@ public class ResultsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_results, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_results, container, false);
     }
 
     @Override
@@ -100,12 +96,4 @@ public class ResultsFragment extends Fragment {
 
         resultRecyclerView.setAdapter(adapter);
     }
-
-    private View.OnClickListener detailClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int position = (Integer) v.getTag();
-            Log.d(TAG, String.valueOf(position));
-        }
-    };
 }

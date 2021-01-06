@@ -1,6 +1,5 @@
 package com.sandboxcode.trackerappr2.adapters.search;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,18 +23,15 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
 
     private static final String TAG = "SearchesAdapter";
     private List<SearchModel> searchList = new ArrayList<>();
-    private Context context;
-    private int itemResource;
-    private SearchesFragment fragment;
-    private FragmentManager fragmentManager;
+    private final int itemResource;
+    private final SearchesFragment fragment;
+    private final FragmentManager fragmentManager;
     private int editActive;
 
 
-    public SearchesAdapter(Context context,
-                           int itemResource,
+    public SearchesAdapter(int itemResource,
                            SearchesFragment fragment) {
 
-        this.context = context;
         this.itemResource = itemResource;
         this.fragment = fragment;
         this.fragmentManager = fragment.getParentFragmentManager();
@@ -52,7 +48,6 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
 
     @Override
     public void onBindViewHolder(SearchesHolder holder, final int position) {
-        Log.d(TAG, "onBindViewHolder");
         CheckBox checkBox = holder.getCheckBox();
 
         final SearchModel SEARCH = this.searchList.get(position);
@@ -61,7 +56,6 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
         holder.setEditActive(editActive);
 
         checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Log.d(TAG, "onCheckedChange");
             fragment.onItemCheckedChange(SEARCH.getId(), isChecked);
         });
 
