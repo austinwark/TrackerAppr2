@@ -8,11 +8,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,11 +28,10 @@ import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private MainSharedViewModel viewModel;
-
     private static final int NOTIFICATION_ID = 0;
     private static final String PRIMARY_CHANNEL_ID = "primary_notification_channel";
     private static final String USER_ID_EXTRA = "user_id";
+    private MainSharedViewModel viewModel;
     private String userId;
     private NotificationManager notificationManager;
 
@@ -43,17 +42,14 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
             if (fragment instanceof SearchesFragment) {
-                Log.d(TAG, "Searches Fragment Open onSaveInstance");
 //                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 //                    transaction.replace(R.id.main_fragment_container, fragment);
             }
             if (fragment instanceof ResultsFragment) {
-                Log.d(TAG, "Result Fragment Open");
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.main_fragment_container, fragment);
             }
             if (fragment instanceof DetailFragment) {
-                Log.d(TAG, "Detail Fragment Open");
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.main_fragment_container, fragment);
             }
@@ -75,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             startUpdatingResultsBroadcast();
         });
         viewModel.getSignUserOut().observe(this, signOut -> {
+            clearNotificationServices();
             AuthUI.getInstance().signOut(this)
                     .addOnCompleteListener(task -> {
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -93,6 +90,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void clearNotificationServices() {
+        if (notificationManager == null)
+            notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        notificationManager.cancelAll();
+        Intent notifyIntent = new Intent(this, ResultsReceiver.class);
+        notifyIntent.putExtra(USER_ID_EXTRA, userId);
+        PendingIntent notifyPendingIntent = PendingIntent.getBroadcast(
+                this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.cancel(notifyPendingIntent);
+    }
+
     private void startUpdatingResultsBroadcast() {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -100,14 +111,8 @@ public class MainActivity extends AppCompatActivity {
         notifyIntent.putExtra(USER_ID_EXTRA, userId);
 
         PendingIntent notifyPendingIntent = PendingIntent.getBroadcast(
-                this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT); // TODO -- check flag in docs
+                this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        boolean alarmAlreadyRunning = (PendingIntent.getBroadcast(this, NOTIFICATION_ID,
-                notifyIntent, PendingIntent.FLAG_NO_CREATE) != null);
-
-        Log.d(TAG, "ALREADY RUNNING: " + alarmAlreadyRunning);
-
-        // TODO -- check if alarms are running instead of cancel?
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(notifyPendingIntent);
         long repeatInterval = 5000;
@@ -124,13 +129,14 @@ public class MainActivity extends AppCompatActivity {
 
             NotificationChannel notificationChannel = new NotificationChannel(
                     PRIMARY_CHANNEL_ID,
-                    "Checking for new results",
-                    NotificationManager.IMPORTANCE_HIGH
+                    "TrackerAppr",
+                    NotificationManager.IMPORTANCE_DEFAULT
             );
+            notificationChannel.setDescription("Notifies user that app is checking for new results");
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.RED);
-            notificationChannel.enableVibration(false);
-            notificationChannel.setDescription("Notifies user that app is checking for new results");
+            notificationChannel.enableVibration(true);
+            notificationChannel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PRIVATE);
             notificationManager.createNotificationChannel(notificationChannel);
         }
     }
@@ -138,12 +144,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
-        if (fragment instanceof SearchesFragment) {
-            if (viewModel.getEditMenuOpen().getValue() == View.VISIBLE) {
-                viewModel.toggleEdit();
-                return;
-            }
-        }
-        super.onBackPressed();
+
+        // If fragment is not SearchesFragment or edit menu DNE or edit menu is closed
+        if (!(fragment instanceof SearchesFragment)
+                || viewModel.getEditMenuOpen().getValue() != null
+                || viewModel.getEditMenuOpen().getValue() == View.INVISIBLE)
+            super.onBackPressed();
     }
+
 }

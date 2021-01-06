@@ -21,7 +21,8 @@
             <ImageView
                 android:id="@+id/result_image_thumbnail"
                 android:layout_width="@dimen/thumbnail_width"
-                android:layout_height="@dimen/thumbnail_height" />
+                android:layout_height="@dimen/thumbnail_height"
+                android:contentDescription="@string/thumbnail_content_description"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -74,7 +75,8 @@
                         android:src="@drawable/ic_new"
                         android:layout_margin="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:contentDescription="@string/new_results_content_description"/>
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

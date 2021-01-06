@@ -1,5 +1,7 @@
 package com.sandboxcode.trackerappr2.repositories;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -11,7 +13,6 @@ public class AuthRepository {
     private MutableLiveData<Boolean> signUserOut = new MutableLiveData<>();
 
     public AuthRepository() {
-        this.userSignedIn.postValue(isUserSignedIn());
     }
 
     public boolean isUserSignedIn() {
@@ -19,11 +20,15 @@ public class AuthRepository {
     }
 
     public MutableLiveData<Boolean> getUserSignedIn() {
+        if (isUserSignedIn())
+            userSignedIn.postValue(true);
+        else
+            signUserOut();
         return userSignedIn;
     }
 
     public void setUserSignedIn() {
-        this.userSignedIn.postValue(isUserSignedIn());
+        this.userSignedIn.setValue(isUserSignedIn());
     }
 
     public void signUserOut() {

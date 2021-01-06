@@ -36,4 +36,7 @@
 
     <string name="password_reset_positive">Save</string>
     <string name="password_reset_negative">Cancel</string>
+    <string name="thumbnail_content_description">Thumbnail image of vehicle</string>
+    <string name="new_results_content_description">Badge indicating search has new results</string>
+    <string name="search_icon_content_description">Search icon</string>
 </resources>

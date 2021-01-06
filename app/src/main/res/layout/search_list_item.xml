@@ -20,7 +20,8 @@
             android:src="@drawable/ic_search"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#000000" />
+            app:tint="#000000"
+            android:contentDescription="@string/search_icon_content_description"/>
 
         <TextView
             android:id="@+id/search_text_name"

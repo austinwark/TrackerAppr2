@@ -28,7 +28,8 @@
             android:id="@+id/result_image_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="225dp"
-            android:transitionName="transName" />
+            android:transitionName="transName"
+            android:contentDescription="@string/thumbnail_content_description"/>
 
         <TextView
             android:id="@+id/tv_details_title"

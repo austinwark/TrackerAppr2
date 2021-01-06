@@ -67,12 +67,12 @@ public class SearchRepository implements AsyncResponse {
         DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
                 .child(searchId).removeValue().addOnCompleteListener(onCompleteListener);
 
-        DATABASE_REF.child("results").child(searchId).removeValue();
+        DATABASE_REF.child("results").child(AUTH_REF.getCurrentUser().getUid()).child(searchId).removeValue();
 
     }
 
     public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
-        DATABASE_REF.child("results").child(searchId)
+        DATABASE_REF.child("results").child(AUTH_REF.getCurrentUser().getUid()).child(searchId)
                 .addListenerForSingleValueEvent(new ResultsListener());
 
         return searchResults;
@@ -146,8 +146,8 @@ public class SearchRepository implements AsyncResponse {
     public void setResultHasBeenViewed(String vin, String searchId) {
 
         // Set isNewResult value in result document to false
-        DATABASE_REF.child("results").child(searchId).child(vin).child("isNewResult")
-                .setValue(false);
+        DATABASE_REF.child("results").child(AUTH_REF.getCurrentUser().getUid())
+                .child(searchId).child(vin).child("isNewResult").setValue(false);
 
         // Get numberOfNewResults from correlated search document to update its numberOfNewResults
         DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).child(searchId)
@@ -170,9 +170,9 @@ public class SearchRepository implements AsyncResponse {
 
     @Override
     public void processResults(ArrayList<ResultModel> searchResults, String searchId) {
-        DatabaseReference resultsRef = DATABASE_REF.child("results").child(searchId);
         String userUid = AUTH_REF.getCurrentUser().getUid();
-
+//        DatabaseReference resultsRef = DATABASE_REF.child("results").child(searchId);
+        DatabaseReference resultsRef = DATABASE_REF.child("results").child(userUid).child(searchId);
         resultsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
