@@ -36,12 +36,6 @@ public class PasswordResetFragment extends DialogFragment {
                 .setPositiveButton("Save", null)
                 .setNegativeButton("Cancel", null);
 
-        //        builder.setView(view)
-//            .setPositiveButton(R.string.password_reset_positive, (dialog, which) ->
-//                    listener.onDialogPositiveClick(PasswordResetFragment.this))
-//            .setNegativeButton(R.string.password_reset_negative, (dialog, which) ->
-//                    listener.onDialogNegativeClick(PasswordResetFragment.this));
-
         return builder.create();
     }
 

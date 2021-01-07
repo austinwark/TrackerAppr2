@@ -6,12 +6,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.SearchesFragment">
-    
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/searches_layout_loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/searches_text_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fetching_searches_text"
+            app:layout_constraintBottom_toTopOf="@+id/searches_progress_loader"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="16dp"/>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/searches_progress_loader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:indeterminate="true"
+            app:hideAnimationBehavior="inward"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searches_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#E5E5E5" />
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

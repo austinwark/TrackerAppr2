@@ -62,4 +62,6 @@
     <string name="edited_at_text">Edited at:</string>
     <string name="stock_text">Stock #:</string>
     <string name="edit_activity_label">Edit Your Search</string>
+    <string name="fetching_searches_text">Fetching searches</string>
+    <string name="fetching_results_text">Fetching results</string>
 </resources>

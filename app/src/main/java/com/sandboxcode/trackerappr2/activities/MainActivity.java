@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.d(TAG, "onCreate");
         Toolbar toolbarTop = findViewById(R.id.toolbar_top);
         setSupportActionBar(toolbarTop);
 

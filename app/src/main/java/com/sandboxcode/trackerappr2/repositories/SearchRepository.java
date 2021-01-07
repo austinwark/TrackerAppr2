@@ -250,7 +250,6 @@ public class SearchRepository implements AsyncResponse {
                 searchList.add(child.getValue(SearchModel.class));
             }
 
-            // TODO - setValue?
             allSearches.postValue(searchList);
         }
 

@@ -1,5 +1,7 @@
 package com.sandboxcode.trackerappr2.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,12 +13,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
 import com.sandboxcode.trackerappr2.activities.EditActivity;
@@ -33,6 +38,7 @@ import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +54,10 @@ public class SearchesFragment extends Fragment {
     private MainSharedViewModel viewModel;
     private BottomNavigationView toolbarBottom;
     private SearchesAdapter adapter;
+    private RecyclerView recyclerView;
+    private ConstraintLayout loaderLayout;
+
+    private int shortAnimationDuration;
 
     final ActivityResultLauncher<Intent> startForResult =
             registerForActivityResult(
@@ -68,28 +78,12 @@ public class SearchesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
+
         activityContext = getActivity().getApplicationContext();
         adapter = new SearchesAdapter(R.layout.search_list_item, this);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
-        viewModel.getAllSearches().observe(this, searches -> {
-            adapter.setSearches(searches);
-        });
-        viewModel.getEditMenuOpen().observe(this, editMenuOpen -> {
-            this.toolbarBottom.setVisibility(editMenuOpen);
-            this.adapter.setCheckboxVisible(editMenuOpen);
-        });
-        viewModel.getToastMessage().observe(this, message ->
-                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show());
-        viewModel.getStartEditActivity().observe(this, searchId -> {
-            Intent intent = new Intent(getActivity(), EditActivity.class);
-            intent.putExtra("searchId", searchId);
-            startForResult.launch(intent);
-        });
-
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-
+        shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
     }
 
     @Override
@@ -97,7 +91,6 @@ public class SearchesFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         setHasOptionsMenu(true);
-
         return inflater.inflate(R.layout.fragment_searches, container, false);
     }
 
@@ -130,7 +123,40 @@ public class SearchesFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Queries");
+
+        instantiateUI(view);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
+        viewModel.getAllSearches().observe(getViewLifecycleOwner(), searches -> {
+            Log.d(TAG, "getAllSearches");
+            adapter.setSearches(searches);
+            crossFade();
+        });
+        viewModel.getEditMenuOpen().observe(getViewLifecycleOwner(), editMenuOpen -> {
+            toolbarBottom.setVisibility(editMenuOpen);
+            adapter.setCheckboxVisible(editMenuOpen);
+        });
+        viewModel.getToastMessage().observe(getViewLifecycleOwner(), message ->
+                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show());
+        viewModel.getStartEditActivity().observe(getViewLifecycleOwner(), searchId -> {
+            Intent intent = new Intent(getActivity(), EditActivity.class);
+            intent.putExtra("searchId", searchId);
+            startForResult.launch(intent);
+        });
+    }
+
+    private void instantiateUI(View view) {
+        if (((AppCompatActivity) getActivity()) != null
+                && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+
+            Objects.requireNonNull(((AppCompatActivity) getActivity())
+                    .getSupportActionBar()).setTitle("Searches");
+        }
+
+        recyclerView = view.findViewById(R.id.searches_view);
+        recyclerView.setVisibility(View.GONE);
+
+        loaderLayout = view.findViewById(R.id.searches_layout_loader);
 
         toolbarBottom = view.findViewById(R.id.toolbar_bottom);
         toolbarBottom.setItemIconTintList(null);
@@ -143,12 +169,28 @@ public class SearchesFragment extends Fragment {
         fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), CreateActivity.class)));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
 
-        RecyclerView searchListView = view.findViewById(R.id.searches_view);
-        searchListView.setLayoutManager(layoutManager);
-        searchListView.setAdapter(adapter);
-
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
     }
 
+    private void crossFade() {
+        recyclerView.setAlpha(0f);
+        recyclerView.setVisibility(View.VISIBLE);
 
+        recyclerView.animate()
+                .alpha(1f)
+                .setDuration(shortAnimationDuration)
+                .setListener(null);
+
+        loaderLayout.animate()
+                .alpha(0f)
+                .setDuration(shortAnimationDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        loaderLayout.setVisibility(View.GONE);
+                    }
+                });
+    }
 
 }

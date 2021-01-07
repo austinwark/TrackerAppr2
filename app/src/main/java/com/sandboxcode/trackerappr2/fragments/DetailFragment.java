@@ -41,7 +41,8 @@ public class DetailFragment extends Fragment {
             String searchId = getArguments().getString("SEARCH_ID");
 
             // Change isNew field indicating the user has seen the result
-            MainSharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
+            MainSharedViewModel viewModel = new ViewModelProvider(requireActivity())
+                    .get(MainSharedViewModel.class);
             viewModel.setResultHasBeenViewed(result.getVin(), searchId);
             result.setIsNewResult(false);
 
@@ -98,7 +99,8 @@ public class DetailFragment extends Fragment {
 
             Objects.requireNonNull(((AppCompatActivity) getActivity())
                     .getSupportActionBar()).setTitle("Details");
-            instantiateUI(view);
         }
+
+        instantiateUI(view);
     }
 }
