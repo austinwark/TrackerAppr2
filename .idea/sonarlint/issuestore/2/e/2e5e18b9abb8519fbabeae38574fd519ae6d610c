@@ -1,17 +1,15 @@
 
-X	java:S1250"<This block of commented-out lines of code should be removed.(óÇöê8Ñ™¨‡í.
 O
-java:S1135R"2Complete the task associated to this TODO comment.(£· Ò8Ñ™¨‡í.
-W	java:S125B"<This block of commented-out lines of code should be removed.(åÃªw8Ñ™¨‡í.
-X	java:S125F"<This block of commented-out lines of code should be removed.(¤¿Íé8Ñ™¨‡í.
+java:S1135?"2Complete the task associated to this TODO comment.(£· Ò8Ñ™¨‡í.
+X	java:S125)"<This block of commented-out lines of code should be removed.(óÇöê8Ñ™¨‡í.
+C
+java:S1068"'Remove this unused "TAG" private field.(ˆ‡§8˜¤Ø«í.
 U
-java:S1135©"2Complete the task associated to this TODO comment.( œ±Ãúÿÿÿÿ8Ñ™¨‡í.
+java:S1135"2Complete the task associated to this TODO comment.( œ±Ãúÿÿÿÿ8Ñ™¨‡í.
+O
+java:S1128"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ8˜¤Ø«í.
+W	java:S125V"<This block of commented-out lines of code should be removed.(ñ€Ú 8Ñ™¨‡í.
+ˆ
+java:S1488“"eImmediately return this expression instead of assigning it to the temporary variable "searchResults".(‰äÚÇøÿÿÿÿ8¤À©í.
 U
-java:S1135Ş"2Complete the task associated to this TODO comment.(İÄÉíÿÿÿÿÿ8Ñ™¨‡í.
-]	java:S125?"<This block of commented-out lines of code should be removed.(·÷Îìùÿÿÿÿ8Ñ™¨‡í.
-]	java:S125I"<This block of commented-out lines of code should be removed.(ÜŠ±øÿÿÿÿ8Ñ™¨‡í.
-~
-java:S1450'"\Remove the "searchResults" field and declare it as a local variable in the relevant methods.(ø—áÎúÿÿÿÿ8Ñ™¨‡í.
-M
-java:S1068"0Remove this unused "firebaseAuth" private field.(“ø8Ñ™¨‡í.
-W	java:S125l"<This block of commented-out lines of code should be removed.(ñ€Ú 8Ñ™¨‡í.
+java:S1135Â"2Complete the task associated to this TODO comment.(İÄÉíÿÿÿÿÿ8Ñ™¨‡í.

@@ -1,11 +1,14 @@
 
-
-java:S14502"]Remove the "searchListView" field and declare it as a local variable in the relevant methods.(ÂÉììşÿÿÿÿ8ó×ı€ì.
-^	java:S125«"<This block of commented-out lines of code should be removed.(á¸«‡úÿÿÿÿ8ì¢ÓŠë.
+]	java:S125r"<This block of commented-out lines of code should be removed.(şÏ®²üÿÿÿÿ8î¸Ô«í.
+
+java:S1128"dRemove this unused import 'com.google.android.material.progressindicator.CircularProgressIndicator'.(ÀÜÜ8˜ÏşÒí.
+V
+java:S1128"4Remove this unused import 'android.widget.TextView'.(„Ë‚ˆÿÿÿÿÿ8‘©ıÒí.
 T
-java:S1135"2Complete the task associated to this TODO comment.(ÏıçÀıÿÿÿÿ8ó×ı€ì.
+java:S1135n"2Complete the task associated to this TODO comment.(ÏıçÀıÿÿÿÿ8î¸Ô«í.
+L
+java:S1128'"/Remove this unused import 'java.util.Calendar'.(ÿÛö´8µËÇí.
 O
-java:S10685"2Remove this unused "deleteMenuItem" private field.(ññ”÷8ó×ı€ì.
-z
-java:S14505"]Remove the "deleteMenuItem" field and declare it as a local variable in the relevant methods.(ññ”÷8ó×ı€ì.
-^	java:S125ƒ"<This block of commented-out lines of code should be removed.(şÏ®²üÿÿÿÿ8ó×ı€ì.
+java:S1128("-Remove this unused import 'java.util.Locale'.(åğ×±ûÿÿÿÿ8µËÇí.
+T
+java:S1128&"7Remove this unused import 'java.text.SimpleDateFormat'.(ú¡ÙÛ8µËÇí.

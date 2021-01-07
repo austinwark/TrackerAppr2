@@ -137,7 +137,7 @@ public class SearchesFragment extends Fragment {
             adapter.setCheckboxVisible(editMenuOpen);
         });
         viewModel.getToastMessage().observe(getViewLifecycleOwner(), message ->
-                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show());
+                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show());
         viewModel.getStartEditActivity().observe(getViewLifecycleOwner(), searchId -> {
             Intent intent = new Intent(getActivity(), EditActivity.class);
             intent.putExtra("searchId", searchId);

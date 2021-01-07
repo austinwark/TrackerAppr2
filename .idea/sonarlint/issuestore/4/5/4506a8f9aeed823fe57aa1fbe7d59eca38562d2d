@@ -1,17 +1,9 @@
 
-w
-java:S1488"\Immediately return this expression instead of assigning it to the temporary variable "view".(ûƒõ‡8ùï±ì.
-[	java:S125"<This block of commented-out lines of code should be removed.(ˆ¸æˆşÿÿÿÿ8çóµì.
-J
-java:S1604h"(Make this anonymous inner class a lambda(ØÕÀãúÿÿÿÿ8Úµ‚¸Ï.
-G
-java:S1602",Remove useless curly braces around statement(°„ØÁ8çóµì.
-Y
-java:S1068h"7Remove this unused "detailClickListener" private field.(ØÕÀãúÿÿÿÿ8«¾Ï.
-R
-java:S1135"2Complete the task associated to this TODO comment.(ƒÒáÂüÿÿÿÿ8ñú®³ì.
-[	java:S125"<This block of commented-out lines of code should be removed.(îøÆıÿÿÿÿ8Ûì´ì.
-R
-java:S1135"2Complete the task associated to this TODO comment.(šÒ´³øÿÿÿÿ8ùï±ì.
-s
-java:S1450"XRemove the "viewModel" field and declare it as a local variable in the relevant methods.(ı¯›µ8ùï±ì.
+Z
+java:S1128"8Remove this unused import 'android.widget.LinearLayout'.(çîšçúÿÿÿÿ8›ÚœÓí.
+T
+java:S1135G"2Complete the task associated to this TODO comment.(šÒ´³øÿÿÿÿ8ùï±ì.
+T
+java:S1135h"2Complete the task associated to this TODO comment.(ƒÒáÂüÿÿÿÿ8¹á£Óí.
+T
+java:S1135o"2Complete the task associated to this TODO comment.(ÙÒÂÖıÿÿÿÿ8§€³Ôí.

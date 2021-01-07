@@ -1,9 +1,4 @@
 
-E
-java:S1172:"(Remove this unused method parameter "v".(¶™Ï³8§¢ÓŠë.
-W	java:S125F"<This block of commented-out lines of code should be removed.(¤ƒø8§¢ÓŠë.
 X	java:S110"<This class has 9 parents which is greater than 5 authorized.(¼òè 8§¢ÓŠë.
-D
-java:S1068"'Remove this unused "TAG" private field.(ÝŽÿü8§¢ÓŠë.
-}
-java:S1450&"[Remove the "modelAdapter" field and declare it as a local variable in the relevant methods.(Ý‹Ï‘ýÿÿÿÿ8§¢ÓŠë.
+E
+java:S1172<"(Remove this unused method parameter "v".(¶™Ï³8§¢ÓŠë.

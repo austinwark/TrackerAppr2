@@ -1,13 +1,11 @@
 
-Q
-java:S1481["4Remove this unused "currentFragment" local variable.(”ÄŞ8×ı€ì.
-E
-java:S1068"+Remove this unused "context" private field.(êİç8Û£˜µì.
-X	java:S125^"<This block of commented-out lines of code should be removed.(Ãø¨8×ı€ì.
-`
-java:S1854["CRemove this useless assignment to local variable "currentFragment".(”ÄŞ8×ı€ì.
-W
-java:S3985k"5Remove this unused private "DetailsTransition" class.(’Ç Ñûÿÿÿÿ8×ı€ì.
-E
-java:S1604O"(Make this anonymous inner class a lambda(Å¨£æ8×ı€ì.
-W	java:S125e"<This block of commented-out lines of code should be removed.(–ù³[8×ı€ì.
+p
+java:S1128"NRemove this unused import 'androidx.constraintlayout.widget.ConstraintLayout'.(¨‘úÿÿÿÿ8¤Ü‹Óí.
+c
+java:S1128"FRemove this unused import 'android.animation.AnimatorListenerAdapter'.(®ÃÙ»8ÂşŠÓí.
+J
+java:S1604I"(Make this anonymous inner class a lambda(ŞÀıÿÿÿÿÿ8×ı€ì.
+S
+java:S1128"7Remove this unused import 'android.animation.Animator'.(İŸéN8ÂşŠÓí.
+Z
+java:S1128	"8Remove this unused import 'android.widget.LinearLayout'.(çîšçúÿÿÿÿ8¤Ü‹Óí.

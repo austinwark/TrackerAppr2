@@ -7,8 +7,6 @@ P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
-V
-&app/src/main/res/anim/load_up_anim.xml,9\5\95bfade18b7ef1b4b87254da30fd86db34adc034
 d
 4app/src/main/res/drawable/ic_launcher_background.xml,4\9\49845c622cb06d895975c7b1e3f943e320bce688
 h
@@ -40,16 +38,8 @@ A
 gradlew,5\b\5bbfa66edb4db3c7c33c5181f43510990d3307f9
 ;
 gradlew.bat,2\a\2a45a911a8f1836b0b6c5b758962572012d8f8c3
-b
-2app/src/main/res/drawable/ic_create_background.xml,4\3\433cdb67a08692ed3ffdbd0d6e4bd2110a4cbb7b
-b
-2app/src/main/res/drawable/ic_create_foreground.xml,6\b\6b672f9b75244291451f70a663175d5493dcc7ca
 ^
 .app/src/main/res/drawable-anydpi/ic_create.xml,5\e\5ef47dcd3a51bc212f6f8442d22f6a1028947e1f
-`
-0app/src/main/res/mipmap-anydpi-v26/ic_create.xml,b\4\b4dfac9291e6b0fe0f3487acb1c885fb604ac651
-f
-6app/src/main/res/mipmap-anydpi-v26/ic_create_round.xml,a\f\af7852327f0c40ee1c0c20c4b3266fbc5aaec1dd
 @
 local.properties,0\7\0712df971a99ac4d2fccb8e0fb19f377f3374cca
 |
@@ -82,10 +72,6 @@ v
 Fapp/src/main/java/com/sandboxcode/trackerappr2/models/ResultModel.java,b\1\b1288595c4b2b935b0c3225ac410804311f96911
 Å
 Qapp/src/main/java/com/sandboxcode/trackerappr2/adapters/result/ResultsHolder.java,5\7\57b576f51cdd26e95702b37f9834e4326dbe195f
-ò
-happ/src/main/java/com/sandboxcode/trackerappr2/adapters/decorators/ShadowVerticalSpaceItemDecorator.java,2\5\25abedb4dd256ffd64bb8187e683f4e9a212da52
-í
-bapp/src/main/java/com/sandboxcode/trackerappr2/adapters/decorators/VerticalSpaceItemDecorator.java,8\9\8995f221731bc11b4b2813d18f51a02b7a12ef98
 Ç
 Rapp/src/main/java/com/sandboxcode/trackerappr2/adapters/search/SearchesHolder.java,b\8\b88337b64bb2ca6e8b514a0cb3952514b0d22104
 Ç
@@ -94,10 +80,6 @@ Rapp/src/main/java/com/sandboxcode/trackerappr2/adapters/result/ResultsAdapter.j
 Sapp/src/main/java/com/sandboxcode/trackerappr2/adapters/search/SearchesAdapter.java,0\e\0ebd0981a913c3aa345a75754389788d57e2db96
 ^
 .app/src/main/res/drawable-anydpi/ic_delete.xml,1\9\193a1ab8249aa9c706aa7440b9702b1cdbf9b93d
-Ü
-Vapp/src/main/java/com/sandboxcode/trackerappr2/livedata/FirebaseQueryLiveDataList.java,9\a\9a5fbfa03b48ea20af26889a74ff80ba587c8d34
-Ç
-Rapp/src/main/java/com/sandboxcode/trackerappr2/livedata/FirebaseQueryLiveData.java,a\3\a3f45618edc5cf92bce4706eb2c26c2a8652cd8c
 Å
 Qapp/src/main/java/com/sandboxcode/trackerappr2/repositories/SearchRepository.java,1\1\11d93fd68a269e80ed7214279368f11e0fa1ab11
 S
@@ -130,3 +112,5 @@ y
 Iapp/src/main/java/com/sandboxcode/trackerappr2/utils/DailyWebScraper.java,d\e\de581111f04cffaf84c4b704a3c37e9712a84361
 y
 Iapp/src/main/java/com/sandboxcode/trackerappr2/utils/ResultsReceiver.java,0\7\07ed55cef5e19757cc2290b14d88dea1f0f2e8a6
+É
+Sapp/src/main/java/com/sandboxcode/trackerappr2/fragments/PasswordResetFragment.java,1\6\16f92903e0ead5d60a2d9e42452822758209f540

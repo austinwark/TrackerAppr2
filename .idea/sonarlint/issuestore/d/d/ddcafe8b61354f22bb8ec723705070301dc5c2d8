@@ -1,5 +1,3 @@
 
-X	java:S110"<This class has 9 parents which is greater than 5 authorized.(²Ú±8èÀ‡í.
-D
-java:S1068"'Remove this unused "TAG" private field.(Ö—ÈÚ8ûŞ§í.
-]	java:S125-"<This block of commented-out lines of code should be removed.(¸•´£şÿÿÿÿ8”™¨‡í.
+]	java:S1250"<This block of commented-out lines of code should be removed.(¸•´£şÿÿÿÿ8”™¨‡í.
+X	java:S110"<This class has 9 parents which is greater than 5 authorized.(²Ú±8®üÀ©í.

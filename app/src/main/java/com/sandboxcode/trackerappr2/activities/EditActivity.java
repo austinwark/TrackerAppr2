@@ -55,7 +55,7 @@ public class EditActivity extends AppCompatActivity {
             insertCurrentSearchValues(search);
         });
         editViewModel.getToastMessage().observe(this,
-                message -> Toast.makeText(this, message, Toast.LENGTH_SHORT));
+                message -> Toast.makeText(this, message, Toast.LENGTH_LONG));
 
         editViewModel.getChangesSaved().observe(this, changesSaved -> {
             Intent intent = new Intent();

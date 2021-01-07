@@ -53,7 +53,7 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/toolbar_bottom"
-        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+        style="@style/Widget.MaterialComponents.BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/menu_edit"

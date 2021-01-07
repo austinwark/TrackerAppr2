@@ -53,7 +53,7 @@ public class CreateActivity extends AppCompatActivity {
         createViewModel.getCreateCancelled().observe(this, isCancelled -> finish());
 
         createViewModel.getToastMessage().observe(this, message ->
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
 
     }
 

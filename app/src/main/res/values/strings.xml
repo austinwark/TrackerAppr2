@@ -41,6 +41,7 @@
     <string name="cancel_text">Cancel</string>
     <string name="email_hint">Email</string>
     <string name="password_hint">Password</string>
+    <string name="password_confirm_hint">Confirm password</string>
     <string name="login_text">Login</string>
     <string name="still_need_to_create_an_account_text">Still need to create an account?</string>
     <string name="register_text">Register</string>

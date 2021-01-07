@@ -1,11 +1,11 @@
 
-{
-java:S1450"YRemove the "editActive" field and declare it as a local variable in the relevant methods.(ÔÁŸêûÿÿÿÿ8üÍœµì.
-w
-java:S1450"ZRemove the "searchModel" field and declare it as a local variable in the relevant methods.(»€µú8üÍœµì.
-T
-java:S2387"2"itemView" is the name of a field in "ViewHolder".(ƒ Èæüÿÿÿÿ8üÍœµì.
-L
-java:S1068"/Remove this unused "searchModel" private field.(»€µú8üÍœµì.
+O
+java:S2387"2"itemView" is the name of a field in "ViewHolder".(º¡ª¯8üÍœµì.
 P
-java:S1068".Remove this unused "editActive" private field.(ÔÁŸêûÿÿÿÿ8üÍœµì.
+java:S1128".Remove this unused import 'android.os.Bundle'.(°şÊóøÿÿÿÿ8±¿´©í.
+u
+java:S1128"SRemove this unused import 'com.sandboxcode.trackerappr2.fragments.ResultsFragment'.(ÂÃ™ûÿÿÿÿ8±¿´©í.
+h
+java:S1128"FRemove this unused import 'androidx.fragment.app.FragmentTransaction'.(¦İÚ¿şÿÿÿÿ8±¿´©í.
+U
+java:S1068"3Remove this unused "fragmentManager" private field.(·±–şÿÿÿÿ8±¿´©í.
