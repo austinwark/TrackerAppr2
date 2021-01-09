@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
@@ -25,12 +26,19 @@ public class MainSharedViewModel extends AndroidViewModel {
     /* MainActivity */
     private final MutableLiveData<Boolean> userSignedIn;
     private final MutableLiveData<Boolean> signUserOut;
-    /* SearchesFragment */
-    private MutableLiveData<List<SearchModel>> allSearches;
-    private final MutableLiveData<String> toastMessage = new MutableLiveData<>();
-    private final MutableLiveData<ArrayList<String>> checkedItems = new MutableLiveData<>();
+    private  MutableLiveData<String> toastMessage = new MutableLiveData<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
     private final MutableLiveData<String> startEditActivity = new MutableLiveData<>();
+    private  MutableLiveData<Integer> confirmDeleteSearches = new MutableLiveData<>();
+    private final ArrayList<String> checkedItems = new ArrayList<>();
+    private final OnCompleteListener<Void> onDeleteListener = task -> {
+
+        if (task.isSuccessful()) {
+            toggleEdit();
+        }
+    };
+    /* SearchesFragment */
+    private MutableLiveData<List<SearchModel>> allSearches;
 
     public MainSharedViewModel(Application application) {
         super(application);
@@ -38,12 +46,9 @@ public class MainSharedViewModel extends AndroidViewModel {
         authRepository = new AuthRepository();
         allSearches = searchRepository.getAllSearches();
 
-//        searchRepository.setListeners();
         userSignedIn = authRepository.getUserSignedIn();
         signUserOut = authRepository.getSignUserOut();
 
-        checkedItems.setValue(new ArrayList<>());
-        editMenuOpen.setValue(View.INVISIBLE);
     }
 
     public MutableLiveData<Boolean> getUserSignedIn() {
@@ -62,15 +67,11 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     // TODO - RESET LIST WHEN NAVIGATING AWAY FROM SCREEN
     public void updateCheckedSearchesList(String searchId, boolean isChecked) {
-        ArrayList<String> localCheckedItems = checkedItems.getValue();
 
-        if (isChecked && localCheckedItems != null) {
-            localCheckedItems.add(searchId);
-        } else if (localCheckedItems != null) {
-            localCheckedItems.remove(searchId);
-        }
-
-        checkedItems.postValue(localCheckedItems);
+        if (isChecked)
+            checkedItems.add(searchId);
+        else
+            checkedItems.remove(searchId);
     }
 
     public void handleOnOptionsItemSelected(int itemId) {
@@ -81,6 +82,18 @@ public class MainSharedViewModel extends AndroidViewModel {
                 toggleEdit();
                 break;
             case R.id.action_settings:
+
+                // TODO -- fix this hack... When switching to dark mode the fragment observes the
+                // LiveDatas again and gets the last value saved in there...
+                checkedItems.clear();
+                confirmDeleteSearches = new MutableLiveData<>();
+                toastMessage = new MutableLiveData<>();
+
+                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                else
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
                 break;
             case R.id.action_logout:
 //                authRepository.setUserSignedIn();
@@ -92,7 +105,8 @@ public class MainSharedViewModel extends AndroidViewModel {
                 editSearch();
                 break;
             case R.id.action_delete:
-                deleteSearch();
+                Log.d(TAG, String.valueOf(checkedItems.size()));
+                handleDeleteSearches();
                 break;
             default:
                 break;
@@ -101,28 +115,34 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     public void toggleEdit() {
 
-        if (getEditMenuOpen().getValue() == View.VISIBLE)
+        if (getEditMenuOpen().getValue() != null && getEditMenuOpen().getValue() == View.VISIBLE)
             editMenuOpen.postValue(View.INVISIBLE);
         else
             editMenuOpen.postValue(View.VISIBLE);
 
     }
 
-    public void deleteSearch() {
-        ArrayList<String> localCheckedItems = checkedItems.getValue();
-        String searchId;
+    public MutableLiveData<Integer> getConfirmDeleteSearches() {
+        return confirmDeleteSearches;
+    }
 
-        if (localCheckedItems.isEmpty())
-            setToastMessage("A search must be selected before deletion.");
-        else if (localCheckedItems.size() > 1)
-            setToastMessage("Only one search can be deleted at a time.");
-        else {
-            searchId = localCheckedItems.get(0);
+    public void handleDeleteSearches() {
 
-            searchRepository.delete(searchId, onDeleteListener);
-            checkedItems.postValue(new ArrayList<>()); // Reset checked items
-            setToastMessage("Deleting search.");
-        }
+        int numberOfSearchesToDelete = checkedItems.size();
+        Log.d(TAG, String.valueOf(numberOfSearchesToDelete) + "--------------");
+        if (numberOfSearchesToDelete < 1)
+            setToastMessage("A search must be selected to delete.");
+        else
+            confirmDeleteSearches.postValue(numberOfSearchesToDelete);
+
+    }
+
+    public void deleteSearches() {
+        Log.d(TAG, String.valueOf(checkedItems.size()));
+        searchRepository.delete(checkedItems, onDeleteListener);
+        checkedItems.clear();
+        setToastMessage("Deleting search.");
+
     }
 
     public MutableLiveData<String> getToastMessage() {
@@ -137,10 +157,6 @@ public class MainSharedViewModel extends AndroidViewModel {
         return editMenuOpen;
     }
 
-    public MutableLiveData<ArrayList<String>> getCheckedItems() {
-        return checkedItems;
-    }
-
     // TODO -- Call SearchResults every time? OR only when null and nothing has changed?
     public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
         /* ResultsFragment */
@@ -150,14 +166,13 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     public void editSearch() {
         String searchId;
-        ArrayList<String> localCheckedItems = getCheckedItems().getValue();
 
-        if (localCheckedItems.isEmpty())
+        if (checkedItems.isEmpty())
             setToastMessage("A search must be selected before editing.");
-        else if (localCheckedItems.size() > 1)
+        else if (checkedItems.size() > 1)
             setToastMessage("Only one search can be edited at a time");
         else {
-            searchId = localCheckedItems.get(0);
+            searchId = checkedItems.get(0);
             setStartEditActivity(searchId);
         }
 
@@ -174,7 +189,7 @@ public class MainSharedViewModel extends AndroidViewModel {
     public void refreshSearches() {
         searchRepository.getAllSearches();
         toggleEdit(); // hide edit menu
-        checkedItems.postValue(new ArrayList<>()); // Reset checked items
+        checkedItems.clear(); // Reset checked items
     }
 
     public String getUserId() {
@@ -193,12 +208,5 @@ public class MainSharedViewModel extends AndroidViewModel {
     protected void onCleared() {
         // TODO -- unsubscribe listeners in repository
     }
-
-    private final OnCompleteListener<Void> onDeleteListener = task -> {
-
-        if (task.isSuccessful()) {
-            toggleEdit();
-        }
-    };
 
 }

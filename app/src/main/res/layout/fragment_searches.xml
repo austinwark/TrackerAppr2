@@ -38,18 +38,18 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searches_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#E5E5E5" />
+        android:layout_height="match_parent" />
 
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/searches_fab_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@android:drawable/ic_dialog_email"
+        android:contentDescription="@string/FAB_create_content_description"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/toolbar_bottom"
@@ -57,6 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/menu_edit"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom"
+        android:background="@color/colorSecondaryLight"/>
 
 </FrameLayout>

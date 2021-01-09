@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/design_default_color_secondary</item>
+        <item name="android:windowContentTransitions">true</item>
+
+        <!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryVariant">@color/design_default_color_primary_variant</item>-->
+<!--        <item name="colorOnPrimary">@color/design_default_color_on_primary</item>-->
+<!--        <item name="colorSecondary">@color/design_default_color_secondary</item>-->
+<!--        <item name="colorSecondaryVariant">@color/design_default_color_secondary_variant</item>-->
+<!--        <item name="colorOnSecondary">@color/design_default_color_on_secondary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+<!--        <item name="colorAccent">@color/colorAccent</item>-->
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.ActionBar" >
+            <item name="colorPrimary">@color/design_default_color_on_secondary</item>
+        </style>
+
+
+        <!-- TODO - make styles file only available for SDK 21+ (Android 5.0+) -->
+</resources>

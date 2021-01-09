@@ -13,6 +13,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
@@ -89,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
             transaction.addToBackStack(null);
             transaction.commit();
         }
-
 
     }
 

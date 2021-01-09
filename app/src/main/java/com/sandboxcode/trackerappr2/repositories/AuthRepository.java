@@ -13,6 +13,13 @@ public class AuthRepository {
     public AuthRepository() {
     }
 
+    public String getUserId() {
+        if (AUTH_REF.getCurrentUser() != null)
+            return AUTH_REF.getCurrentUser().getUid();
+        else
+            return null;
+    }
+
     public boolean isUserSignedIn() {
         return AUTH_REF.getCurrentUser() != null;
     }

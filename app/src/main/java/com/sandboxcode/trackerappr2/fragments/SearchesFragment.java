@@ -3,6 +3,7 @@ package com.sandboxcode.trackerappr2.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,17 +28,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
 import com.sandboxcode.trackerappr2.activities.EditActivity;
 import com.sandboxcode.trackerappr2.adapters.search.SearchesAdapter;
 import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.Objects;
+
+import static android.util.Log.d;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,16 +47,9 @@ public class SearchesFragment extends Fragment {
 
     private static final String TAG = "SearchesFragment";
     private static final String RESULT_MESSAGE_TAG = "result_message";
+    FloatingActionButton fab;
     private Context activityContext;
-
     private MainSharedViewModel viewModel;
-    private BottomNavigationView toolbarBottom;
-    private SearchesAdapter adapter;
-    private RecyclerView recyclerView;
-    private ConstraintLayout loaderLayout;
-
-    private int shortAnimationDuration;
-
     final ActivityResultLauncher<Intent> startForResult =
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -69,6 +60,11 @@ public class SearchesFragment extends Fragment {
                                 .getStringExtra(RESULT_MESSAGE_TAG), Toast.LENGTH_LONG)
                                 .show();
                     });
+    private BottomNavigationView toolbarBottom;
+    private SearchesAdapter adapter;
+    private RecyclerView recyclerView;
+    private ConstraintLayout loaderLayout;
+    private int shortAnimationDuration;
 
     public SearchesFragment() {
         // Required empty public constructor
@@ -78,7 +74,7 @@ public class SearchesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
+        d(TAG, "onCreate");
 
         activityContext = getActivity().getApplicationContext();
         adapter = new SearchesAdapter(R.layout.search_list_item, this);
@@ -128,13 +124,15 @@ public class SearchesFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
         viewModel.getAllSearches().observe(getViewLifecycleOwner(), searches -> {
-            Log.d(TAG, "getAllSearches");
+            d(TAG, "getAllSearches");
             adapter.setSearches(searches);
             crossFade();
         });
         viewModel.getEditMenuOpen().observe(getViewLifecycleOwner(), editMenuOpen -> {
+            Log.d(TAG, "getEditMenuOpen");
             toolbarBottom.setVisibility(editMenuOpen);
             adapter.setCheckboxVisible(editMenuOpen);
+            toggleFabVisibility();
         });
         viewModel.getToastMessage().observe(getViewLifecycleOwner(), message ->
                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show());
@@ -142,6 +140,17 @@ public class SearchesFragment extends Fragment {
             Intent intent = new Intent(getActivity(), EditActivity.class);
             intent.putExtra("searchId", searchId);
             startForResult.launch(intent);
+        });
+        viewModel.getConfirmDeleteSearches().observe(getViewLifecycleOwner(), numberOfSearches -> {
+            Log.d(TAG, "deletesearches OBSERVED");
+
+            String message = numberOfSearches > 1
+                    ? "Delete " + numberOfSearches + " searches?" : "Delete search?";
+
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(message)
+                    .setPositiveButton("Yes", (dialog, which) -> viewModel.deleteSearches())
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel()).show();
         });
     }
 
@@ -164,7 +173,8 @@ public class SearchesFragment extends Fragment {
         toolbarBottom.setVisibility(View.INVISIBLE);
         adapter.setCheckboxVisible(View.INVISIBLE);
 
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab = view.findViewById(R.id.searches_fab_create);
+        fab.setVisibility(View.VISIBLE);
         fab.setImageResource(R.drawable.ic_create);
         fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), CreateActivity.class)));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
@@ -191,6 +201,10 @@ public class SearchesFragment extends Fragment {
                         loaderLayout.setVisibility(View.GONE);
                     }
                 });
+    }
+
+    private void toggleFabVisibility() {
+        fab.setVisibility(fab.getVisibility() == View.INVISIBLE ? View.VISIBLE : View.INVISIBLE);
     }
 
 }

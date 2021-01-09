@@ -66,10 +66,9 @@
 
                     <ImageView
                         android:id="@+id/result_image_new"
-                        style="@style/MaterialAlertDialog.MaterialComponents.Title.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_new"
+                        android:src="@drawable/ic_vector_new"
                         android:layout_margin="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -99,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/see_more_text"
-                style="?attr/borderlessButtonStyle" />
+                style="@style/Widget.MaterialComponents.Button.TextButton" />
 
         </LinearLayout>
 

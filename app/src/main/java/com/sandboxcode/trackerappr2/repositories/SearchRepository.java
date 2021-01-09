@@ -25,6 +25,7 @@ public class SearchRepository implements AsyncResponse {
     private static final String TAG = "SearchRepository";
     private static final FirebaseAuth AUTH_REF = FirebaseAuth.getInstance();
     private static final DatabaseReference DATABASE_REF = FirebaseDatabase.getInstance().getReference();
+    private final AuthRepository authRepository = new AuthRepository();
 
     /* Fragment Searches */
     private final SearchesListener searchesListener = new SearchesListener();
@@ -62,11 +63,17 @@ public class SearchRepository implements AsyncResponse {
         return singleSearch;
     }
 
-    public void delete(String searchId, OnCompleteListener<Void> onCompleteListener) {
-        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
-                .child(searchId).removeValue().addOnCompleteListener(onCompleteListener);
+    public void delete(List<String> searchesToDelete, OnCompleteListener<Void> onCompleteListener) {
+        if (authRepository.getUserId() != null) { // TODO -- change all getUserUid to this
 
-        DATABASE_REF.child("results").child(AUTH_REF.getCurrentUser().getUid()).child(searchId).removeValue();
+            for (String searchId : searchesToDelete) {
+                DATABASE_REF.child("queries").child(authRepository.getUserId())
+                    .child(searchId).removeValue().addOnCompleteListener(onCompleteListener);
+
+                DATABASE_REF.child("results").child(authRepository.getUserId()).child(searchId)
+                        .removeValue();
+            }
+        }
 
     }
 
