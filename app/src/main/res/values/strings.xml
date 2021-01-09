@@ -45,7 +45,7 @@
     <string name="login_text">Login</string>
     <string name="still_need_to_create_an_account_text">Still need to create an account?</string>
     <string name="register_text">Register</string>
-    <string name="forgot_your_password_text">Forgot your password?</string>
+    <string name="forgot_your_password_text"><u>Forgot your password?</u></string>
     <string name="already_have_an_account_text">Already have an account?</string>
     <string name="miles_text">Miles:</string>
     <string name="engine_text">Engine:</string>
@@ -66,4 +66,6 @@
     <string name="fetching_searches_text">Fetching searches</string>
     <string name="fetching_results_text">Fetching results</string>
     <string name="FAB_create_content_description">Button to create a new search</string>
+    <string name="login_text_underlined"><u>Login</u></string>
+    <string name="register_text_underlined"><u>Register</u></string>
 </resources>

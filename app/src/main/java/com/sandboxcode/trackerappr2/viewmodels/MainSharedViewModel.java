@@ -14,6 +14,7 @@ import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 import com.sandboxcode.trackerappr2.repositories.AuthRepository;
 import com.sandboxcode.trackerappr2.repositories.SearchRepository;
+import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,13 @@ public class MainSharedViewModel extends AndroidViewModel {
     /* MainActivity */
     private final MutableLiveData<Boolean> userSignedIn;
     private final MutableLiveData<Boolean> signUserOut;
-    private  MutableLiveData<String> toastMessage = new MutableLiveData<>();
+    /* Searches Fragment */
+    private final SingleLiveEvent<String> toastMessage = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
     private final MutableLiveData<String> startEditActivity = new MutableLiveData<>();
-    private  MutableLiveData<Integer> confirmDeleteSearches = new MutableLiveData<>();
+    private final SingleLiveEvent<Integer> confirmDeleteSearches = new SingleLiveEvent<>();
     private final ArrayList<String> checkedItems = new ArrayList<>();
+
     private final OnCompleteListener<Void> onDeleteListener = task -> {
 
         if (task.isSuccessful()) {
@@ -42,6 +45,7 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     public MainSharedViewModel(Application application) {
         super(application);
+        Log.d(TAG, "viewmodel CONSTRUCTOR=========");
         searchRepository = new SearchRepository();
         authRepository = new AuthRepository();
         allSearches = searchRepository.getAllSearches();
@@ -49,6 +53,14 @@ public class MainSharedViewModel extends AndroidViewModel {
         userSignedIn = authRepository.getUserSignedIn();
         signUserOut = authRepository.getSignUserOut();
 
+    }
+
+    public void saveState() {
+
+    }
+
+    public ArrayList<String> getCheckedItems() {
+        return checkedItems;
     }
 
     public MutableLiveData<Boolean> getUserSignedIn() {
@@ -83,12 +95,6 @@ public class MainSharedViewModel extends AndroidViewModel {
                 break;
             case R.id.action_settings:
 
-                // TODO -- fix this hack... When switching to dark mode the fragment observes the
-                // LiveDatas again and gets the last value saved in there...
-                checkedItems.clear();
-                confirmDeleteSearches = new MutableLiveData<>();
-                toastMessage = new MutableLiveData<>();
-
                 if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
@@ -96,7 +102,6 @@ public class MainSharedViewModel extends AndroidViewModel {
 
                 break;
             case R.id.action_logout:
-//                authRepository.setUserSignedIn();
                 authRepository.signUserOut();
                 break;
 
@@ -105,7 +110,6 @@ public class MainSharedViewModel extends AndroidViewModel {
                 editSearch();
                 break;
             case R.id.action_delete:
-                Log.d(TAG, String.valueOf(checkedItems.size()));
                 handleDeleteSearches();
                 break;
             default:
@@ -122,18 +126,17 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     }
 
-    public MutableLiveData<Integer> getConfirmDeleteSearches() {
+    public SingleLiveEvent<Integer> getConfirmDeleteSearches() {
         return confirmDeleteSearches;
     }
 
     public void handleDeleteSearches() {
 
         int numberOfSearchesToDelete = checkedItems.size();
-        Log.d(TAG, String.valueOf(numberOfSearchesToDelete) + "--------------");
         if (numberOfSearchesToDelete < 1)
             setToastMessage("A search must be selected to delete.");
         else
-            confirmDeleteSearches.postValue(numberOfSearchesToDelete);
+            confirmDeleteSearches.setValue(numberOfSearchesToDelete);
 
     }
 
@@ -145,12 +148,12 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     }
 
-    public MutableLiveData<String> getToastMessage() {
+    public SingleLiveEvent<String> getToastMessage() {
         return toastMessage;
     }
 
     public void setToastMessage(String message) {
-        toastMessage.postValue(message);
+        toastMessage.setValue(message);
     }
 
     public MutableLiveData<Integer> getEditMenuOpen() {

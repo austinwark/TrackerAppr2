@@ -110,9 +110,6 @@ public class RegisterActivity extends AppCompatActivity {
             snackbar.show();
         });
 
-        authViewModel.getToastMessage().observe(this, message ->
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show());
-
         registerButton.setOnClickListener(view -> {
             if (email.getEditText() != null
                     && password.getEditText() != null

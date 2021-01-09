@@ -23,6 +23,7 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
 
     private static final String TAG = "SearchesAdapter";
     private List<SearchModel> searchList = new ArrayList<>();
+    private List<String> checkedItems;
     private final int itemResource;
     private final SearchesFragment fragment;
     private final FragmentManager fragmentManager;
@@ -30,12 +31,13 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
 
 
     public SearchesAdapter(int itemResource,
-                           SearchesFragment fragment) {
+                           SearchesFragment fragment, ArrayList<String> checkedItems) {
 
         this.itemResource = itemResource;
         this.fragment = fragment;
         this.fragmentManager = fragment.getParentFragmentManager();
         this.editActive = View.INVISIBLE;
+        this.checkedItems = checkedItems;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(this.itemResource, parent, false);
-        return new SearchesHolder(view, fragment);
+        return new SearchesHolder(view, fragment, checkedItems);
     }
 
     @Override

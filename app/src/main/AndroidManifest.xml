@@ -19,7 +19,9 @@
         <activity
             android:name=".activities.CreateActivity"
             android:label="Create a New Search" />
-        <activity android:name=".activities.RegisterActivity" />
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:label="Register"/>
         <activity
             android:name=".activities.LoginActivity"
             android:label="Login">

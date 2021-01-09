@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.sandboxcode.trackerappr2.repositories.AuthRepository;
-
+import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 
 
 public class AuthViewModel extends AndroidViewModel {
@@ -19,11 +19,10 @@ public class AuthViewModel extends AndroidViewModel {
     private final AuthRepository authRepository;
     private final FirebaseAuth firebaseAuth;
 
-    private final MutableLiveData<String> toastMessage;
     private final MutableLiveData<ValidationError> emailError;
     private final MutableLiveData<ValidationError> passError;
     private final MutableLiveData<ValidationError> passConfirmError;
-    private final MutableLiveData<String> firebaseError;
+    private final SingleLiveEvent<String> firebaseError;
     private final MutableLiveData<String> passwordResetErrorMessage;
     private final MutableLiveData<Boolean> passwordResetSuccess;
     private MutableLiveData<Boolean> userSignedIn;
@@ -34,11 +33,10 @@ public class AuthViewModel extends AndroidViewModel {
         authRepository = new AuthRepository();
         firebaseAuth = FirebaseAuth.getInstance();
 
-        toastMessage = new MutableLiveData<>();
         emailError = new MutableLiveData<>();
         passError = new MutableLiveData<>();
         passConfirmError = new MutableLiveData<>();
-        firebaseError = new MutableLiveData<>();
+        firebaseError = new SingleLiveEvent<>();
 
         passwordResetErrorMessage = new MutableLiveData<>();
         passwordResetSuccess = new MutableLiveData<>();
@@ -57,10 +55,6 @@ public class AuthViewModel extends AndroidViewModel {
         NO_ERROR;
     }
 
-    public MutableLiveData<String> getToastMessage() {
-        return toastMessage;
-    }
-
     public MutableLiveData<ValidationError> getEmailError() {
         return emailError;
     }
@@ -73,7 +67,7 @@ public class AuthViewModel extends AndroidViewModel {
         return passConfirmError;
     }
 
-    public MutableLiveData<String> getFirebaseError() {
+    public SingleLiveEvent<String> getFirebaseError() {
         return firebaseError;
     }
 
@@ -94,9 +88,9 @@ public class AuthViewModel extends AndroidViewModel {
     public void loginUser(String email, String password) {
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password))
-            firebaseError.postValue("All required fields must be filled in.");
+            setFirebaseError("All required fields must be filled in.");
         else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
-            firebaseError.postValue("No matching account found");
+            setFirebaseError("No matching account found");
         else {
             firebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener(authResult -> authRepository.setUserSignedIn())
@@ -106,16 +100,20 @@ public class AuthViewModel extends AndroidViewModel {
                                     ((FirebaseAuthInvalidUserException) e).getErrorCode();
 
                             if (errorCode.equals("ERROR_USER_NOT_FOUND"))
-                                firebaseError.postValue("No matching account found");
+                                setFirebaseError("No matching account found");
                             else if (errorCode.equals("ERROR_USER_DISABLED"))
-                                firebaseError.postValue("User account has been disabled");
+                                setFirebaseError("User account has been disabled");
                         }
                         else if (e instanceof FirebaseAuthInvalidCredentialsException)
-                            firebaseError.postValue("Invalid password");
+                            setFirebaseError("Invalid password");
                         else
-                            firebaseError.postValue(e.getLocalizedMessage());
+                            setFirebaseError(e.getLocalizedMessage());
                     });
         }
+    }
+
+    private void setFirebaseError(String message) {
+        firebaseError.setValue(message);
     }
 
 

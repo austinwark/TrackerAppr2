@@ -7,13 +7,14 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.sandboxcode.trackerappr2.models.SearchModel;
 import com.sandboxcode.trackerappr2.repositories.SearchRepository;
+import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 
 public class EditViewModel extends AndroidViewModel {
 
     private final SearchRepository repository;
     private String searchId;
     private final MutableLiveData<SearchModel> search;
-    private MutableLiveData<String> toastMessage;
+    private SingleLiveEvent<String> toastMessage;
     private final MutableLiveData<Boolean> changesSaved;
     private final MutableLiveData<String> errorMessage;
 
@@ -34,15 +35,15 @@ public class EditViewModel extends AndroidViewModel {
         return search;
     }
 
-    public MutableLiveData<String> getToastMessage() {
+    public SingleLiveEvent<String> getToastMessage() {
         if (toastMessage == null)
-            toastMessage = new MutableLiveData<>();
+            toastMessage = new SingleLiveEvent<>();
         return toastMessage;
     }
 
     @SuppressWarnings("unused")
     public void setToastMessage(String message) {
-        toastMessage.postValue(message);
+        toastMessage.setValue(message);
     }
 
     public void saveChanges(String name, String model, String trim, String minYear, String maxYear,

@@ -52,9 +52,6 @@ public class LoginActivity extends AppCompatActivity implements PasswordResetFra
             snackbar.show();
         });
 
-        authViewModel.getToastMessage().observe(this, message ->
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show());
-
         authViewModel.getPasswordResetErrorMessage().observe(this, message -> {
             if (dialog != null)
                 dialog.setPasswordErrorText(message);
@@ -95,7 +92,6 @@ public class LoginActivity extends AppCompatActivity implements PasswordResetFra
     }
 
     public void instantiateUI() {
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         coordinatorLayout = findViewById(R.id.login_coordinator_layout);
         email = findViewById(R.id.login_edit_email);

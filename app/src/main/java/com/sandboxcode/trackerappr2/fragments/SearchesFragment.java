@@ -34,6 +34,7 @@ import com.sandboxcode.trackerappr2.activities.EditActivity;
 import com.sandboxcode.trackerappr2.adapters.search.SearchesAdapter;
 import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static android.util.Log.d;
@@ -74,10 +75,13 @@ public class SearchesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        d(TAG, "onCreate");
-
+        ArrayList<String> checkedItems;
+        Log.d(TAG, "onCreate============");
         activityContext = getActivity().getApplicationContext();
-        adapter = new SearchesAdapter(R.layout.search_list_item, this);
+        viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
+
+        checkedItems = viewModel.getCheckedItems();
+        adapter = new SearchesAdapter(R.layout.search_list_item, this, checkedItems);
 
         shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
     }
@@ -107,7 +111,6 @@ public class SearchesFragment extends Fragment {
     public void onItemCheckedChange(String searchId, boolean isChecked) {
 
         viewModel.updateCheckedSearchesList(searchId, isChecked);
-//        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -122,7 +125,6 @@ public class SearchesFragment extends Fragment {
 
         instantiateUI(view);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
         viewModel.getAllSearches().observe(getViewLifecycleOwner(), searches -> {
             d(TAG, "getAllSearches");
             adapter.setSearches(searches);
@@ -132,7 +134,7 @@ public class SearchesFragment extends Fragment {
             Log.d(TAG, "getEditMenuOpen");
             toolbarBottom.setVisibility(editMenuOpen);
             adapter.setCheckboxVisible(editMenuOpen);
-            toggleFabVisibility();
+            fab.setVisibility(editMenuOpen == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
         });
         viewModel.getToastMessage().observe(getViewLifecycleOwner(), message ->
                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show());
@@ -142,8 +144,6 @@ public class SearchesFragment extends Fragment {
             startForResult.launch(intent);
         });
         viewModel.getConfirmDeleteSearches().observe(getViewLifecycleOwner(), numberOfSearches -> {
-            Log.d(TAG, "deletesearches OBSERVED");
-
             String message = numberOfSearches > 1
                     ? "Delete " + numberOfSearches + " searches?" : "Delete search?";
 
@@ -174,7 +174,6 @@ public class SearchesFragment extends Fragment {
         adapter.setCheckboxVisible(View.INVISIBLE);
 
         fab = view.findViewById(R.id.searches_fab_create);
-        fab.setVisibility(View.VISIBLE);
         fab.setImageResource(R.drawable.ic_create);
         fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), CreateActivity.class)));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
@@ -203,8 +202,10 @@ public class SearchesFragment extends Fragment {
                 });
     }
 
-    private void toggleFabVisibility() {
-        fab.setVisibility(fab.getVisibility() == View.INVISIBLE ? View.VISIBLE : View.INVISIBLE);
+    @Override
+    public void onDestroy() {
+        viewModel.saveState();
+        super.onDestroy();
     }
 
 }
