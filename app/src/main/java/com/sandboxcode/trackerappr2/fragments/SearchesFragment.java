@@ -22,6 +22,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -151,6 +153,15 @@ public class SearchesFragment extends Fragment {
                     .setMessage(message)
                     .setPositiveButton("Yes", (dialog, which) -> viewModel.deleteSearches())
                     .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel()).show();
+        });
+        viewModel.getOpenSettingsScreen().observe(getViewLifecycleOwner(), openSettings -> {
+            SettingsFragment settingsFragment = new SettingsFragment();
+            FragmentManager fragmentManager = getParentFragmentManager();
+
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.main_fragment_container, settingsFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
     }
 

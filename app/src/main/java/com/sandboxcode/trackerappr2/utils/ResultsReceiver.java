@@ -5,11 +5,13 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.InboxStyle;
+import androidx.preference.PreferenceManager;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -178,7 +180,11 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
                         for (NewNotification newNotification : newNotifications)
                             totalNewNotifications += newNotification.getNumberOfNewResults();
 
-                        deliverSummaryNotification(context, newNotifications, totalNewNotifications);
+                        // If user has notifications enabled -- show notifications
+                        SharedPreferences sharedPreferences =
+                                PreferenceManager.getDefaultSharedPreferences(context);
+                        if (sharedPreferences.getBoolean("notifications", false))
+                            deliverSummaryNotification(context, newNotifications, totalNewNotifications);
                     }
 
                 }

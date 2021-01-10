@@ -125,7 +125,11 @@ public class AuthViewModel extends AndroidViewModel {
 
         if (!emailErr && !passwordErr && !passwordConfirmErr) {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnSuccessListener(authResult -> authRepository.setUserSignedIn())
+                    .addOnSuccessListener(authResult -> {
+                        String userId = authResult.getUser().getUid();
+                        createSettingsDocument(userId);
+                        authRepository.setUserSignedIn();
+                    })
                     .addOnFailureListener(e -> {
                         if (e instanceof FirebaseAuthInvalidCredentialsException)
                             firebaseError.postValue("Invalid password");
@@ -213,5 +217,9 @@ public class AuthViewModel extends AndroidViewModel {
                     passwordResetErrorMessage.postValue("Error sending password link to " + email + ".");
             });
         }
+    }
+
+    public void createSettingsDocument(String userId) {
+        authRepository.createSettingsDocument(userId);
     }
 }

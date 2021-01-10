@@ -32,6 +32,7 @@ public class MainSharedViewModel extends AndroidViewModel {
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
     private final MutableLiveData<String> startEditActivity = new MutableLiveData<>();
     private final SingleLiveEvent<Integer> confirmDeleteSearches = new SingleLiveEvent<>();
+    private final SingleLiveEvent<Boolean> openSettingsScreen = new SingleLiveEvent<>();
     private final ArrayList<String> checkedItems = new ArrayList<>();
 
     private final OnCompleteListener<Void> onDeleteListener = task -> {
@@ -95,10 +96,11 @@ public class MainSharedViewModel extends AndroidViewModel {
                 break;
             case R.id.action_settings:
 
-                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                else
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                openSettingsScreen.setValue(true);
+//                                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                else
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
                 break;
             case R.id.action_logout:
@@ -206,6 +208,12 @@ public class MainSharedViewModel extends AndroidViewModel {
     public void setResultHasBeenViewed(String vin, String searchId) {
         searchRepository.setResultHasBeenViewed(vin, searchId);
     }
+
+    public SingleLiveEvent<Boolean> getOpenSettingsScreen() { return openSettingsScreen; }
+
+    //    public void getSavedSettings(String userId) {
+//        authRepository.getSavedSettings(userId);
+//    }
 
     @Override
     protected void onCleared() {

@@ -19,5 +19,5 @@
         android:orderInCategory="1000"
         android:title="@string/action_logout"
         android:icon="@drawable/ic_power_settings_new"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>

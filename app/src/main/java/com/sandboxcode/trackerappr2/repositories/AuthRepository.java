@@ -1,12 +1,23 @@
 package com.sandboxcode.trackerappr2.repositories;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.sandboxcode.trackerappr2.models.SettingsModel;
 
 public class AuthRepository {
 
     private static final FirebaseAuth AUTH_REF = FirebaseAuth.getInstance();
+    private static final DatabaseReference DATABASE_REF =
+            FirebaseDatabase.getInstance().getReference();
     private final MutableLiveData<Boolean> userSignedIn = new MutableLiveData<>();
     private final MutableLiveData<Boolean> signUserOut = new MutableLiveData<>();
 
@@ -44,4 +55,10 @@ public class AuthRepository {
     public MutableLiveData<Boolean> getSignUserOut() {
         return signUserOut;
     }
+
+    public void createSettingsDocument(String userId) {
+        DATABASE_REF.child("settings").child(userId)
+                .setValue(new SettingsModel(true, false));
+    }
+
 }

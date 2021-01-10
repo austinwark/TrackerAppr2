@@ -4,7 +4,9 @@ import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -19,6 +21,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 import com.firebase.ui.auth.AuthUI;
 import com.sandboxcode.trackerappr2.R;
@@ -38,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private MainSharedViewModel viewModel;
     private String userId;
     private NotificationManager notificationManager;
+
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             viewModel.setSearchesListener();
             userId = viewModel.getUserId();
             startUpdatingResultsBroadcast();
+//            retrieveSavedSettings(userId);
         });
         viewModel.getSignUserOut().observe(this, signOut -> {
             clearNotificationServices();
@@ -83,6 +89,13 @@ public class MainActivity extends AppCompatActivity {
                     });
         });
 
+        // TODO -- Set dark mode here or elsewhere?
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        boolean darkModeEnabled = sharedPreferences.getBoolean("dark_mode", false);
+        AppCompatDelegate.setDefaultNightMode(darkModeEnabled ?
+                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+
         if (savedInstanceState == null) {
             SearchesFragment fragment = new SearchesFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -92,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+//    public void retrieveSavedSettings(String userId) {
+//        viewModel.getSavedSettings(userId);
+//    }
 
     private void clearNotificationServices() {
         if (notificationManager == null)
