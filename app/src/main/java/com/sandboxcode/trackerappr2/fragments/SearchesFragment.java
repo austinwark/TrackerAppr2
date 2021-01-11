@@ -39,7 +39,6 @@ import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static android.util.Log.d;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,23 +50,29 @@ public class SearchesFragment extends Fragment {
     private static final String TAG = "SearchesFragment";
     private static final String RESULT_MESSAGE_TAG = "result_message";
     FloatingActionButton fab;
-    private Context activityContext;
-    private MainSharedViewModel viewModel;
-    final ActivityResultLauncher<Intent> startForResult =
-            registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(), result -> {
-                        if (result.getResultCode() == Activity.RESULT_OK)
-                            viewModel.refreshSearches();
 
-                        Toast.makeText(getActivity(), result.getData()
-                                .getStringExtra(RESULT_MESSAGE_TAG), Toast.LENGTH_LONG)
-                                .show();
-                    });
+    private MainSharedViewModel viewModel;
+
     private BottomNavigationView toolbarBottom;
     private SearchesAdapter adapter;
     private RecyclerView recyclerView;
     private ConstraintLayout loaderLayout;
+    private ConstraintLayout noSearchesLayout;
     private int shortAnimationDuration;
+    private int numberOfSearches;
+
+    final ActivityResultLauncher<Intent> startForResult =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(), result -> {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            viewModel.refreshSearches();
+                            requireActivity().invalidateOptionsMenu();
+                        }
+
+                        Toast.makeText(getActivity(),
+                                result.getData().getStringExtra(RESULT_MESSAGE_TAG), Toast.LENGTH_LONG)
+                                .show();
+                    });
 
     public SearchesFragment() {
         // Required empty public constructor
@@ -78,14 +83,14 @@ public class SearchesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ArrayList<String> checkedItems;
-        Log.d(TAG, "onCreate============");
-        activityContext = getActivity().getApplicationContext();
+
         viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
 
         checkedItems = viewModel.getCheckedItems();
         adapter = new SearchesAdapter(R.layout.search_list_item, this, checkedItems);
 
         shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        numberOfSearches = 0;
     }
 
     @Override
@@ -102,6 +107,10 @@ public class SearchesFragment extends Fragment {
         inflater.inflate(R.menu.menu_main, menu);
 
         Menu bottomMenu = toolbarBottom.getMenu();
+        MenuItem editSearchItem = menu.findItem(R.id.action_edit);
+
+        // enable edit menu button if there is at least one search in recyclerview
+        editSearchItem.setEnabled((numberOfSearches > 0));
 
         // returns the onOptionsItemSelected method for each MenuItem
         for (int itemIndex = 0; itemIndex < bottomMenu.size(); itemIndex++) {
@@ -109,9 +118,7 @@ public class SearchesFragment extends Fragment {
         }
     }
 
-    // TODO -- save checked status after orientation change
-    public void onItemCheckedChange(String searchId, boolean isChecked) {
-
+       public void onItemCheckedChange(String searchId, boolean isChecked) {
         viewModel.updateCheckedSearchesList(searchId, isChecked);
     }
 
@@ -128,12 +135,18 @@ public class SearchesFragment extends Fragment {
         instantiateUI(view);
 
         viewModel.getAllSearches().observe(getViewLifecycleOwner(), searches -> {
-            d(TAG, "getAllSearches");
             adapter.setSearches(searches);
-            crossFade();
+            if (searches.isEmpty())
+                crossFade(noSearchesLayout, loaderLayout);
+            else
+                crossFade(recyclerView, loaderLayout);
+
+            // Refresh Menu to potentially enable/disable editSearchItem
+            numberOfSearches = searches.size();
+            requireActivity().invalidateOptionsMenu();
+
         });
         viewModel.getEditMenuOpen().observe(getViewLifecycleOwner(), editMenuOpen -> {
-            Log.d(TAG, "getEditMenuOpen");
             toolbarBottom.setVisibility(editMenuOpen);
             adapter.setCheckboxVisible(editMenuOpen);
             fab.setVisibility(editMenuOpen == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
@@ -145,14 +158,18 @@ public class SearchesFragment extends Fragment {
             intent.putExtra("searchId", searchId);
             startForResult.launch(intent);
         });
-        viewModel.getConfirmDeleteSearches().observe(getViewLifecycleOwner(), numberOfSearches -> {
-            String message = numberOfSearches > 1
-                    ? "Delete " + numberOfSearches + " searches?" : "Delete search?";
+        viewModel.getConfirmDeleteSearches().observe(getViewLifecycleOwner(), numOfSearchesToDelete -> {
+            String message = numOfSearchesToDelete > 1
+                    ? "Delete " + numOfSearchesToDelete + " searches?" : "Delete search?";
 
             new AlertDialog.Builder(getActivity())
                     .setMessage(message)
-                    .setPositiveButton("Yes", (dialog, which) -> viewModel.deleteSearches())
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        viewModel.deleteSearches();
+                        requireActivity().invalidateOptionsMenu();
+                    })
                     .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel()).show();
+
         });
         viewModel.getOpenSettingsScreen().observe(getViewLifecycleOwner(), openSettings -> {
             SettingsFragment settingsFragment = new SettingsFragment();
@@ -177,6 +194,7 @@ public class SearchesFragment extends Fragment {
         recyclerView.setVisibility(View.GONE);
 
         loaderLayout = view.findViewById(R.id.searches_layout_loader);
+        noSearchesLayout = view.findViewById(R.id.searches_layout_no_searches);
 
         toolbarBottom = view.findViewById(R.id.toolbar_bottom);
         toolbarBottom.setItemIconTintList(null);
@@ -187,22 +205,22 @@ public class SearchesFragment extends Fragment {
         fab = view.findViewById(R.id.searches_fab_create);
         fab.setImageResource(R.drawable.ic_create);
         fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), CreateActivity.class)));
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireActivity().getApplicationContext());
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
 
-    private void crossFade() {
-        recyclerView.setAlpha(0f);
-        recyclerView.setVisibility(View.VISIBLE);
+    private void crossFade(View view1, View view2) {
+        view1.setAlpha(0f);
+        view1.setVisibility(View.VISIBLE);
 
-        recyclerView.animate()
+        view1.animate()
                 .alpha(1f)
                 .setDuration(shortAnimationDuration)
                 .setListener(null);
 
-        loaderLayout.animate()
+        view2.animate()
                 .alpha(0f)
                 .setDuration(shortAnimationDuration)
                 .setListener(new AnimatorListenerAdapter() {

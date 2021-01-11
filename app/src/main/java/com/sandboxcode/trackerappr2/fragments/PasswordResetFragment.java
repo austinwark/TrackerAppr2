@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -22,6 +23,11 @@ public class PasswordResetFragment extends DialogFragment {
 
     private String email;
 
+    public PasswordResetFragment() {
+        // Required empty public constructor
+    }
+
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -44,6 +50,7 @@ public class PasswordResetFragment extends DialogFragment {
         super.onResume();
 
         AlertDialog dialog = (AlertDialog) getDialog();
+
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
 

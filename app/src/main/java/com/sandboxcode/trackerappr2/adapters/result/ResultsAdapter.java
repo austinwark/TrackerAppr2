@@ -17,17 +17,12 @@ import java.util.List;
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
 
     private List<ResultModel> resultsList = new ArrayList<>();
-    private final Context context;
     private final int itemResource;
     private final FragmentManager fragmentManager;
     private final String searchId;
 
-    public ResultsAdapter(Context context,
-                          int itemResource,
-                          FragmentManager fragmentManager,
-                          String searchId) {
+    public ResultsAdapter(int itemResource, FragmentManager fragmentManager, String searchId) {
 
-        this.context = context;
         this.itemResource = itemResource;
         this.fragmentManager = fragmentManager;
         this.searchId = searchId;

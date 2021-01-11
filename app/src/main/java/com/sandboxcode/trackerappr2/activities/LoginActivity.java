@@ -19,7 +19,8 @@ import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.PasswordResetFragment;
 import com.sandboxcode.trackerappr2.viewmodels.AuthViewModel;
 
-public class LoginActivity extends AppCompatActivity implements PasswordResetFragment.PasswordResetDialogListener {
+public class LoginActivity extends AppCompatActivity
+        implements PasswordResetFragment.PasswordResetDialogListener {
 
     private CoordinatorLayout coordinatorLayout;
     private TextInputLayout email;

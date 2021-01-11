@@ -2,30 +2,45 @@ package com.sandboxcode.trackerappr2.viewmodels;
 
 import android.app.Application;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.sandboxcode.trackerappr2.repositories.AuthRepository;
 import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 
 
 public class AuthViewModel extends AndroidViewModel {
 
+    private static final String TAG = "AuthViewModel";
     private final AuthRepository authRepository;
     private final FirebaseAuth firebaseAuth;
 
+    // TODO -- change error values to SingleLiveEvent but save data on device rotation (because
+    //         viewmodel will be shared with multiple views (LoginActivity, RegisterActivity I think
+    //         , and PasswordResetFragment)
     private final MutableLiveData<ValidationError> emailError;
     private final MutableLiveData<ValidationError> passError;
     private final MutableLiveData<ValidationError> passConfirmError;
+
+    // TODO -- will activity lose firebaseError data on device rotate because of singleliveevent?
     private final SingleLiveEvent<String> firebaseError;
+
     private final MutableLiveData<String> passwordResetErrorMessage;
     private final MutableLiveData<Boolean> passwordResetSuccess;
     private MutableLiveData<Boolean> userSignedIn;
+
+    private final SingleLiveEvent<Boolean> passwordChangeSuccess;
+    private final SingleLiveEvent<Boolean> needsToReauthenticate;
+    private final SingleLiveEvent<Boolean> reauthenticateSuccess;
 
     // TODO -- Add AuthStateListener
     public AuthViewModel(Application application) {
@@ -40,6 +55,10 @@ public class AuthViewModel extends AndroidViewModel {
 
         passwordResetErrorMessage = new MutableLiveData<>();
         passwordResetSuccess = new MutableLiveData<>();
+
+        passwordChangeSuccess = new SingleLiveEvent<>();
+        needsToReauthenticate = new SingleLiveEvent<>();
+        reauthenticateSuccess = new SingleLiveEvent<>();
     }
 
     public enum ValidationError {
@@ -85,6 +104,12 @@ public class AuthViewModel extends AndroidViewModel {
         return passwordResetSuccess;
     }
 
+    public SingleLiveEvent<Boolean> getPasswordChangeSuccess() { return passwordChangeSuccess; }
+
+    public SingleLiveEvent<Boolean> getNeedsToReauthenticate() { return needsToReauthenticate; }
+
+    public SingleLiveEvent<Boolean> getReauthenticateSuccess() { return reauthenticateSuccess; }
+
     public void loginUser(String email, String password) {
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password))
@@ -119,15 +144,14 @@ public class AuthViewModel extends AndroidViewModel {
 
     public void createUser(String email, String password, String passwordConfirm) {
 
-        boolean emailErr = validatePasswordConfirm(password, passwordConfirm);
-        boolean passwordErr = validateEmail(email);
-        boolean passwordConfirmErr = validatePassword(password, passwordConfirm);
+        boolean emailErr = validateEmail(email);
+        boolean passwordErr = validateNewPassword(password, passwordConfirm);
+        boolean passwordConfirmErr = validatePasswordConfirm(password, passwordConfirm);
 
         if (!emailErr && !passwordErr && !passwordConfirmErr) {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                     .addOnSuccessListener(authResult -> {
                         String userId = authResult.getUser().getUid();
-                        createSettingsDocument(userId);
                         authRepository.setUserSignedIn();
                     })
                     .addOnFailureListener(e -> {
@@ -148,6 +172,53 @@ public class AuthViewModel extends AndroidViewModel {
         }
     }
 
+    public void changePassword(String newPassword, String confirmPassword) {
+        boolean newPasswordErr = validateNewPassword(newPassword, confirmPassword);
+        boolean confirmPasswordErr = validatePasswordConfirm(newPassword, confirmPassword);
+
+        if (!newPasswordErr && !confirmPasswordErr) {
+
+            if (firebaseAuth.getCurrentUser() != null) {
+
+                firebaseAuth.getCurrentUser().updatePassword(newPassword)
+                        .addOnSuccessListener(authResult -> {
+                            Log.d(TAG, "onsuccess");
+                            passwordChangeSuccess.setValue(true);
+                        })
+                        .addOnFailureListener(e -> {
+                            // TODO
+                            Log.d(TAG, e.getMessage());
+                            if (e instanceof FirebaseAuthRecentLoginRequiredException)
+                                needsToReauthenticate.setValue(true);
+                            else
+                                firebaseError.setValue(e.getMessage());
+                        });
+            } else
+                Log.d(TAG, "getcurrentuser else");
+
+        } else
+            Log.d(TAG, "changePassword else");
+
+    }
+    public void reauthenticate(String email, String password, String newPassword, String confirmPassword) {
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password))
+            setFirebaseError("All required fields must be filled in.");
+        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+            setFirebaseError("No matching account found");
+        else {
+            AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+            firebaseAuth.getCurrentUser().reauthenticate(credential)
+                    .addOnSuccessListener(authResult -> {
+                        Log.d(TAG, "reauth onsuccess");
+                        changePassword(newPassword, confirmPassword);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.d(TAG, e.getMessage());
+                        firebaseError.setValue(e.getMessage());
+                    });
+        }
+    }
+
     private boolean validateEmail(String email) {
 
         if (TextUtils.isEmpty(email)) {
@@ -162,7 +233,7 @@ public class AuthViewModel extends AndroidViewModel {
         return false;
     }
 
-    private boolean validatePassword(String password, String passwordConfirm) {
+    private boolean validateNewPassword(String password, String passwordConfirm) {
         if (TextUtils.isEmpty(password)) {
             passError.setValue(ValidationError.PASS_REQUIRED);
             return true;
@@ -219,7 +290,5 @@ public class AuthViewModel extends AndroidViewModel {
         }
     }
 
-    public void createSettingsDocument(String userId) {
-        authRepository.createSettingsDocument(userId);
-    }
+
 }

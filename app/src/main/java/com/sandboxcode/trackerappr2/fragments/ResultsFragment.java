@@ -29,6 +29,7 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +43,7 @@ public class ResultsFragment extends Fragment {
 
     private RecyclerView resultRecyclerView;
     private ConstraintLayout loaderLayout;
+    private ConstraintLayout noResultsLayout;
 
     private final List<ResultModel> resultList = new ArrayList<>();
     private String searchId;
@@ -66,10 +68,9 @@ public class ResultsFragment extends Fragment {
         if (getArguments() != null) {
             searchId = getArguments().getString("ID");
         }
-        activityContext = getActivity().getApplicationContext();
         FragmentManager fragmentManager = getParentFragmentManager();
-        // TODO - add searchID
-        adapter = new ResultsAdapter(activityContext, R.layout.result_list_item, fragmentManager, searchId);
+
+        adapter = new ResultsAdapter(R.layout.result_list_item, fragmentManager, searchId);
 
     }
 
@@ -83,23 +84,32 @@ public class ResultsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Results");
+        if (((AppCompatActivity) getActivity()) != null
+                && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+
+            Objects.requireNonNull(((AppCompatActivity) getActivity())
+                    .getSupportActionBar()).setTitle("Results");
+        }
+
+        noResultsLayout = view.findViewById(R.id.results_layout_no_results);
+        resultRecyclerView = view.findViewById(R.id.results_view);
+        loaderLayout = view.findViewById(R.id.results_layout_loader);
 
         MainSharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
-        viewModel.getSearchResults(searchId)
-                .observe(getViewLifecycleOwner(), results -> {
+        viewModel.getSearchResults(searchId).observe(getViewLifecycleOwner(), results -> {
                     adapter.setResults(results);
-                    crossFade();
+                    if (results.isEmpty())
+                        crossFade(noResultsLayout, loaderLayout);
+                    else
+                        crossFade(resultRecyclerView, loaderLayout);
                 });
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
 
-        resultRecyclerView = view.findViewById(R.id.results_view);
         resultRecyclerView.setVisibility(View.GONE);
         resultRecyclerView.setHasFixedSize(true);
         resultRecyclerView.setLayoutManager(layoutManager);
 
-        loaderLayout = view.findViewById(R.id.results_layout_loader);
 
         // TODO -- Why doesn't this work???
         LinearSnapHelper snapHelper = new LinearSnapHelper();
@@ -116,16 +126,16 @@ public class ResultsFragment extends Fragment {
         super.onDestroyView();
     }
 
-    public void crossFade() {
-        resultRecyclerView.setAlpha(0f);
-        resultRecyclerView.setVisibility(View.VISIBLE);
+    public void crossFade(View view1, View view2) {
+        view1.setAlpha(0f);
+        view1.setVisibility(View.VISIBLE);
 
-        resultRecyclerView.animate()
+        view1.animate()
                 .alpha(1f)
                 .setDuration(shortAnimationDuration)
                 .setListener(null);
 
-        loaderLayout.animate()
+        view2.animate()
                 .alpha(0f)
                 .setDuration(shortAnimationDuration)
                 .setListener(new AnimatorListenerAdapter() {

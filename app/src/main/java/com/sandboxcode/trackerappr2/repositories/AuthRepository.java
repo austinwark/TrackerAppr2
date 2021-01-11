@@ -56,9 +56,4 @@ public class AuthRepository {
         return signUserOut;
     }
 
-    public void createSettingsDocument(String userId) {
-        DATABASE_REF.child("settings").child(userId)
-                .setValue(new SettingsModel(true, false));
-    }
-
 }

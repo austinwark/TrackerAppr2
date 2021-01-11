@@ -95,13 +95,7 @@ public class MainSharedViewModel extends AndroidViewModel {
                 toggleEdit();
                 break;
             case R.id.action_settings:
-
                 openSettingsScreen.setValue(true);
-//                                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-//                else
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
                 break;
             case R.id.action_logout:
                 authRepository.signUserOut();
@@ -165,8 +159,7 @@ public class MainSharedViewModel extends AndroidViewModel {
     // TODO -- Call SearchResults every time? OR only when null and nothing has changed?
     public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
         /* ResultsFragment */
-        MutableLiveData<ArrayList<ResultModel>> searchResults = searchRepository.getSearchResults(searchId);
-        return searchResults;
+        return searchRepository.getSearchResults(searchId);
     }
 
     public void editSearch() {

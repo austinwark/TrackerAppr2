@@ -3,16 +3,41 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreferenceCompat
-        app:key="notifications"
-        app:title="Enable notifications"
-        app:summary="Show new result notifications"
-        android:defaultValue="true"/>
+    <PreferenceCategory
+        app:key="general_category"
+        app:title="General">
 
-    <SwitchPreferenceCompat
-        app:key="dark_mode"
-        app:title="Enable dark mode"
-        android:defaultValue="false"
+        <SwitchPreferenceCompat
+            app:key="dark_mode"
+            app:title="Enable dark mode"
+            android:defaultValue="false"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="notifications_category"
+        app:title="Notifications">
+
+        <SwitchPreferenceCompat
+            app:key="notifications"
+            app:title="Enable notifications"
+            app:summary="Notify me of new search results"
+            android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+<PreferenceCategory
+    app:key="account_category"
+    app:title="Account">
+
+    <Preference
+        app:key="change_password"
+        app:title="Change password"
+        app:summary="Change your password here (current password is required)"
         />
+
+</PreferenceCategory>
+
 
 </PreferenceScreen>

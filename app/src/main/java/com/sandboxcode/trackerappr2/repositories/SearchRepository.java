@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 import com.sandboxcode.trackerappr2.utils.AsyncResponse;
+import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 import com.sandboxcode.trackerappr2.utils.WebScraper;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class SearchRepository implements AsyncResponse {
     /* Fragment Searches */
     private final SearchesListener searchesListener = new SearchesListener();
     private final MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
-    private final MutableLiveData<ArrayList<ResultModel>> searchResults = new MutableLiveData<>();
+    private final SingleLiveEvent<ArrayList<ResultModel>> searchResults = new SingleLiveEvent<>();
 
     /* Activity Edit */
     private final MutableLiveData<SearchModel> singleSearch = new MutableLiveData<>();
@@ -44,13 +45,13 @@ public class SearchRepository implements AsyncResponse {
     }
 
     public void setListeners() {
-        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
+        DATABASE_REF.child("queries").child(authRepository.getUserId())
                 .addValueEventListener(searchesListener);
     }
 
     public void retrieveSearch(String searchId) {
 
-        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
+        DATABASE_REF.child("queries").child(authRepository.getUserId())
                 .child(searchId).addListenerForSingleValueEvent(new SingleSearchListener());
     }
 
@@ -64,7 +65,7 @@ public class SearchRepository implements AsyncResponse {
     }
 
     public void delete(List<String> searchesToDelete, OnCompleteListener<Void> onCompleteListener) {
-        if (authRepository.getUserId() != null) { // TODO -- change all getUserUid to this
+        if (authRepository.getUserId() != null) {
 
             for (String searchId : searchesToDelete) {
                 DATABASE_REF.child("queries").child(authRepository.getUserId())
@@ -77,8 +78,8 @@ public class SearchRepository implements AsyncResponse {
 
     }
 
-    public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
-        DATABASE_REF.child("results").child(AUTH_REF.getCurrentUser().getUid()).child(searchId)
+    public SingleLiveEvent<ArrayList<ResultModel>> getSearchResults(String searchId) {
+        DATABASE_REF.child("results").child(authRepository.getUserId()).child(searchId)
                 .addListenerForSingleValueEvent(new ResultsListener());
 
         return searchResults;
@@ -89,32 +90,32 @@ public class SearchRepository implements AsyncResponse {
 
         //TODO-- Add completed check and return boolean to confirm success
         final String KEY = DATABASE_REF.child("queries")
-                .child(AUTH_REF.getCurrentUser().getUid()).push().getKey();
+                .child(authRepository.getUserId()).push().getKey();
 
         SearchModel searchModel = new SearchModel(KEY, name, model, trim, minYear,
                 maxYear, minPrice, maxPrice, allDealerships);
         searchModel.setCreatedDate();
         searchModel.setLastEditedDate();
 
-        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).child(KEY)
+        DATABASE_REF.child("queries").child(authRepository.getUserId()).child(KEY)
                 .setValue(searchModel).addOnSuccessListener(aVoid -> {
 
             WebScraper scraper = new WebScraper(searchModel,
-                    DATABASE_REF, AUTH_REF.getCurrentUser().getUid());
+                    DATABASE_REF, authRepository.getUserId());
             scraper.setDelegate(this);
             scraper.execute();
         });
     }
 
     public void saveChanges(SearchModel search) {
-        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid())
+        DATABASE_REF.child("queries").child(authRepository.getUserId())
                 .child(search.getId()).setValue(search)
                 .addOnCompleteListener(task -> {
 
                     if (task.isSuccessful()) {
                         setChangesSaved(true);
                         WebScraper scraper = new WebScraper(search,
-                                DATABASE_REF, AUTH_REF.getCurrentUser().getUid());
+                                DATABASE_REF, authRepository.getUserId());
                         scraper.setDelegate(this);
                         scraper.execute();
 
@@ -142,7 +143,7 @@ public class SearchRepository implements AsyncResponse {
 
     public String getUserId() {
         if (AUTH_REF.getCurrentUser() != null)
-            return AUTH_REF.getCurrentUser().getUid();
+            return authRepository.getUserId();
         else
             return null;
     }
@@ -151,18 +152,18 @@ public class SearchRepository implements AsyncResponse {
     public void setResultHasBeenViewed(String vin, String searchId) {
 
         // Set isNewResult value in result document to false
-        DATABASE_REF.child("results").child(AUTH_REF.getCurrentUser().getUid())
+        DATABASE_REF.child("results").child(authRepository.getUserId())
                 .child(searchId).child(vin).child("isNewResult").setValue(false);
 
         // Get numberOfNewResults from correlated search document to update its numberOfNewResults
-        DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).child(searchId)
+        DATABASE_REF.child("queries").child(authRepository.getUserId()).child(searchId)
                 .child("numberOfNewResults").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.getValue() != null) {
                     long numberOfNewResults = (Long) snapshot.getValue();
                     numberOfNewResults--;
-                    DATABASE_REF.child("queries").child(AUTH_REF.getCurrentUser().getUid()).child(searchId)
+                    DATABASE_REF.child("queries").child(authRepository.getUserId()).child(searchId)
                             .child("numberOfNewResults").setValue(numberOfNewResults);
                 }
             }
@@ -175,8 +176,8 @@ public class SearchRepository implements AsyncResponse {
 
     @Override
     public void processResults(ArrayList<ResultModel> searchResults, String searchId) {
-        String userUid = AUTH_REF.getCurrentUser().getUid();
-//        DatabaseReference resultsRef = DATABASE_REF.child("results").child(searchId);
+        String userUid = authRepository.getUserId();
+
         DatabaseReference resultsRef = DATABASE_REF.child("results").child(userUid).child(searchId);
         resultsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -274,7 +275,7 @@ public class SearchRepository implements AsyncResponse {
                 results.add(child.getValue(ResultModel.class));
             }
 
-            searchResults.postValue(results);
+            searchResults.setValue(results);
         }
 
         @Override
