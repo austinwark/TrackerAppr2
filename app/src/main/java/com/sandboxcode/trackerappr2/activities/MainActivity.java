@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
@@ -28,6 +29,7 @@ import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.DetailFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
+import com.sandboxcode.trackerappr2.fragments.SettingsFragment;
 import com.sandboxcode.trackerappr2.utils.ResultsReceiver;
 import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 
@@ -80,13 +82,14 @@ public class MainActivity extends AppCompatActivity {
             startUpdatingResultsBroadcast();
 //            retrieveSavedSettings(userId);
         });
-        viewModel.getSignUserOut().observe(this, signOut -> {
-            clearNotificationServices();
-            AuthUI.getInstance().signOut(this)
-                    .addOnCompleteListener(task -> {
-                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                        finish();
-                    });
+        viewModel.getOpenSettingsScreen().observe(this, openSettings -> {
+            SettingsFragment settingsFragment = new SettingsFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.main_fragment_container, settingsFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         // TODO -- Set dark mode here or elsewhere?
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    public void retrieveSavedSettings(String userId) {
+    //    public void retrieveSavedSettings(String userId) {
 //        viewModel.getSavedSettings(userId);
 //    }
 

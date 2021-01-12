@@ -1,9 +1,13 @@
 package com.sandboxcode.trackerappr2.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +32,7 @@ public class DetailFragment extends Fragment {
     @SuppressWarnings("unused")
     private static final String TAG = "DetailFragment";
     private ResultModel result;
+    private String searchId;
 
     ImageView image;
 
@@ -38,13 +43,7 @@ public class DetailFragment extends Fragment {
 
             // Get result and search ID
             result = Parcels.unwrap(getArguments().getParcelable("RESULT"));
-            String searchId = getArguments().getString("SEARCH_ID");
-
-            // Change isNew field indicating the user has seen the result
-            MainSharedViewModel viewModel = new ViewModelProvider(requireActivity())
-                    .get(MainSharedViewModel.class);
-            viewModel.setResultHasBeenViewed(result.getVin(), searchId);
-            result.setIsNewResult(false);
+            searchId = getArguments().getString("SEARCH_ID");
 
         } else {
             // TODO -- restart activity? somehow go back to previous fragment?
@@ -82,6 +81,13 @@ public class DetailFragment extends Fragment {
         image = v.findViewById(R.id.result_image_thumbnail);
         Picasso.get().load(result.getImageUrl()).fit().into(image);
 
+        ImageButton carfaxImageButton =  v.findViewById(R.id.detail_button_carfax);
+        carfaxImageButton.setOnClickListener(view -> {
+            String carfaxUrl = "https:" + result.getCarfaxLink();
+            Uri webpage = Uri.parse(carfaxUrl);
+            Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
+            startActivity(webIntent);
+        });
     }
 
     @Override
@@ -100,6 +106,12 @@ public class DetailFragment extends Fragment {
             Objects.requireNonNull(((AppCompatActivity) getActivity())
                     .getSupportActionBar()).setTitle("Details");
         }
+
+        // Change isNew field indicating the user has seen the result
+        MainSharedViewModel viewModel = new ViewModelProvider(requireActivity())
+                .get(MainSharedViewModel.class);
+        viewModel.setResultHasBeenViewed(result.getVin(), searchId);
+        result.setIsNewResult(false);
 
         instantiateUI(view);
     }

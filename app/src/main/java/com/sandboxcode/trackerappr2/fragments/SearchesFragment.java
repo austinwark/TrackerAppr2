@@ -171,15 +171,6 @@ public class SearchesFragment extends Fragment {
                     .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel()).show();
 
         });
-        viewModel.getOpenSettingsScreen().observe(getViewLifecycleOwner(), openSettings -> {
-            SettingsFragment settingsFragment = new SettingsFragment();
-            FragmentManager fragmentManager = getParentFragmentManager();
-
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.main_fragment_container, settingsFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        });
     }
 
     private void instantiateUI(View view) {

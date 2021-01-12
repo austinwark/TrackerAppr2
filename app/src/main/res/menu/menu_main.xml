@@ -14,10 +14,4 @@
         android:title="@string/action_settings"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_settings"/>
-    <item
-        android:id="@+id/action_logout"
-        android:orderInCategory="1000"
-        android:title="@string/action_logout"
-        android:icon="@drawable/ic_power_settings_new"
-        app:showAsAction="never" />
 </menu>

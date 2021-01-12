@@ -97,9 +97,6 @@ public class MainSharedViewModel extends AndroidViewModel {
             case R.id.action_settings:
                 openSettingsScreen.setValue(true);
                 break;
-            case R.id.action_logout:
-                authRepository.signUserOut();
-                break;
 
             /* ----- Bottom Toolbar Menu ----- */
             case R.id.action_search_edit:
@@ -111,6 +108,10 @@ public class MainSharedViewModel extends AndroidViewModel {
             default:
                 break;
         }
+    }
+
+    public void signUserOut() {
+        authRepository.signUserOut();
     }
 
     public void toggleEdit() {

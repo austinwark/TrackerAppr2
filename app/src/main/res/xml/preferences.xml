@@ -34,7 +34,12 @@
     <Preference
         app:key="change_password"
         app:title="Change password"
-        app:summary="Change your password here (current password is required)"
+        app:summary="Change your password here"
+        />
+
+    <Preference
+        app:key="logout"
+        app:title="Logout"
         />
 
 </PreferenceCategory>

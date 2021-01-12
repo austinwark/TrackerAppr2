@@ -23,6 +23,7 @@ public class ResultModel {
     private String dealer;
     private String imageUrl;
     private boolean isNewResult;
+    private String carfaxLink;
 
     /**
      * Default constructor required by Firebase
@@ -47,6 +48,7 @@ public class ResultModel {
         dealer = details.get("dealer");
         imageUrl = details.get("imageUrl");
         isNewResult = true;
+        carfaxLink = details.get("carfaxLink");
     }
 
     @Override
@@ -137,5 +139,9 @@ public class ResultModel {
 
     public void setIsNewResult(boolean isNewResult) {
         this.isNewResult = isNewResult;
+    }
+
+    public String getCarfaxLink() {
+        return carfaxLink;
     }
 }

@@ -117,6 +117,8 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
                         vehicle.select("div.vehiclePhoto").first()
                                 .select("img.vehicleImg").attr("src");
                 details.put("imageUrl", imageUrl);
+                details.put("carfaxLink", vehicle.select("a.stat-image-link").attr("href"));
+
                 ResultModel resultModel = new ResultModel(details);
                 results.add(resultModel);
 
