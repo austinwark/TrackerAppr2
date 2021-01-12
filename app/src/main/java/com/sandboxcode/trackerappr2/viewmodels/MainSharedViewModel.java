@@ -30,7 +30,7 @@ public class MainSharedViewModel extends AndroidViewModel {
     /* Searches Fragment */
     private final SingleLiveEvent<String> toastMessage = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
-    private final MutableLiveData<String> startEditActivity = new MutableLiveData<>();
+    private final SingleLiveEvent<String> startEditActivity = new SingleLiveEvent<>();
     private final SingleLiveEvent<Integer> confirmDeleteSearches = new SingleLiveEvent<>();
     private final SingleLiveEvent<Boolean> openSettingsScreen = new SingleLiveEvent<>();
     private final ArrayList<String> checkedItems = new ArrayList<>();
@@ -177,12 +177,12 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     }
 
-    public MutableLiveData<String> getStartEditActivity() {
+    public SingleLiveEvent<String> getStartEditActivity() {
         return startEditActivity;
     }
 
     public void setStartEditActivity(String searchId) {
-        startEditActivity.postValue(searchId);
+        startEditActivity.setValue(searchId);
     }
 
     public void refreshSearches() {

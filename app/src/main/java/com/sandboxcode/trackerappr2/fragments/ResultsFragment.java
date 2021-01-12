@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -104,16 +105,16 @@ public class ResultsFragment extends Fragment {
                         crossFade(resultRecyclerView, loaderLayout);
                 });
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
-
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(activityContext, 2);
         resultRecyclerView.setVisibility(View.GONE);
         resultRecyclerView.setHasFixedSize(true);
         resultRecyclerView.setLayoutManager(layoutManager);
 
 
         // TODO -- Why doesn't this work???
-        LinearSnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(resultRecyclerView);
+//        LinearSnapHelper snapHelper = new LinearSnapHelper();
+//        snapHelper.attachToRecyclerView(resultRecyclerView);
         resultRecyclerView.setAdapter(adapter);
 
     }
