@@ -3,7 +3,6 @@ package com.sandboxcode.trackerappr2.activities;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -125,7 +124,7 @@ public class EditActivity extends AppCompatActivity {
         Resources res = getResources();
         ArrayList<CharSequence> models =
                 new ArrayList<>(Arrays.asList(res.getStringArray(R.array.models_array)));
-        ArrayAdapter<CharSequence> modelAdapter = new ArrayAdapter<>(this, R.layout.models_list_item, models);
+        ArrayAdapter<CharSequence> modelAdapter = new ArrayAdapter<>(this, R.layout.dropdown_list_item, models);
         modelSpinner.setAdapter(modelAdapter);
     }
 

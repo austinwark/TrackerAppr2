@@ -82,8 +82,6 @@ Sapp/src/main/java/com/sandboxcode/trackerappr2/adapters/search/SearchesAdapter.
 .app/src/main/res/drawable-anydpi/ic_delete.xml,1\9\193a1ab8249aa9c706aa7440b9702b1cdbf9b93d
 Å
 Qapp/src/main/java/com/sandboxcode/trackerappr2/repositories/SearchRepository.java,1\1\11d93fd68a269e80ed7214279368f11e0fa1ab11
-R
-"app/src/main/res/values/arrays.xml,7\c\7cca4a2d94815c47d6a1ce79d4f7ac1c41c7b766
 |
 Lapp/src/main/java/com/sandboxcode/trackerappr2/viewmodels/AuthViewModel.java,f\c\fc6bb7b4caa0a5618906653385997a65a2fb1df2
 ~
@@ -92,8 +90,6 @@ Napp/src/main/java/com/sandboxcode/trackerappr2/viewmodels/CreateViewModel.java
 Oapp/src/main/java/com/sandboxcode/trackerappr2/repositories/AuthRepository.java,d\8\d898748ab2f1a19dbb7ae334daa9ad5b02e71119
 Ç
 Rapp/src/main/java/com/sandboxcode/trackerappr2/viewmodels/MainSharedViewModel.java,2\e\2e5e18b9abb8519fbabeae38574fd519ae6d610c
-R
-"app/src/main/res/values/dimens.xml,c\3\c3c1811dec2dbad2deeafb9aad505ca9631da740
 ^
 .app/src/main/res/drawable-anydpi/ic_search.xml,a\6\a69b4ab31e38277b28e57d0114ee25ca5d9dd69a
 {

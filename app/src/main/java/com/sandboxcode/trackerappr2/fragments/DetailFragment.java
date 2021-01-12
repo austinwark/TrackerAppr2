@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -31,16 +32,15 @@ public class DetailFragment extends Fragment {
 
     @SuppressWarnings("unused")
     private static final String TAG = "DetailFragment";
+    ImageView image;
     private ResultModel result;
     private String searchId;
-
-    ImageView image;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            postponeEnterTransition();
             // Get result and search ID
             result = Parcels.unwrap(getArguments().getParcelable("RESULT"));
             searchId = getArguments().getString("SEARCH_ID");
@@ -78,15 +78,26 @@ public class DetailFragment extends Fragment {
         engine.setText(result.getEngine());
         TextView transmission = v.findViewById(R.id.tv_details_transmission);
         transmission.setText(result.getTransmission());
-        image = v.findViewById(R.id.result_image_thumbnail);
-        Picasso.get().load(result.getImageUrl()).fit().into(image);
+        image = v.findViewById(R.id.detail_image_thumbnail);
+        Picasso.get().load(result.getImageUrl()).fit().into(image, new Callback() {
+            @Override
+            public void onSuccess() {
+                startPostponedEnterTransition();
+            }
 
-        ImageButton carfaxImageButton =  v.findViewById(R.id.detail_button_carfax);
+            @Override
+            public void onError(Exception e) {
+                startPostponedEnterTransition();
+            }
+        });
+
+        ImageButton carfaxImageButton = v.findViewById(R.id.detail_button_carfax);
         carfaxImageButton.setOnClickListener(view -> {
             String carfaxUrl = "https:" + result.getCarfaxLink();
             Uri webpage = Uri.parse(carfaxUrl);
             Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
-            startActivity(webIntent);
+            if (webIntent.resolveActivity(getActivity().getPackageManager()) != null)
+                startActivity(webIntent);
         });
     }
 
@@ -94,8 +105,10 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        return inflater.inflate(R.layout.fragment_detail, container, false);
+        View v = inflater.inflate(R.layout.fragment_detail, container, false);
+        v.findViewById(R.id.detail_image_thumbnail).setTransitionName(result.getVin());
+        Log.d(TAG, v.findViewById(R.id.detail_image_thumbnail).getTransitionName() + "--------");
+        return v;
     }
 
     @Override

@@ -140,6 +140,7 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
                                 .select("img.vehicleImg").attr("src");
                 details.put("imageUrl", imageUrl);
                 details.put("carfaxLink", vehicle.select("a.stat-image-link").attr("href"));
+                details.put("detailsLink", vehicle.select("a.vehicleDetailsLink").attr("href"));
 
                 ResultModel resultModel = new ResultModel(details);
                 results.add(resultModel);
@@ -158,6 +159,7 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
         PRICE_RANGE("&Pricerange="),
         NOT_ALL_DEALERSHIPS("&Dealership=Lia%20Toyota%20of%20Colonie"),
         MILEAGERANGE("&Mileagerange="); // TODO: add mileage range parameter to search
+
         private final String val;
 
         UrlBits(String val) {

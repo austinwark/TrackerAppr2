@@ -5,27 +5,10 @@
 
     <string name="action_logout">Logout</string>
 
-    <string-array name="models_array">
-        <item>4Runner</item>
-        <item>Avalon</item>
-        <item>Camry</item>
-        <item>Camry Hybrid</item>
-        <item>C-HR</item>
-        <item>Corolla</item>
-        <item>Highlander</item>
-        <item>Prius</item>
-        <item>RAV4</item>
-        <item>RAV4 Hybrid</item>
-        <item>Sienna</item>
-        <item>Tacoma</item>
-        <item>Tundra</item>
-        <item>Venza</item>
-        <item>Corolla Hatchback</item>
-    </string-array>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="action_edit">Edit</string>
 
-    <string name="transition_string">result_to_detail_transition</string>
 
     <string name="thumbnail_content_description">Thumbnail image of vehicle</string>
     <string name="new_results_content_description">Badge indicating search has new results</string>

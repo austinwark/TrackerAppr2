@@ -93,7 +93,7 @@ public class CreateActivity extends AppCompatActivity {
         Resources res = getResources();
         ArrayList<CharSequence> models =
                 new ArrayList<>(Arrays.asList(res.getStringArray(R.array.models_array)));
-        ArrayAdapter<CharSequence> modelAdapter = new ArrayAdapter<>(this, R.layout.models_list_item, models);
+        ArrayAdapter<CharSequence> modelAdapter = new ArrayAdapter<>(this, R.layout.dropdown_list_item, models);
         modelSpinner.setAdapter(modelAdapter);
 
     }

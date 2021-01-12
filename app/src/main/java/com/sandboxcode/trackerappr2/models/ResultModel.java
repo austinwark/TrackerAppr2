@@ -1,5 +1,7 @@
 package com.sandboxcode.trackerappr2.models;
 
+import com.google.firebase.database.Exclude;
+
 import org.parceler.Parcel;
 
 import java.util.Map;
@@ -24,6 +26,9 @@ public class ResultModel {
     private String imageUrl;
     private boolean isNewResult;
     private String carfaxLink;
+    private String detailsLink;
+
+    private boolean isChecked; // field used to keep track of UI state in RecyclerView
 
     /**
      * Default constructor required by Firebase
@@ -49,6 +54,8 @@ public class ResultModel {
         imageUrl = details.get("imageUrl");
         isNewResult = true;
         carfaxLink = details.get("carfaxLink");
+        detailsLink = details.get("detailsLink");
+        isChecked = false;
     }
 
     @Override
@@ -144,4 +151,13 @@ public class ResultModel {
     public String getCarfaxLink() {
         return carfaxLink;
     }
+
+    public String getDetailsLink() { return detailsLink; }
+
+    public void setIsChecked(boolean isChecked) { this.isChecked = isChecked; }
+
+    // No need to save this UI state field in database
+    @Exclude
+    public boolean isChecked() { return isChecked; }
+
 }

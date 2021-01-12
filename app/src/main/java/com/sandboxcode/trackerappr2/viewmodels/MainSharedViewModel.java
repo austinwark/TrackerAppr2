@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.sandboxcode.trackerappr2.R;
+import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 import com.sandboxcode.trackerappr2.repositories.AuthRepository;
@@ -17,6 +18,8 @@ import com.sandboxcode.trackerappr2.repositories.SearchRepository;
 import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainSharedViewModel extends AndroidViewModel {
@@ -27,13 +30,23 @@ public class MainSharedViewModel extends AndroidViewModel {
     /* MainActivity */
     private final MutableLiveData<Boolean> userSignedIn;
     private final MutableLiveData<Boolean> signUserOut;
+    private MutableLiveData<List<SearchModel>> allSearches;
+
     /* Searches Fragment */
     private final SingleLiveEvent<String> toastMessage = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
-    private final MutableLiveData<String> startEditActivity = new MutableLiveData<>();
+    private final SingleLiveEvent<String> startEditActivity = new SingleLiveEvent<>();
     private final SingleLiveEvent<Integer> confirmDeleteSearches = new SingleLiveEvent<>();
     private final SingleLiveEvent<Boolean> openSettingsScreen = new SingleLiveEvent<>();
     private final ArrayList<String> checkedItems = new ArrayList<>();
+
+    /* Results Fragment */
+    private SingleLiveEvent<ArrayList<ResultModel>> searchResults;
+    private SingleLiveEvent<Integer> sortMenuOpen = new SingleLiveEvent<>();
+    private final SingleLiveEvent<Boolean> sortCompleted = new SingleLiveEvent<>();
+    private SingleLiveEvent<Integer> openShareConfirmation = new SingleLiveEvent<>();
+
+    private ArrayList<String> checkedResults;
 
     private final OnCompleteListener<Void> onDeleteListener = task -> {
 
@@ -42,7 +55,6 @@ public class MainSharedViewModel extends AndroidViewModel {
         }
     };
     /* SearchesFragment */
-    private MutableLiveData<List<SearchModel>> allSearches;
 
     public MainSharedViewModel(Application application) {
         super(application);
@@ -53,6 +65,8 @@ public class MainSharedViewModel extends AndroidViewModel {
 
         userSignedIn = authRepository.getUserSignedIn();
         signUserOut = authRepository.getSignUserOut();
+
+        checkedResults = new ArrayList<>();
 
     }
 
@@ -105,10 +119,19 @@ public class MainSharedViewModel extends AndroidViewModel {
             case R.id.action_delete:
                 handleDeleteSearches();
                 break;
+
+            /* Results Menu */
+            case R.id.results_action_sort:
+                toggleSortMenu();
+                break;
+            case R.id.results_action_share:
+                openShareConfirmation.setValue(checkedResults.size());
+                break;
             default:
                 break;
         }
     }
+
 
     public void signUserOut() {
         authRepository.signUserOut();
@@ -159,8 +182,11 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     // TODO -- Call SearchResults every time? OR only when null and nothing has changed?
     public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
-        /* ResultsFragment */
-        return searchRepository.getSearchResults(searchId);
+        if (searchResults == null || searchResults.getValue().isEmpty())
+            Log.d(TAG, "NULL ------------");
+
+        searchResults = searchRepository.getSearchResults(searchId);
+        return searchResults;
     }
 
     public void editSearch() {
@@ -177,12 +203,12 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     }
 
-    public MutableLiveData<String> getStartEditActivity() {
+    public SingleLiveEvent<String> getStartEditActivity() {
         return startEditActivity;
     }
 
     public void setStartEditActivity(String searchId) {
-        startEditActivity.postValue(searchId);
+        startEditActivity.setValue(searchId);
     }
 
     public void refreshSearches() {
@@ -205,9 +231,69 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     public SingleLiveEvent<Boolean> getOpenSettingsScreen() { return openSettingsScreen; }
 
+    public SingleLiveEvent<Boolean> getSortCompleted() { return sortCompleted; }
+
+    public SingleLiveEvent<Integer> getSortMenuOpen() { return sortMenuOpen; }
+
     //    public void getSavedSettings(String userId) {
 //        authRepository.getSavedSettings(userId);
 //    }
+
+    public void toggleSortMenu() {
+        if (sortMenuOpen.getValue() != null && sortMenuOpen.getValue() == View.VISIBLE)
+            sortMenuOpen.setValue(View.GONE);
+        else
+            sortMenuOpen.setValue(View.VISIBLE);
+    }
+
+    public void handleSortSelection(ResultsFragment.SortOption sortOption) {
+        List<ResultModel> currentSearchResults = searchResults.getValue();
+        if (currentSearchResults == null)
+            return;
+
+        switch (sortOption) {
+            case PRICE_ASC:
+                Collections.sort(currentSearchResults, (o1, o2) ->
+                    Integer.compare(Integer.parseInt(o1.getPrice()),
+                            Integer.parseInt(o2.getPrice())));
+                break;
+            case PRICE_DESC:
+                Collections.sort(currentSearchResults, (o1, o2) ->
+                        Integer.compare(Integer.parseInt(o2.getPrice()),
+                                Integer.parseInt(o1.getPrice())));
+                break;
+            case YEAR_ASC:
+                Collections.sort(currentSearchResults, (o1, o2) ->
+                        Integer.compare(Integer.parseInt(o1.getYear()),
+                                Integer.parseInt(o2.getYear())));
+                break;
+            case YEAR_DESC:
+                Collections.sort(currentSearchResults, (o1, o2) ->
+                        Integer.compare(Integer.parseInt(o2.getYear()),
+                                Integer.parseInt(o1.getYear())));
+                break;
+        }
+        sortCompleted.setValue(true);
+    }
+
+    public void clearCheckedResults() {
+        checkedResults.clear();
+    }
+    public int removeCheckedResult(String link) {
+        checkedResults.remove(link);
+        return checkedResults.size();
+    }
+
+    public int addCheckedResult(String... links) {
+        Collections.addAll(checkedResults, links);
+        return checkedResults.size();
+    }
+
+    public List<String> getCheckedResults() { return checkedResults; }
+
+    public SingleLiveEvent<Integer> getOpenShareConfirmation() { return openShareConfirmation; }
+
+
 
     @Override
     protected void onCleared() {

@@ -48,6 +48,13 @@ android {
     dataBinding {
         enabled = true
     }
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src\\main\\res'
+            }
+        }
+    }
 }
 
 dependencies {
@@ -91,5 +98,9 @@ dependencies {
     implementation "io.reactivex.rxjava3:rxjava:3.0.9"
 
     implementation "androidx.preference:preference:1.1.1"
+
+    // Third party recyclerview snap helper library
+    implementation 'com.github.rubensousa:gravitysnaphelper:2.2.1'
+
 
 }
