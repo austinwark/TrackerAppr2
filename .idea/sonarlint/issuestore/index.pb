@@ -92,8 +92,6 @@ Napp/src/main/java/com/sandboxcode/trackerappr2/viewmodels/CreateViewModel.java
 Oapp/src/main/java/com/sandboxcode/trackerappr2/repositories/AuthRepository.java,d\8\d898748ab2f1a19dbb7ae334daa9ad5b02e71119
 ‚
 Rapp/src/main/java/com/sandboxcode/trackerappr2/viewmodels/MainSharedViewModel.java,2\e\2e5e18b9abb8519fbabeae38574fd519ae6d610c
-R
-"app/src/main/res/values/dimens.xml,c\3\c3c1811dec2dbad2deeafb9aad505ca9631da740
 ^
 .app/src/main/res/drawable-anydpi/ic_search.xml,a\6\a69b4ab31e38277b28e57d0114ee25ca5d9dd69a
 {

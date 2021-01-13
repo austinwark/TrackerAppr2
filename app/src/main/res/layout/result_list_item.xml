@@ -3,45 +3,66 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:id="@+id/result_layout_card"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="10dp"
-    android:layout_margin="16dp"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="4dp"
+    android:layout_margin="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:checkable="true"
+    app:checkedIconTint="@color/checkedYellow"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_gravity="center">
+
 
         <ImageView
             android:id="@+id/result_image_thumbnail"
-            android:layout_width="@dimen/thumbnail_width"
-            android:layout_height="@dimen/thumbnail_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             android:contentDescription="@string/thumbnail_content_description"
-            android:src="@drawable/corolla_preview"/>
+            android:src="@drawable/corolla_preview"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/result_text_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2018 Toyota Corolla"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 />
 
             <TextView
                 android:id="@+id/result_text_stock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2018 Toyota Corolla"
+                android:text="#626546"
+                style="@style/TextAppearance.MaterialComponents.Body2"
                 />
 
             <TextView
                 android:id="@+id/result_text_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2018 Toyota Corolla"
+                android:text="$28,998"
+                style="@style/TextAppearance.MaterialComponents.Overline"
                 />
 
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -30,6 +30,7 @@ public class MainSharedViewModel extends AndroidViewModel {
     /* Searches Fragment */
     private final SingleLiveEvent<String> toastMessage = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
+    // TODO -- after saving edit and going to results fragment, hitting back button brings it back to edit activity
     private final SingleLiveEvent<String> startEditActivity = new SingleLiveEvent<>();
     private final SingleLiveEvent<Integer> confirmDeleteSearches = new SingleLiveEvent<>();
     private final SingleLiveEvent<Boolean> openSettingsScreen = new SingleLiveEvent<>();

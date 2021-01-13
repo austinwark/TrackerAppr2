@@ -78,7 +78,7 @@ public class DetailFragment extends Fragment {
         engine.setText(result.getEngine());
         TextView transmission = v.findViewById(R.id.tv_details_transmission);
         transmission.setText(result.getTransmission());
-        image = v.findViewById(R.id.result_image_thumbnail);
+        image = v.findViewById(R.id.detail_image_thumbnail);
         Picasso.get().load(result.getImageUrl()).fit().into(image);
 
         ImageButton carfaxImageButton =  v.findViewById(R.id.detail_button_carfax);
@@ -94,8 +94,10 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        return inflater.inflate(R.layout.fragment_detail, container, false);
+        View v = inflater.inflate(R.layout.fragment_detail, container, false);
+        v.findViewById(R.id.detail_image_thumbnail).setTransitionName(result.getVin());
+        Log.d(TAG, v.findViewById(R.id.detail_image_thumbnail).getTransitionName() + "--------");
+        return v;
     }
 
     @Override

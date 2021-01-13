@@ -86,4 +86,7 @@ dependencies {
 
     implementation "androidx.preference:preference:1.1.1"
 
+    implementation 'com.github.rubensousa:gravitysnaphelper:2.2.1'
+
+
 }

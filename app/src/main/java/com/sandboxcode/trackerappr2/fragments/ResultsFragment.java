@@ -5,9 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
@@ -20,10 +22,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.adapters.result.ResultsAdapter;
 import com.sandboxcode.trackerappr2.models.ResultModel;
+import com.sandboxcode.trackerappr2.utils.GravitySnapHelper;
 import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
 
 import org.parceler.Parcels;
@@ -71,9 +75,30 @@ public class ResultsFragment extends Fragment {
         }
         FragmentManager fragmentManager = getParentFragmentManager();
 
-        adapter = new ResultsAdapter(R.layout.result_list_item, fragmentManager, searchId);
+        adapter = new ResultsAdapter(R.layout.result_list_item, fragmentManager, searchId, this);
 
     }
+
+//    public void viewDetails(ResultModel result, String searchId, ImageView thumbnail) {
+//        Bundle args = new Bundle();
+//        args.putParcelable("RESULT", Parcels.wrap(result));
+//        args.putString("SEARCH_ID", searchId);
+//
+//        DetailFragment fragment = new DetailFragment();
+//        fragment.setArguments(args);
+//
+//        fragment.getParentFragmentManager()
+//                .beginTransaction()
+//                .setReorderingAllowed(true)
+//                .addSharedElement(thumbnail, thumbnail.getTransitionName())
+//                .replace(R.id.main_fragment_container,
+//                        fragment,
+//                        DetailFragment.class.getSimpleName())
+//                .addToBackStack(null)
+//                .commit();
+//    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,16 +130,14 @@ public class ResultsFragment extends Fragment {
                         crossFade(resultRecyclerView, loaderLayout);
                 });
 
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activityContext);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(activityContext, 2);
         resultRecyclerView.setVisibility(View.GONE);
         resultRecyclerView.setHasFixedSize(true);
         resultRecyclerView.setLayoutManager(layoutManager);
 
+        GravitySnapHelper gravitySnapHelper = new GravitySnapHelper(Gravity.TOP);
+        gravitySnapHelper.attachToRecyclerView(resultRecyclerView);
 
-        // TODO -- Why doesn't this work???
-//        LinearSnapHelper snapHelper = new LinearSnapHelper();
-//        snapHelper.attachToRecyclerView(resultRecyclerView);
         resultRecyclerView.setAdapter(adapter);
 
     }
