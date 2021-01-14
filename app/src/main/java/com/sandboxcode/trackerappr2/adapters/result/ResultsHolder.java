@@ -20,8 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 //import com.google.android.material.transition.MaterialContainerTransform;
-import com.google.android.material.transition.platform.Hold;
-import com.google.android.material.transition.platform.MaterialContainerTransform;
+import com.google.android.material.transition.MaterialContainerTransform;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.DetailFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
@@ -127,7 +126,6 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
 
         fragmentManager
                 .beginTransaction()
-//                .addSharedElement(thumbnail, searchId)
                 .setReorderingAllowed(true)
                 .addSharedElement(thumbnail, thumbnail.getTransitionName())
                 .replace(R.id.main_fragment_container,

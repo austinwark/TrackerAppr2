@@ -42,6 +42,13 @@ android {
     dataBinding {
         enabled = true
     }
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src\\main\\res'
+            }
+        }
+    }
 }
 
 dependencies {

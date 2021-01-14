@@ -43,6 +43,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2018 Toyota Corolla"
+                android:maxLines="1"
+                android:ellipsize="end"
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 />
 

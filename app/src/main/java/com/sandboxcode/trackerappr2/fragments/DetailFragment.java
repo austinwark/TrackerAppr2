@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -40,7 +41,7 @@ public class DetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            postponeEnterTransition();
             // Get result and search ID
             result = Parcels.unwrap(getArguments().getParcelable("RESULT"));
             searchId = getArguments().getString("SEARCH_ID");
@@ -79,7 +80,17 @@ public class DetailFragment extends Fragment {
         TextView transmission = v.findViewById(R.id.tv_details_transmission);
         transmission.setText(result.getTransmission());
         image = v.findViewById(R.id.detail_image_thumbnail);
-        Picasso.get().load(result.getImageUrl()).fit().into(image);
+        Picasso.get().load(result.getImageUrl()).fit().into(image, new Callback() {
+            @Override
+            public void onSuccess() {
+                startPostponedEnterTransition();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                startPostponedEnterTransition();
+            }
+        });
 
         ImageButton carfaxImageButton =  v.findViewById(R.id.detail_button_carfax);
         carfaxImageButton.setOnClickListener(view -> {

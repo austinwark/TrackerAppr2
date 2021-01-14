@@ -175,6 +175,9 @@ public class MainActivity extends AppCompatActivity {
             viewModel.toggleEdit();
         else if ((fragment instanceof SearchesFragment))
             finish();
+//        else if ((fragment instanceof DetailFragment)) {
+//
+//        }
         else
             super.onBackPressed();
     }

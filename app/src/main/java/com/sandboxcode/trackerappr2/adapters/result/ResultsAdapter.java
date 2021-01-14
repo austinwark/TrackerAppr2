@@ -61,6 +61,4 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
 
         return this.resultsList.size();
     }
-
-
 }

@@ -79,27 +79,6 @@ public class ResultsFragment extends Fragment {
 
     }
 
-//    public void viewDetails(ResultModel result, String searchId, ImageView thumbnail) {
-//        Bundle args = new Bundle();
-//        args.putParcelable("RESULT", Parcels.wrap(result));
-//        args.putString("SEARCH_ID", searchId);
-//
-//        DetailFragment fragment = new DetailFragment();
-//        fragment.setArguments(args);
-//
-//        fragment.getParentFragmentManager()
-//                .beginTransaction()
-//                .setReorderingAllowed(true)
-//                .addSharedElement(thumbnail, thumbnail.getTransitionName())
-//                .replace(R.id.main_fragment_container,
-//                        fragment,
-//                        DetailFragment.class.getSimpleName())
-//                .addToBackStack(null)
-//                .commit();
-//    }
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
