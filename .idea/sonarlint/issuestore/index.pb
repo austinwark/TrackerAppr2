@@ -82,8 +82,6 @@ Sapp/src/main/java/com/sandboxcode/trackerappr2/adapters/search/SearchesAdapter.
 .app/src/main/res/drawable-anydpi/ic_delete.xml,1\9\193a1ab8249aa9c706aa7440b9702b1cdbf9b93d
 Å
 Qapp/src/main/java/com/sandboxcode/trackerappr2/repositories/SearchRepository.java,1\1\11d93fd68a269e80ed7214279368f11e0fa1ab11
-R
-"app/src/main/res/values/arrays.xml,7\c\7cca4a2d94815c47d6a1ce79d4f7ac1c41c7b766
 |
 Lapp/src/main/java/com/sandboxcode/trackerappr2/viewmodels/AuthViewModel.java,f\c\fc6bb7b4caa0a5618906653385997a65a2fb1df2
 ~

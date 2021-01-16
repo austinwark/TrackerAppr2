@@ -158,6 +158,7 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
         PRICE_RANGE("&Pricerange="),
         NOT_ALL_DEALERSHIPS("&Dealership=Lia%20Toyota%20of%20Colonie"),
         MILEAGERANGE("&Mileagerange="); // TODO: add mileage range parameter to search
+
         private final String val;
 
         UrlBits(String val) {

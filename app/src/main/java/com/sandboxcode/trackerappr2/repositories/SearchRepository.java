@@ -31,6 +31,8 @@ public class SearchRepository implements AsyncResponse {
     /* Fragment Searches */
     private final SearchesListener searchesListener = new SearchesListener();
     private final MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
+
+    /* Fragment Results */
     private final SingleLiveEvent<ArrayList<ResultModel>> searchResults = new SingleLiveEvent<>();
 
     /* Activity Edit */

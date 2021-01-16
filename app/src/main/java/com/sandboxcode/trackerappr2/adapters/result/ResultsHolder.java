@@ -89,12 +89,10 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
         cardView.setOnClickListener(cardViewClickListener);
         cardView.setOnLongClickListener(cardViewLongClickListener);
 
-        Log.d(TAG, result.getStock() + ": " + cardView.isChecked());
 //        newIcon.setVisibility(result.getIsNewResult() ? View.VISIBLE : View.INVISIBLE);
 
         this.position = position;
         thumbnail.setTransitionName(result.getVin());
-        Log.d(TAG, thumbnail.getTransitionName() + "--------");
 
     }
 

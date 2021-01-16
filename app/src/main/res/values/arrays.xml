@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="models_array">
+        <item>4Runner</item>
+        <item>Avalon</item>
+        <item>Camry</item>
+        <item>Camry Hybrid</item>
+        <item>C-HR</item>
+        <item>Corolla</item>
+        <item>Highlander</item>
+        <item>Prius</item>
+        <item>RAV4</item>
+        <item>RAV4 Hybrid</item>
+        <item>Sienna</item>
+        <item>Tacoma</item>
+        <item>Tundra</item>
+        <item>Venza</item>
+        <item>Corolla Hatchback</item>
+    </string-array>
     <integer-array name="price_range">
         <item>0</item>
         <item>40000</item>
@@ -8,4 +25,10 @@
         <item>2000</item>
         <item>2021</item>
     </integer-array>
+    <string-array name="recyclerview_sort_options">
+        <item>Price asc.</item>
+        <item>Price desc.</item>
+        <item>Year asc.</item>
+        <item>Year desc.</item>
+    </string-array>
 </resources>
