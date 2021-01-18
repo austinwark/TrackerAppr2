@@ -93,6 +93,7 @@ dependencies {
 
     implementation "androidx.preference:preference:1.1.1"
 
+    // Third party recyclerview snap helper library
     implementation 'com.github.rubensousa:gravitysnaphelper:2.2.1'
 
 

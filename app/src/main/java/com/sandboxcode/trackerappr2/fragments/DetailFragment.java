@@ -32,10 +32,9 @@ public class DetailFragment extends Fragment {
 
     @SuppressWarnings("unused")
     private static final String TAG = "DetailFragment";
+    ImageView image;
     private ResultModel result;
     private String searchId;
-
-    ImageView image;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,12 +91,13 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        ImageButton carfaxImageButton =  v.findViewById(R.id.detail_button_carfax);
+        ImageButton carfaxImageButton = v.findViewById(R.id.detail_button_carfax);
         carfaxImageButton.setOnClickListener(view -> {
             String carfaxUrl = "https:" + result.getCarfaxLink();
             Uri webpage = Uri.parse(carfaxUrl);
             Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
-            startActivity(webIntent);
+            if (webIntent.resolveActivity(getActivity().getPackageManager()) != null)
+                startActivity(webIntent);
         });
     }
 

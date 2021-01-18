@@ -43,8 +43,10 @@ public class MainSharedViewModel extends AndroidViewModel {
     /* Results Fragment */
     private SingleLiveEvent<ArrayList<ResultModel>> searchResults;
     private SingleLiveEvent<Integer> sortMenuOpen = new SingleLiveEvent<>();
-    private final SingleLiveEvent<ResultsFragment.SortOption> sortOption = new SingleLiveEvent<>();
     private final SingleLiveEvent<Boolean> sortCompleted = new SingleLiveEvent<>();
+    private SingleLiveEvent<Integer> openShareConfirmation = new SingleLiveEvent<>();
+
+    private ArrayList<String> checkedResults;
 
     private final OnCompleteListener<Void> onDeleteListener = task -> {
 
@@ -63,6 +65,8 @@ public class MainSharedViewModel extends AndroidViewModel {
 
         userSignedIn = authRepository.getUserSignedIn();
         signUserOut = authRepository.getSignUserOut();
+
+        checkedResults = new ArrayList<>();
 
     }
 
@@ -120,10 +124,14 @@ public class MainSharedViewModel extends AndroidViewModel {
             case R.id.results_action_sort:
                 toggleSortMenu();
                 break;
+            case R.id.results_action_share:
+                openShareConfirmation.setValue(checkedResults.size());
+                break;
             default:
                 break;
         }
     }
+
 
     public void signUserOut() {
         authRepository.signUserOut();
@@ -174,6 +182,9 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     // TODO -- Call SearchResults every time? OR only when null and nothing has changed?
     public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
+        if (searchResults == null || searchResults.getValue().isEmpty())
+            Log.d(TAG, "NULL ------------");
+
         searchResults = searchRepository.getSearchResults(searchId);
         return searchResults;
     }
@@ -264,6 +275,25 @@ public class MainSharedViewModel extends AndroidViewModel {
         }
         sortCompleted.setValue(true);
     }
+
+    public void clearCheckedResults() {
+        checkedResults.clear();
+    }
+    public int removeCheckedResult(String link) {
+        checkedResults.remove(link);
+        return checkedResults.size();
+    }
+
+    public int addCheckedResult(String... links) {
+        Collections.addAll(checkedResults, links);
+        return checkedResults.size();
+    }
+
+    public List<String> getCheckedResults() { return checkedResults; }
+
+    public SingleLiveEvent<Integer> getOpenShareConfirmation() { return openShareConfirmation; }
+
+
 
     @Override
     protected void onCleared() {

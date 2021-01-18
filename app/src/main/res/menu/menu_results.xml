@@ -5,9 +5,19 @@
 
     <item
         android:id="@+id/results_action_sort"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title="Sort"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_sort" />
+
+    <item
+        android:id="@+id/results_action_share"
+        android:orderInCategory="1"
+        android:title="Share"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_share"
+        android:enabled="false"
+        />
+
 
 </menu>

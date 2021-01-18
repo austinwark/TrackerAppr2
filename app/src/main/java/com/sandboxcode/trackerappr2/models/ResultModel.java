@@ -26,6 +26,7 @@ public class ResultModel {
     private String imageUrl;
     private boolean isNewResult;
     private String carfaxLink;
+    private String detailsLink;
 
     private boolean isChecked; // field used to keep track of UI state in RecyclerView
 
@@ -53,6 +54,7 @@ public class ResultModel {
         imageUrl = details.get("imageUrl");
         isNewResult = true;
         carfaxLink = details.get("carfaxLink");
+        detailsLink = details.get("detailsLink");
         isChecked = false;
     }
 
@@ -149,6 +151,8 @@ public class ResultModel {
     public String getCarfaxLink() {
         return carfaxLink;
     }
+
+    public String getDetailsLink() { return detailsLink; }
 
     public void setIsChecked(boolean isChecked) { this.isChecked = isChecked; }
 

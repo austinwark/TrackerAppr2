@@ -140,6 +140,7 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
                                 .select("img.vehicleImg").attr("src");
                 details.put("imageUrl", imageUrl);
                 details.put("carfaxLink", vehicle.select("a.stat-image-link").attr("href"));
+                details.put("detailsLink", vehicle.select("a.vehicleDetailsLink").attr("href"));
 
                 ResultModel resultModel = new ResultModel(details);
                 results.add(resultModel);

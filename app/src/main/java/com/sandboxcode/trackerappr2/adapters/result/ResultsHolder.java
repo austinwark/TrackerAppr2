@@ -109,6 +109,12 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
             boolean isCurrentlyChecked = resultModel.isChecked();
             cardView.setChecked(!isCurrentlyChecked);
             resultModel.setIsChecked(!isCurrentlyChecked);
+
+            if (!isCurrentlyChecked)
+                resultsFragment.addCheckedResult(resultModel.getDetailsLink());
+            else
+                resultsFragment.removeCheckedResult(resultModel.getDetailsLink());
+
             return true;
         }
     };
