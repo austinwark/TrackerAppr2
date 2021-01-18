@@ -18,7 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.models.ResultModel;
-import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
+import com.sandboxcode.trackerappr2.viewmodels.DetailViewModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -121,8 +121,8 @@ public class DetailFragment extends Fragment {
         }
 
         // Change isNew field indicating the user has seen the result
-        MainSharedViewModel viewModel = new ViewModelProvider(requireActivity())
-                .get(MainSharedViewModel.class);
+        DetailViewModel viewModel = new ViewModelProvider(requireActivity())
+                .get(DetailViewModel.class);
         viewModel.setResultHasBeenViewed(result.getVin(), searchId);
         result.setIsNewResult(false);
 

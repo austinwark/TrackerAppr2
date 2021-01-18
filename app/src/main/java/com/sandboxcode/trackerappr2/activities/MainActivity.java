@@ -4,14 +4,13 @@ import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.View;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,14 +23,13 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
-import com.firebase.ui.auth.AuthUI;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.DetailFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
 import com.sandboxcode.trackerappr2.fragments.SettingsFragment;
 import com.sandboxcode.trackerappr2.utils.ResultsReceiver;
-import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
+import com.sandboxcode.trackerappr2.viewmodels.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int NOTIFICATION_ID = 0;
     private static final String PRIMARY_CHANNEL_ID = "primary_notification_channel";
     private static final String USER_ID_EXTRA = "user_id";
-    private MainSharedViewModel viewModel;
+    private MainViewModel viewModel;
     private String userId;
     private NotificationManager notificationManager;
 
@@ -75,21 +73,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbarTop = findViewById(R.id.toolbar_top);
         setSupportActionBar(toolbarTop);
 
-        viewModel = new ViewModelProvider(this).get(MainSharedViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.getUserSignedIn().observe(this, userSignedIn -> {
-            viewModel.setSearchesListener();
+//            viewModel.setSearchesListener();
             userId = viewModel.getUserId();
             startUpdatingResultsBroadcast();
 //            retrieveSavedSettings(userId);
-        });
-        viewModel.getOpenSettingsScreen().observe(this, openSettings -> {
-            SettingsFragment settingsFragment = new SettingsFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.main_fragment_container, settingsFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
         });
 
         // TODO -- Set dark mode here or elsewhere?
@@ -168,16 +157,9 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
 
-        // If fragment is not SearchesFragment or edit menu DNE or edit menu is closed
-        if ((fragment instanceof SearchesFragment)
-                && viewModel.getEditMenuOpen().getValue() != null
-                && viewModel.getEditMenuOpen().getValue() == View.VISIBLE)
-            viewModel.toggleEdit();
-        else if ((fragment instanceof SearchesFragment))
-            finish();
-//        else if ((fragment instanceof DetailFragment)) {
-//
-//        }
+        // If fragment is SearchesFragment call its own method to handle back pressed
+        if ((fragment instanceof SearchesFragment))
+            ((SearchesFragment) fragment).handleBackPressed();
         else
             super.onBackPressed();
     }

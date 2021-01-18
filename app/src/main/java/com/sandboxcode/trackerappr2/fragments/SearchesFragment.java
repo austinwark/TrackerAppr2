@@ -20,6 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +32,7 @@ import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
 import com.sandboxcode.trackerappr2.activities.EditActivity;
 import com.sandboxcode.trackerappr2.adapters.search.SearchesAdapter;
-import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
+import com.sandboxcode.trackerappr2.viewmodels.SearchesViewModel;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -47,7 +49,8 @@ public class SearchesFragment extends Fragment {
     private static final String RESULT_MESSAGE_TAG = "result_message";
     FloatingActionButton fab;
 
-    private MainSharedViewModel viewModel;
+//    private MainViewModel viewModel;
+    private SearchesViewModel viewModel;
 
     private BottomNavigationView toolbarBottom;
     private SearchesAdapter adapter;
@@ -80,8 +83,9 @@ public class SearchesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         ArrayList<String> checkedItems;
 
-        viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
-
+//        viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        viewModel = new ViewModelProvider(getActivity()).get(SearchesViewModel.class);
+        viewModel.setSearchesListener();
         checkedItems = viewModel.getCheckedItems();
         adapter = new SearchesAdapter(R.layout.search_list_item, this, checkedItems);
 
@@ -125,6 +129,7 @@ public class SearchesFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
@@ -167,6 +172,25 @@ public class SearchesFragment extends Fragment {
                     .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel()).show();
 
         });
+        viewModel.getOpenSettingsScreen().observe(this, openSettings -> {
+            SettingsFragment settingsFragment = new SettingsFragment();
+            FragmentManager fragmentManager = getParentFragmentManager();
+
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.main_fragment_container, settingsFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
+    }
+
+    public void handleBackPressed() {
+        // If edit menu is open on back pressed -> close edit menu
+        if (viewModel.getEditMenuOpen().getValue() != null
+                && viewModel.getEditMenuOpen().getValue() == View.VISIBLE)
+            viewModel.toggleEdit();
+        // Otherwise finish activity
+        else
+            getActivity().finish();
     }
 
     private void instantiateUI(View view) {

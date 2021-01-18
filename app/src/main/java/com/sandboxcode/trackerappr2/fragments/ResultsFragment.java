@@ -3,7 +3,6 @@ package com.sandboxcode.trackerappr2.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,7 +33,7 @@ import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.adapters.result.ResultsAdapter;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.utils.GravitySnapHelper;
-import com.sandboxcode.trackerappr2.viewmodels.MainSharedViewModel;
+import com.sandboxcode.trackerappr2.viewmodels.ResultsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,7 @@ public class ResultsFragment extends Fragment {
     private static final String TAG = "ResultsFragment";
     private static final String CHECKED_RESULTS_TAG = "checked_results";
 
-    private MainSharedViewModel viewModel;
+    private ResultsViewModel viewModel;
     private ArrayList<ResultModel> unsortedResults;
     private int numberOfResults;
     private int numberOfCheckedResults;
@@ -118,7 +117,7 @@ public class ResultsFragment extends Fragment {
         }
 
 
-        viewModel = new ViewModelProvider(requireActivity()).get(MainSharedViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(ResultsViewModel.class);
 //        viewModel.clearCheckedResults();
 
         instantiateUI(view);

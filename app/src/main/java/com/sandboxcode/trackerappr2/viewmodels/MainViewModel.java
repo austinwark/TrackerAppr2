@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.Log;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
@@ -19,20 +18,19 @@ import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class MainSharedViewModel extends AndroidViewModel {
+public class MainViewModel extends AndroidViewModel {
 
-    private static final String TAG = "SearchViewModel";
+    private static final String TAG = MainViewModel.class.getSimpleName();
     private final SearchRepository searchRepository;
     private final AuthRepository authRepository;
     /* MainActivity */
     private final MutableLiveData<Boolean> userSignedIn;
     private final MutableLiveData<Boolean> signUserOut;
-    private MutableLiveData<List<SearchModel>> allSearches;
 
     /* Searches Fragment */
+    private MutableLiveData<List<SearchModel>> allSearches;
     private final SingleLiveEvent<String> toastMessage = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
     private final SingleLiveEvent<String> startEditActivity = new SingleLiveEvent<>();
@@ -56,9 +54,9 @@ public class MainSharedViewModel extends AndroidViewModel {
     };
     /* SearchesFragment */
 
-    public MainSharedViewModel(Application application) {
+    public MainViewModel(Application application) {
         super(application);
-        Log.d(TAG, "viewmodel CONSTRUCTOR=========");
+
         searchRepository = new SearchRepository();
         authRepository = new AuthRepository();
         allSearches = searchRepository.getAllSearches();
@@ -70,68 +68,9 @@ public class MainSharedViewModel extends AndroidViewModel {
 
     }
 
-    public void saveState() {
-
-    }
-
-    public ArrayList<String> getCheckedItems() {
-        return checkedItems;
-    }
-
     public MutableLiveData<Boolean> getUserSignedIn() {
         return userSignedIn;
     }
-
-    public void setSearchesListener() {
-        searchRepository.setListeners();
-    }
-
-    public MutableLiveData<List<SearchModel>> getAllSearches() {
-        if (allSearches == null)
-            allSearches = searchRepository.getAllSearches();
-        return allSearches;
-    }
-
-    // TODO - RESET LIST WHEN NAVIGATING AWAY FROM SCREEN
-    public void updateCheckedSearchesList(String searchId, boolean isChecked) {
-
-        if (isChecked)
-            checkedItems.add(searchId);
-        else
-            checkedItems.remove(searchId);
-    }
-
-    public void handleOnOptionsItemSelected(int itemId) {
-
-        switch (itemId) {
-            /* ----- Top Toolbar Menu ----- */
-            case R.id.action_edit:
-                toggleEdit();
-                break;
-            case R.id.action_settings:
-                openSettingsScreen.setValue(true);
-                break;
-
-            /* ----- Bottom Toolbar Menu ----- */
-            case R.id.action_search_edit:
-                editSearch();
-                break;
-            case R.id.action_delete:
-                handleDeleteSearches();
-                break;
-
-            /* Results Menu */
-            case R.id.results_action_sort:
-                toggleSortMenu();
-                break;
-            case R.id.results_action_share:
-                openShareConfirmation.setValue(checkedResults.size());
-                break;
-            default:
-                break;
-        }
-    }
-
 
     public void signUserOut() {
         authRepository.signUserOut();
