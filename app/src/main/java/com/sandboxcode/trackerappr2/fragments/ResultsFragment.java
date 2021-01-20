@@ -27,13 +27,17 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.transition.MaterialContainerTransform;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.adapters.result.ResultsAdapter;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.utils.GravitySnapHelper;
 import com.sandboxcode.trackerappr2.viewmodels.ResultsViewModel;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +52,7 @@ public class ResultsFragment extends Fragment {
 
     private static final String TAG = "ResultsFragment";
     private static final String CHECKED_RESULTS_TAG = "checked_results";
+    FragmentManager fragmentManager;
 
     private ResultsViewModel viewModel;
     private ArrayList<ResultModel> unsortedResults;
@@ -70,6 +75,7 @@ public class ResultsFragment extends Fragment {
     private Chip getSortChipPriceDesc;
 
     private MenuItem shareResultsItem;
+    private BottomNavigationView toolbarBottom;
 
     public ResultsFragment() {
         // Required empty public constructor
@@ -79,9 +85,9 @@ public class ResultsFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        ArrayList<String> checkedResults = (ArrayList<String>) viewModel.getCheckedResults();
-        if (!checkedResults.isEmpty())
-            outState.putStringArrayList(CHECKED_RESULTS_TAG, checkedResults);
+//        ArrayList<ResultModel> checkedResults = (ArrayList<ResultModel>) viewModel.getCheckedResults();
+//        if (!checkedResults.isEmpty())
+//            outState.putStringArrayList(CHECKED_RESULTS_TAG, checkedResults);
     }
 
     @Override
@@ -90,10 +96,9 @@ public class ResultsFragment extends Fragment {
         if (getArguments() != null) {
             searchId = getArguments().getString("ID");
         }
-        FragmentManager fragmentManager = getParentFragmentManager();
+        fragmentManager = getParentFragmentManager();
 
         shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-        adapter = new ResultsAdapter(R.layout.result_list_item, fragmentManager, searchId, this);
 
         setHasOptionsMenu(true);
         numberOfResults = 0;
@@ -116,8 +121,9 @@ public class ResultsFragment extends Fragment {
                     .getSupportActionBar()).setTitle("Results");
         }
 
+        adapter = new ResultsAdapter(R.layout.result_list_item, fragmentManager, searchId, this);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(ResultsViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ResultsViewModel.class);
 //        viewModel.clearCheckedResults();
 
         instantiateUI(view);
@@ -125,15 +131,18 @@ public class ResultsFragment extends Fragment {
         viewModel.getSearchResults(searchId).observe(getViewLifecycleOwner(), results -> {
             unsortedResults = results;
 
-            if (savedInstanceState != null &&
-                    savedInstanceState.getStringArrayList(CHECKED_RESULTS_TAG) != null) {
-                // Restore UI state after config. change
-                restoreCheckedCardStates(unsortedResults, savedInstanceState.getStringArrayList(CHECKED_RESULTS_TAG));
-            } else {
-                viewModel.clearCheckedResults(); // reset checkedResults array in ViewModel
-            }
+//            if (savedInstanceState != null &&
+//                    savedInstanceState.getStringArrayList(CHECKED_RESULTS_TAG) != null) {
+//                // Restore UI state after config. change
+//                restoreCheckedCardStates(unsortedResults, savedInstanceState.getStringArrayList(CHECKED_RESULTS_TAG));
+//            } else {
+//                viewModel.clearCheckedResults(); // reset checkedResults array in ViewModel
+//            }
+
+            restoreCheckedCardStates(results, viewModel.getCheckedResults());
 
             adapter.setResults(results);
+            startPostponedEnterTransition();
             if (results.isEmpty())
                 crossFade(noResultsLayout, loaderLayout);
             else
@@ -151,34 +160,47 @@ public class ResultsFragment extends Fragment {
         );
         viewModel.getOpenShareConfirmation().observe(getViewLifecycleOwner(),
                 this::showShareConfirmationDialog);
+        viewModel.getEditMenuVisibility().observe(getViewLifecycleOwner(), visibility -> {
+            toolbarBottom.setVisibility(visibility);
+            adapter.setEditActive(visibility);
+
+        });
+        viewModel.getViewDetails().observe(getViewLifecycleOwner(), result -> {
+            viewDetails(result, searchId);
+        });
 
     }
 
-    private void restoreCheckedCardStates(ArrayList<ResultModel> results,
-                                      ArrayList<String> checkedResultsLinks) {
+    private void restoreCheckedCardStates(List<ResultModel> results,
+                                      List<ResultModel> checkedResults) {
 
-        for (String resultLink : checkedResultsLinks)
+        for (ResultModel checkedResult : checkedResults)
             for (ResultModel result : results)
-                if (result.getDetailsLink().equalsIgnoreCase(resultLink))
+                if (result.getDetailsLink().equalsIgnoreCase(checkedResult.getDetailsLink()))
                     result.setIsChecked(true);
 
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_results, menu);
 
         MenuItem sortResultsItem = menu.findItem(R.id.results_action_sort);
         shareResultsItem = menu.findItem(R.id.results_action_share);
         sortResultsItem.setEnabled((numberOfResults > 0));
-        super.onCreateOptionsMenu(menu, inflater);
+
+        Menu bottomMenu = toolbarBottom.getMenu();
+
+        for (int itemIndex = 0; itemIndex < bottomMenu.size(); itemIndex++)
+            bottomMenu.getItem(itemIndex).setOnMenuItemClickListener(this::onOptionsItemSelected);
     }
 
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-         menu.findItem(R.id.results_action_share).setEnabled(numberOfCheckedResults > 0);
+//         menu.findItem(R.id.results_action_share).setEnabled(numberOfCheckedResults > 0);
     }
 
     @Override
@@ -194,6 +216,7 @@ public class ResultsFragment extends Fragment {
         loaderLayout = view.findViewById(R.id.results_layout_loader);
         sortLayout = view.findViewById(R.id.results_layout_sort_options);
         sortChipGroup = view.findViewById(R.id.results_chip_group_sort);
+        toolbarBottom = view.findViewById(R.id.results_toolbar_bottom);
 
         sortChipGroup.setOnCheckedChangeListener((group, id) -> {
             Chip sortChip = view.findViewById(id);
@@ -217,16 +240,22 @@ public class ResultsFragment extends Fragment {
         gravitySnapHelper.attachToRecyclerView(resultRecyclerView);
 
         resultRecyclerView.setAdapter(adapter);
+
+        toolbarBottom.setVisibility(View.INVISIBLE);
     }
 
-    public void addCheckedResult(String link) {
-        numberOfCheckedResults = viewModel.addCheckedResult(link);
-        shareResultsItem.setEnabled(numberOfCheckedResults > 0);
+    public void setEditMenuActive() {
+        viewModel.setEditMenuVisibility(View.VISIBLE);
     }
 
-    public void removeCheckedResult(String link) {
-        numberOfCheckedResults = viewModel.removeCheckedResult(link);
-        shareResultsItem.setEnabled(numberOfCheckedResults > 0);
+    public void addCheckedResult(ResultModel result) {
+        numberOfCheckedResults = viewModel.addCheckedResult(result);
+//        shareResultsItem.setEnabled(numberOfCheckedResults > 0);
+    }
+
+    public void removeCheckedResult(ResultModel result) {
+        numberOfCheckedResults = viewModel.removeCheckedResult(result);
+//        shareResultsItem.setEnabled(numberOfCheckedResults > 0);
     }
 
     public void showShareConfirmationDialog(int numberOfResults) {
@@ -243,7 +272,10 @@ public class ResultsFragment extends Fragment {
     }
 
     public void shareResults() {
-        List<String> resultLinks = viewModel.getCheckedResults();
+        List<String> resultLinks = new ArrayList<>();
+        for (ResultModel checkedResult : viewModel.getCheckedResults())
+            resultLinks.add(checkedResult.getDetailsLink());
+
 //        String subjectText = "Check Out These Pre-Owned Toyotas I Found for You!";
         String bodyText = buildBodyText(resultLinks);
         if (!resultLinks.isEmpty()) {
@@ -258,6 +290,32 @@ public class ResultsFragment extends Fragment {
         }
     }
 
+    public void viewDetails(ResultModel result, String searchId) {
+        Bundle args = new Bundle();
+        args.putParcelable("RESULT", Parcels.wrap(result));
+        args.putString("SEARCH_ID", searchId);
+
+        DetailFragment fragment = new DetailFragment();
+//        fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
+        fragment.setArguments(args);
+
+        fragmentManager
+                .beginTransaction()
+                .setReorderingAllowed(true)
+//                .addSharedElement(thumbnail, thumbnail.getTransitionName())
+                .replace(R.id.main_fragment_container,
+                        fragment,
+                        DetailFragment.class.getSimpleName())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onResume() {
+        postponeEnterTransition();
+        super.onResume();
+    }
+
     private String buildBodyText(List<String> resultLinks) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Check out these pre-owned Toyotas I found for you! Click the links below to view each vehicle: \n\n");
@@ -267,13 +325,14 @@ public class ResultsFragment extends Fragment {
         return stringBuilder.toString();
     }
 
-    // TODO - Fix slight lag when choosing a different search (previous results show for 1/2 a sec)
+    // TODO - Results are reloaded on orientation change????
     @Override
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView");
         adapter.setResults(null);
         super.onDestroyView();
     }
+
 
     public void crossFade(View view1, View view2) {
         view1.setAlpha(0f);

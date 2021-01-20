@@ -21,6 +21,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
     private final int itemResource;
     private final FragmentManager fragmentManager;
     private final String searchId;
+    private int editActive;
 
     ResultsFragment resultsFragment;
 
@@ -30,7 +31,6 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
         this.itemResource = itemResource;
         this.fragmentManager = fragmentManager;
         this.searchId = searchId;
-
         this.resultsFragment = resultsFragment;
     }
 
@@ -49,10 +49,16 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
         ResultModel result = this.resultsList.get(position);
 
         holder.bindResult(result, position);
+        holder.setEditActive(editActive);
     }
 
     public void setResults(List<ResultModel> results) {
         resultsList = results;
+        notifyDataSetChanged();
+    }
+
+    public void setEditActive(int editActive) {
+        this.editActive = editActive;
         notifyDataSetChanged();
     }
 
@@ -61,4 +67,5 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
 
         return this.resultsList.size();
     }
+
 }

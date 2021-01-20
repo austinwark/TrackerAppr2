@@ -40,7 +40,7 @@ public class DetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            postponeEnterTransition();
+//            postponeEnterTransition();
             // Get result and search ID
             result = Parcels.unwrap(getArguments().getParcelable("RESULT"));
             searchId = getArguments().getString("SEARCH_ID");
@@ -79,17 +79,18 @@ public class DetailFragment extends Fragment {
         TextView transmission = v.findViewById(R.id.tv_details_transmission);
         transmission.setText(result.getTransmission());
         image = v.findViewById(R.id.detail_image_thumbnail);
-        Picasso.get().load(result.getImageUrl()).fit().into(image, new Callback() {
-            @Override
-            public void onSuccess() {
-                startPostponedEnterTransition();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                startPostponedEnterTransition();
-            }
-        });
+        Picasso.get().load(result.getImageUrl()).fit().into(image);
+        //        Picasso.get().load(result.getImageUrl()).fit().into(image, new Callback() {
+//            @Override
+//            public void onSuccess() {
+//                startPostponedEnterTransition();
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                startPostponedEnterTransition();
+//            }
+//        });
 
         ImageButton carfaxImageButton = v.findViewById(R.id.detail_button_carfax);
         carfaxImageButton.setOnClickListener(view -> {
@@ -106,8 +107,8 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_detail, container, false);
-        v.findViewById(R.id.detail_image_thumbnail).setTransitionName(result.getVin());
-        Log.d(TAG, v.findViewById(R.id.detail_image_thumbnail).getTransitionName() + "--------");
+//        v.findViewById(R.id.detail_image_thumbnail).setTransitionName(result.getVin());
+//        Log.d(TAG, v.findViewById(R.id.detail_image_thumbnail).getTransitionName() + "--------");
         return v;
     }
 

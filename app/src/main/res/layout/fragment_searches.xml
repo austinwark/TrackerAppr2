@@ -70,7 +70,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email"
         android:contentDescription="@string/FAB_create_content_description"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -78,7 +77,7 @@
         style="@style/Widget.MaterialComponents.BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/menu_edit"
+        app:menu="@menu/menu_searches_edit"
         android:layout_gravity="bottom"
         android:background="@color/colorSecondaryLight"/>
 

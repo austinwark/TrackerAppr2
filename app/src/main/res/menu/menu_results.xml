@@ -16,8 +16,14 @@
         android:title="Share"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_share"
-        android:enabled="false"
         />
+
+    <item
+        android:id="@+id/results_action_edit"
+        android:orderInCategory="3"
+        android:title="Edit"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_create" />
 
 
 </menu>

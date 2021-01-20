@@ -24,7 +24,7 @@
             android:label="Register"/>
         <activity
             android:name=".activities.LoginActivity"
-            android:label="Login">
+            android:label="Tracker Appr">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

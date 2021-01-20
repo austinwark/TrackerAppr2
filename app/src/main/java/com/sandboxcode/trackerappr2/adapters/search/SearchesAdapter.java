@@ -36,8 +36,8 @@ public class SearchesAdapter extends RecyclerView.Adapter<SearchesHolder> {
         this.itemResource = itemResource;
         this.fragment = fragment;
         this.fragmentManager = fragment.getParentFragmentManager();
-        this.editActive = View.INVISIBLE;
         this.checkedItems = checkedItems;
+        editActive = View.INVISIBLE;
     }
 
     @Override

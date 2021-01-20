@@ -53,6 +53,8 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
     private int position;
     private View thumbnailView;
 
+    private View emptyCheckbox;
+
     public ResultsHolder(View itemView, FragmentManager fragmentManager,
                          String searchId, ResultsFragment resultsFragment) {
         super(itemView);
@@ -62,6 +64,7 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
         stock = itemView.findViewById(R.id.result_text_stock);
         price = itemView.findViewById(R.id.result_text_price);
         thumbnail = itemView.findViewById(R.id.result_image_thumbnail);
+        emptyCheckbox = itemView.findViewById(R.id.result_shape_ring);
 //        newIcon = itemView.findViewById(R.id.result_image_new);
 
         this.fragmentManager = fragmentManager;
@@ -86,7 +89,7 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
         Picasso.get().load(result.getImageUrl()).into(thumbnail);
 
         cardView.setChecked(result.isChecked());
-        cardView.setOnClickListener(cardViewClickListener);
+//        cardView.setOnClickListener(cardViewClickListener);
         cardView.setOnLongClickListener(cardViewLongClickListener);
 
 //        newIcon.setVisibility(result.getIsNewResult() ? View.VISIBLE : View.INVISIBLE);
@@ -110,10 +113,12 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
             cardView.setChecked(!isCurrentlyChecked);
             resultModel.setIsChecked(!isCurrentlyChecked);
 
-            if (!isCurrentlyChecked)
-                resultsFragment.addCheckedResult(resultModel.getDetailsLink());
+            if (!isCurrentlyChecked) {
+                resultsFragment.addCheckedResult(resultModel);
+                resultsFragment.setEditMenuActive();
+            }
             else
-                resultsFragment.removeCheckedResult(resultModel.getDetailsLink());
+                resultsFragment.removeCheckedResult(resultModel);
 
             return true;
         }
@@ -139,6 +144,14 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
                 .commit();
     }
 
+    public void setEditActive(int editActive) {
+        emptyCheckbox.setVisibility(editActive);
+        if (editActive == View.INVISIBLE) {
+            cardView.setChecked(false);
+            resultModel.setIsChecked(false);
+        }
+    }
+
 
     //    public void viewDetails(ResultModel result, String searchId) {
 //
@@ -154,15 +167,5 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
 //        transaction.addToBackStack(null);
 //        transaction.commit();
 //    }
-
-    private class ResultWrapper {
-        ResultModel result;
-        boolean isChecked;
-        ResultWrapper(ResultModel result, boolean isChecked) {
-            this.result = result;
-            this.isChecked = isChecked;
-        }
-        void toggleChecked() { isChecked = !isChecked; }
-    }
 
 }

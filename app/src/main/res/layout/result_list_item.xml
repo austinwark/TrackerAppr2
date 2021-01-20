@@ -12,61 +12,82 @@
     android:clickable="true"
     android:focusable="true"
     android:checkable="true"
-    app:checkedIconTint="@color/checkedYellow"
+    app:checkedIconTint="@android:color/white"
     >
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_gravity="center">
+        android:layout_height="wrap_content">
 
 
-        <ImageView
-            android:id="@+id/result_image_thumbnail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/thumbnail_content_description"
-            android:src="@drawable/corolla_preview"
-            />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center">
 
-            <TextView
-                android:id="@+id/result_text_title"
-                android:layout_width="wrap_content"
+
+            <ImageView
+                android:id="@+id/result_image_thumbnail"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="2018 Toyota Corolla"
-                android:maxLines="1"
-                android:ellipsize="end"
-                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/thumbnail_content_description"
+                android:src="@drawable/corolla_preview"
                 />
 
-            <TextView
-                android:id="@+id/result_text_stock"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="#626546"
-                style="@style/TextAppearance.MaterialComponents.Body2"
-                />
+                android:padding="5dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/result_text_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="$28,998"
-                style="@style/TextAppearance.MaterialComponents.Overline"
-                />
+                <TextView
+                    android:id="@+id/result_text_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2018 Toyota Corolla"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    />
+
+                <TextView
+                    android:id="@+id/result_text_stock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="#626546"
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    />
+
+                <TextView
+                    android:id="@+id/result_text_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$28,998"
+                    style="@style/TextAppearance.MaterialComponents.Overline"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <View
+            android:id="@+id/result_shape_ring"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/empty_checkable_ring"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="8dp"
+            android:visibility="invisible"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </com.google.android.material.card.MaterialCardView>
 <!--<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"-->
