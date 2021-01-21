@@ -45,10 +45,10 @@ public class ResultsViewModel extends AndroidViewModel {
         if (itemId == R.id.results_action_sort)
             toggleSortMenu();
         else if (itemId == R.id.results_action_share) {
-//            openShareConfirmation.setValue(checkedResults.size());
+            openShareConfirmation.setValue(checkedResults.size());
         } else if (itemId == R.id.results_action_edit) {
             toggleEdit();
-        } else if (itemId ==  R.id.action_results_view_details) {
+        } else if (itemId ==  R.id.results_action_view_details) {
             // TODO -- view multiple details with a horizontal list in DetailsFragment
             viewDetails.setValue(checkedResults.get(0));
         }

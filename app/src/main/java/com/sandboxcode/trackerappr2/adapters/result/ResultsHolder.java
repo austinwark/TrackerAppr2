@@ -54,6 +54,7 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
     private View thumbnailView;
 
     private View emptyCheckbox;
+    private int editActive;
 
     public ResultsHolder(View itemView, FragmentManager fragmentManager,
                          String searchId, ResultsFragment resultsFragment) {
@@ -89,7 +90,7 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
         Picasso.get().load(result.getImageUrl()).into(thumbnail);
 
         cardView.setChecked(result.isChecked());
-//        cardView.setOnClickListener(cardViewClickListener);
+        cardView.setOnClickListener(cardViewClickListener);
         cardView.setOnLongClickListener(cardViewLongClickListener);
 
 //        newIcon.setVisibility(result.getIsNewResult() ? View.VISIBLE : View.INVISIBLE);
@@ -102,7 +103,21 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
     private final View.OnClickListener cardViewClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewDetails(resultModel, searchId);
+
+            if (editActive == View.VISIBLE) {
+                boolean isCurrentlyChecked = resultModel.isChecked();
+                cardView.setChecked(!isCurrentlyChecked);
+                resultModel.setIsChecked(!isCurrentlyChecked);
+                if (!isCurrentlyChecked)
+                    resultsFragment.addCheckedResult(resultModel);
+                else
+                    resultsFragment.removeCheckedResult(resultModel);
+            } else {
+                viewDetails(resultModel, searchId);
+            }
+
+            //            viewDetails(resultModel, searchId);
+
         }
     };
 
@@ -145,6 +160,7 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
     }
 
     public void setEditActive(int editActive) {
+        this.editActive = editActive;
         emptyCheckbox.setVisibility(editActive);
         if (editActive == View.INVISIBLE) {
             cardView.setChecked(false);

@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -283,8 +285,9 @@ public class ResultsFragment extends Fragment {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_SEND);
 //            intent.putExtra(Intent.EXTRA_SUBJECT, subjectText);
-            intent.putExtra(Intent.EXTRA_TEXT, bodyText);
-            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(bodyText));
+//            intent.setType("text/plain");
+            intent.setType("text/html");
             Intent shareIntent = Intent.createChooser(intent, "Share Search Results");
             startActivity(shareIntent);
         }
@@ -298,7 +301,6 @@ public class ResultsFragment extends Fragment {
         DetailFragment fragment = new DetailFragment();
 //        fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
         fragment.setArguments(args);
-
         fragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true)
@@ -318,9 +320,13 @@ public class ResultsFragment extends Fragment {
 
     private String buildBodyText(List<String> resultLinks) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Check out these pre-owned Toyotas I found for you! Click the links below to view each vehicle: \n\n");
-        for (String link : resultLinks)
-            stringBuilder.append(link).append("\n");
+        stringBuilder.append("Check out these pre-owned Toyotas I found for you! Click the links below to view each vehicle: </br>");
+        for (String link : resultLinks) {
+            String linkString = String.format("<a href=\"%s\">%s</a></br>", link, link);
+//            stringBuilder.append("<a href=\"").append(link).append("\">").append(link).append("</a>").append("\n\n");
+            stringBuilder.append(linkString);
+            Log.d(TAG, linkString);
+        }
 
         return stringBuilder.toString();
     }
@@ -331,6 +337,18 @@ public class ResultsFragment extends Fragment {
         Log.d(TAG, "onDestroyView");
         adapter.setResults(null);
         super.onDestroyView();
+    }
+
+    public void handleBackPressed() {
+        if (viewModel.getEditMenuVisibility().getValue() == null ||
+                viewModel.getEditMenuVisibility().getValue() == View.INVISIBLE) {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.remove(this);
+            transaction.commit();
+            fragmentManager.popBackStack();
+        } else
+            viewModel.toggleEdit();
     }
 
 

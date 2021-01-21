@@ -1,8 +1,0 @@
-
-r	java:S1175"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ª„Íáüÿÿÿÿ8²Û²ë.
-O
-java:S1128"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ8¿ËÒ«í.
-I
-java:S1068"'Remove this unused "TAG" private field.(Ëª¿ıÿÿÿÿ8¿ËÒ«í.
-I
-java:S1602:",Remove useless curly braces around statement(µ›Ê²8¿ËÒ«í.

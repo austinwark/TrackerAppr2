@@ -1,6 +1,5 @@
 package com.sandboxcode.trackerappr2.adapters.result;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +16,12 @@ import java.util.List;
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsHolder> {
 
     private static final String TAG = ResultsAdapter.class.getSimpleName();
-    private List<ResultModel> resultsList = new ArrayList<>();
     private final int itemResource;
     private final FragmentManager fragmentManager;
     private final String searchId;
-    private int editActive;
-
     ResultsFragment resultsFragment;
+    private List<ResultModel> resultsList = new ArrayList<>();
+    private int editActive;
 
     public ResultsAdapter(int itemResource, FragmentManager fragmentManager, String searchId,
                           ResultsFragment resultsFragment) {

@@ -11,14 +11,6 @@
         android:icon="@drawable/ic_sort" />
 
     <item
-        android:id="@+id/results_action_share"
-        android:orderInCategory="1"
-        android:title="Share"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_share"
-        />
-
-    <item
         android:id="@+id/results_action_edit"
         android:orderInCategory="3"
         android:title="Edit"

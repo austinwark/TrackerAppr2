@@ -1,6 +1,0 @@
-
-X	java:S110"<This class has 9 parents which is greater than 5 authorized.(Ê¨¹8ºë„Õí.
-y
-java:S1450"\Remove the "authViewModel" field and declare it as a local variable in the relevant methods.(¼¢‰î8Íš«Œê.
-Q
-java:S1128"4Remove this unused import 'android.widget.EditText'.(†Å›Ú8èÁ›Õí.

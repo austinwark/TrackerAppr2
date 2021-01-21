@@ -1,11 +1,0 @@
-
-p
-java:S1128"NRemove this unused import 'androidx.constraintlayout.widget.ConstraintLayout'.(¨‘úÿÿÿÿ8¤Ü‹Óí.
-c
-java:S1128"FRemove this unused import 'android.animation.AnimatorListenerAdapter'.(®ÃÙ»8ÂşŠÓí.
-J
-java:S1604I"(Make this anonymous inner class a lambda(ŞÀıÿÿÿÿÿ8×ı€ì.
-S
-java:S1128"7Remove this unused import 'android.animation.Animator'.(İŸéN8ÂşŠÓí.
-Z
-java:S1128	"8Remove this unused import 'android.widget.LinearLayout'.(çîšçúÿÿÿÿ8¤Ü‹Óí.

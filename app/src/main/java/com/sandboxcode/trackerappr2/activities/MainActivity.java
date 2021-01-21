@@ -160,6 +160,8 @@ public class MainActivity extends AppCompatActivity {
         // If fragment is SearchesFragment call its own method to handle back pressed
         if ((fragment instanceof SearchesFragment))
             ((SearchesFragment) fragment).handleBackPressed();
+        else if ((fragment instanceof  ResultsFragment))
+            ((ResultsFragment) fragment).handleBackPressed();
         else
             super.onBackPressed();
     }
