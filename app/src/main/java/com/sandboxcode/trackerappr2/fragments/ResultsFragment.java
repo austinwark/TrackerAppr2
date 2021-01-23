@@ -167,8 +167,8 @@ public class ResultsFragment extends Fragment {
             adapter.setEditActive(visibility);
 
         });
-        viewModel.getViewDetails().observe(getViewLifecycleOwner(), result -> {
-            viewDetails(result, searchId);
+        viewModel.getViewDetails().observe(getViewLifecycleOwner(), results -> {
+            viewDetails(results, searchId);
         });
 
     }
@@ -293,23 +293,30 @@ public class ResultsFragment extends Fragment {
         }
     }
 
-    public void viewDetails(ResultModel result, String searchId) {
-        Bundle args = new Bundle();
-        args.putParcelable("RESULT", Parcels.wrap(result));
-        args.putString("SEARCH_ID", searchId);
-
-        DetailFragment fragment = new DetailFragment();
-//        fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
-        fragment.setArguments(args);
+    public void viewDetails(List<ResultModel> results, String searchId) {
+        DetailPagerFragment fragment = DetailPagerFragment.newInstance(results);
         fragmentManager
                 .beginTransaction()
-                .setReorderingAllowed(true)
-//                .addSharedElement(thumbnail, thumbnail.getTransitionName())
-                .replace(R.id.main_fragment_container,
-                        fragment,
-                        DetailFragment.class.getSimpleName())
+                .replace(R.id.main_fragment_container, fragment, DetailPagerFragment.class.getSimpleName())
                 .addToBackStack(null)
                 .commit();
+
+        //        Bundle args = new Bundle();
+//        args.putParcelable("RESULT", Parcels.wrap(result));
+//        args.putString("SEARCH_ID", searchId);
+//
+//        DetailFragment fragment = new DetailFragment();
+////        fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
+//        fragment.setArguments(args);
+//        fragmentManager
+//                .beginTransaction()
+//                .setReorderingAllowed(true)
+////                .addSharedElement(thumbnail, thumbnail.getTransitionName())
+//                .replace(R.id.main_fragment_container,
+//                        fragment,
+//                        DetailFragment.class.getSimpleName())
+//                .addToBackStack(null)
+//                .commit();
     }
 
     @Override

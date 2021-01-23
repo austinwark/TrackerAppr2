@@ -29,7 +29,7 @@ public class ResultsViewModel extends AndroidViewModel {
     private final SingleLiveEvent<Boolean> sortCompleted = new SingleLiveEvent<>();
     private final SingleLiveEvent<Integer> openShareConfirmation = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuVisibility = new MutableLiveData<>();
-    private final SingleLiveEvent<ResultModel> viewDetails = new SingleLiveEvent<>();
+    private final SingleLiveEvent<List<ResultModel>> viewDetails = new SingleLiveEvent<>();
 
     private final ArrayList<ResultModel> checkedResults;
 
@@ -50,7 +50,7 @@ public class ResultsViewModel extends AndroidViewModel {
             toggleEdit();
         } else if (itemId ==  R.id.results_action_view_details) {
             // TODO -- view multiple details with a horizontal list in DetailsFragment
-            viewDetails.setValue(checkedResults.get(0));
+            viewDetails.setValue(checkedResults);
         }
     }
 
@@ -147,6 +147,6 @@ public class ResultsViewModel extends AndroidViewModel {
         }
     }
 
-    public SingleLiveEvent<ResultModel> getViewDetails() { return viewDetails; }
+    public SingleLiveEvent<List<ResultModel>> getViewDetails() { return viewDetails; }
 
 }

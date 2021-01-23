@@ -121,7 +121,7 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
                 details.put("detailsLink", vehicle.select("a.vehicleDetailsLink").attr("href"));
                 ResultModel resultModel = new ResultModel(details);
                 results.add(resultModel);
-
+                Log.d(TAG, resultModel.toString());
             }
         }
         return results;

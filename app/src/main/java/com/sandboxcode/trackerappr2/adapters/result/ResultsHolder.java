@@ -23,6 +23,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.transition.MaterialContainerTransform;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.DetailFragment;
+import com.sandboxcode.trackerappr2.fragments.DetailPagerFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.squareup.picasso.Picasso;
@@ -139,24 +140,32 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
         }
     };
 
+    // TODO -- pass arraylist of ResultModels to display in Pager!!!!!!
     public void viewDetails(ResultModel result, String searchId) {
-        Bundle args = new Bundle();
-        args.putParcelable("RESULT", Parcels.wrap(result));
-        args.putString("SEARCH_ID", searchId);
-
-        DetailFragment fragment = new DetailFragment();
-        fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
-        fragment.setArguments(args);
+        DetailPagerFragment fragment = new DetailPagerFragment();
 
         fragmentManager
                 .beginTransaction()
-                .setReorderingAllowed(true)
-                .addSharedElement(thumbnail, thumbnail.getTransitionName())
-                .replace(R.id.main_fragment_container,
-                        fragment,
-                        DetailFragment.class.getSimpleName())
+                .replace(R.id.main_fragment_container, fragment, DetailPagerFragment.class.getSimpleName())
                 .addToBackStack(null)
                 .commit();
+        //        Bundle args = new Bundle();
+//        args.putParcelable("RESULT", Parcels.wrap(result));
+//        args.putString("SEARCH_ID", searchId);
+//
+//        DetailFragment fragment = new DetailFragment();
+//        fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
+//        fragment.setArguments(args);
+//
+//        fragmentManager
+//                .beginTransaction()
+//                .setReorderingAllowed(true)
+//                .addSharedElement(thumbnail, thumbnail.getTransitionName())
+//                .replace(R.id.main_fragment_container,
+//                        fragment,
+//                        DetailFragment.class.getSimpleName())
+//                .addToBackStack(null)
+//                .commit();
     }
 
     public void setEditActive(int editActive) {

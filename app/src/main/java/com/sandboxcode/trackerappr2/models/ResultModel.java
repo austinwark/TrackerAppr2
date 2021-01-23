@@ -6,29 +6,28 @@ import org.parceler.Parcel;
 
 import java.util.Map;
 
-// TODO - add engine, transmission, and dealer to model
+// TODO - Implement AutoValue @Parcelable extension (need to make class immutable)
 @Parcel
 public class ResultModel {
 
-    private String stock;
-    private String make;
-    private String model;
-    private String year;
-    private String trim;
-    private String extColor;
-    private String intColor;
-    private String price;
-    private String vin;
-    private String miles;
-    private String engine;
-    private String transmission;
-    private String dealer;
-    private String imageUrl;
-    private boolean isNewResult;
-    private String carfaxLink;
-    private String detailsLink;
-
-    private boolean isChecked; // field used to keep track of UI state in RecyclerView
+    String stock;
+    String make;
+    String model;
+    String year;
+    String trim;
+    String extColor;
+    String intColor;
+    String price;
+    String vin;
+    String miles;
+    String engine;
+    String transmission;
+    String dealer;
+    String imageUrl;
+    boolean isNewResult;
+    String carfaxLink;
+    String detailsLink;
+    boolean isChecked; // field used to keep track of UI state in RecyclerView
 
     /**
      * Default constructor required by Firebase
@@ -88,7 +87,6 @@ public class ResultModel {
     public int hashCode() {
         return getVin().hashCode();
     }
-
 
     public String getStock() {
         return stock;
