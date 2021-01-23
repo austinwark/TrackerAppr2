@@ -4,11 +4,16 @@ import com.google.firebase.database.Exclude;
 
 import org.parceler.Parcel;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Map;
 
 // TODO - Implement AutoValue @Parcelable extension (need to make class immutable)
 @Parcel
-public class ResultModel {
+public class ResultModel implements Serializable {
 
     String stock;
     String make;
@@ -57,6 +62,30 @@ public class ResultModel {
         isChecked = false;
     }
 
+    public static Object deepCopy(Object object) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(object);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+            return objectInputStream.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+//    public ResultModel(ResultModel result) {
+//        this.stock = result.getStock();
+//        this.make = result.getMake();
+//        this.model = result.getModel();
+//        this.year = result.getYear();
+//        this.trim = result.getTrim();
+//        this.extColor = result.getExtColor();
+//        this
+//    }
+
     @Override
     public String toString() {
         return String.format("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
@@ -91,6 +120,8 @@ public class ResultModel {
     public String getStock() {
         return stock;
     }
+
+    public String getMake() { return make; }
 
     public String getModel() {
         return model;

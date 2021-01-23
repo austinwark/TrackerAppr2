@@ -32,7 +32,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.transition.MaterialContainerTransform;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.adapters.result.ResultsAdapter;
 import com.sandboxcode.trackerappr2.models.ResultModel;
@@ -144,7 +143,7 @@ public class ResultsFragment extends Fragment {
             restoreCheckedCardStates(results, viewModel.getCheckedResults());
 
             adapter.setResults(results);
-            startPostponedEnterTransition();
+
             if (results.isEmpty())
                 crossFade(noResultsLayout, loaderLayout);
             else
@@ -294,34 +293,18 @@ public class ResultsFragment extends Fragment {
     }
 
     public void viewDetails(List<ResultModel> results, String searchId) {
-        DetailPagerFragment fragment = DetailPagerFragment.newInstance(results);
+        DetailPagerFragment fragment = DetailPagerFragment.newInstance(results, searchId);
         fragmentManager
                 .beginTransaction()
                 .replace(R.id.main_fragment_container, fragment, DetailPagerFragment.class.getSimpleName())
                 .addToBackStack(null)
                 .commit();
-
-        //        Bundle args = new Bundle();
-//        args.putParcelable("RESULT", Parcels.wrap(result));
-//        args.putString("SEARCH_ID", searchId);
-//
-//        DetailFragment fragment = new DetailFragment();
-////        fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
-//        fragment.setArguments(args);
-//        fragmentManager
-//                .beginTransaction()
-//                .setReorderingAllowed(true)
-////                .addSharedElement(thumbnail, thumbnail.getTransitionName())
-//                .replace(R.id.main_fragment_container,
-//                        fragment,
-//                        DetailFragment.class.getSimpleName())
-//                .addToBackStack(null)
-//                .commit();
+        viewModel.clearCheckedResults();
     }
 
     @Override
     public void onResume() {
-        postponeEnterTransition();
+        Log.d(TAG, "ONRESUME");
         super.onResume();
     }
 
@@ -345,6 +328,8 @@ public class ResultsFragment extends Fragment {
         adapter.setResults(null);
         super.onDestroyView();
     }
+
+
 
     public void handleBackPressed() {
         if (viewModel.getEditMenuVisibility().getValue() == null ||

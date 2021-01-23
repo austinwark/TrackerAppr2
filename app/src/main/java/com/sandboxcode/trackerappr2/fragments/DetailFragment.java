@@ -31,7 +31,7 @@ import java.util.Objects;
 public class DetailFragment extends Fragment {
 
     @SuppressWarnings("unused")
-    private static final String TAG = "DetailFragment";
+    private static final String TAG = DetailFragment.class.getSimpleName();
     ImageView image;
     private ResultModel result;
     private String searchId;
@@ -106,10 +106,7 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_detail, container, false);
-//        v.findViewById(R.id.detail_image_thumbnail).setTransitionName(result.getVin());
-//        Log.d(TAG, v.findViewById(R.id.detail_image_thumbnail).getTransitionName() + "--------");
-        return v;
+        return inflater.inflate(R.layout.fragment_detail, container, false);
     }
 
     @Override

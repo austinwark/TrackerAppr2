@@ -49,8 +49,7 @@ public class ResultsViewModel extends AndroidViewModel {
         } else if (itemId == R.id.results_action_edit) {
             toggleEdit();
         } else if (itemId ==  R.id.results_action_view_details) {
-            // TODO -- view multiple details with a horizontal list in DetailsFragment
-            viewDetails.setValue(checkedResults);
+            startViewDetails();
         }
     }
 
@@ -113,7 +112,9 @@ public class ResultsViewModel extends AndroidViewModel {
     }
 
     public void clearCheckedResults() {
+
         checkedResults.clear();
+        editMenuVisibility.setValue(View.INVISIBLE);
     }
 
     public int removeCheckedResult(ResultModel result) {
@@ -149,4 +150,15 @@ public class ResultsViewModel extends AndroidViewModel {
 
     public SingleLiveEvent<List<ResultModel>> getViewDetails() { return viewDetails; }
 
+    public void startViewDetails() {
+        if (!checkedResults.isEmpty()) {
+            List<ResultModel> deepCopiedResults = new ArrayList<>();
+            for (ResultModel result : checkedResults)
+                deepCopiedResults.add((ResultModel) ResultModel.deepCopy(result));
+            viewDetails.setValue(deepCopiedResults);
+        } else {
+
+            // TODO -- show banner
+        }
+    }
 }
