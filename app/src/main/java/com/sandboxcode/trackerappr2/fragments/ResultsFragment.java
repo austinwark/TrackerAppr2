@@ -15,13 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -68,27 +72,15 @@ public class ResultsFragment extends Fragment {
     private ResultsAdapter adapter;
 
     private int shortAnimationDuration;
-    private AutoCompleteTextView sortDropdown;
 
     private LinearLayout sortLayout;
     private ChipGroup sortChipGroup;
-    private Chip sortChipPriceAsc;
-    private Chip getSortChipPriceDesc;
 
     private MenuItem shareResultsItem;
     private BottomNavigationView toolbarBottom;
 
     public ResultsFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-//        ArrayList<ResultModel> checkedResults = (ArrayList<ResultModel>) viewModel.getCheckedResults();
-//        if (!checkedResults.isEmpty())
-//            outState.putStringArrayList(CHECKED_RESULTS_TAG, checkedResults);
     }
 
     @Override
@@ -132,16 +124,7 @@ public class ResultsFragment extends Fragment {
         viewModel.getSearchResults(searchId).observe(getViewLifecycleOwner(), results -> {
             unsortedResults = results;
 
-//            if (savedInstanceState != null &&
-//                    savedInstanceState.getStringArrayList(CHECKED_RESULTS_TAG) != null) {
-//                // Restore UI state after config. change
-//                restoreCheckedCardStates(unsortedResults, savedInstanceState.getStringArrayList(CHECKED_RESULTS_TAG));
-//            } else {
-//                viewModel.clearCheckedResults(); // reset checkedResults array in ViewModel
-//            }
-
-            restoreCheckedCardStates(results, viewModel.getCheckedResults());
-
+            viewModel.restoreCheckedCardStates(results);
             adapter.setResults(results);
 
             if (results.isEmpty())
@@ -159,27 +142,25 @@ public class ResultsFragment extends Fragment {
         viewModel.getSortMenuOpen().observe(getViewLifecycleOwner(), open ->
                 sortLayout.setVisibility(open)
         );
-        viewModel.getOpenShareConfirmation().observe(getViewLifecycleOwner(),
-                this::showShareConfirmationDialog);
+        viewModel.getOpenShareConfirmation().observe(getViewLifecycleOwner(), numOfResults ->
+                showShareConfirmationDialog());
         viewModel.getEditMenuVisibility().observe(getViewLifecycleOwner(), visibility -> {
             toolbarBottom.setVisibility(visibility);
             adapter.setEditActive(visibility);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            );
+
+            int toolbarHeight = toolbarBottom.getHeight();
+            Log.d(TAG, String.valueOf(toolbarHeight));
+            params.setMargins(0, 0, 0, (visibility == View.INVISIBLE ? 0 : toolbarHeight));
+            resultRecyclerView.setLayoutParams(params);
 
         });
         viewModel.getViewDetails().observe(getViewLifecycleOwner(), results -> {
             viewDetails(results, searchId);
         });
-
-    }
-
-    private void restoreCheckedCardStates(List<ResultModel> results,
-                                      List<ResultModel> checkedResults) {
-
-        for (ResultModel checkedResult : checkedResults)
-            for (ResultModel result : results)
-                if (result.getDetailsLink().equalsIgnoreCase(checkedResult.getDetailsLink()))
-                    result.setIsChecked(true);
-
     }
 
     @Override
@@ -259,17 +240,15 @@ public class ResultsFragment extends Fragment {
 //        shareResultsItem.setEnabled(numberOfCheckedResults > 0);
     }
 
-    public void showShareConfirmationDialog(int numberOfResults) {
-        String message = numberOfResults > 1
-                ? ("Share " + numberOfResults + " results?")
-                : "Share 1 result?";
+    public void showShareConfirmationDialog() {
+        String message = viewModel.buildShareConfirmationMessage();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(message);
-        builder.setPositiveButton("Share", (dialog, which) -> shareResults());
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        new AlertDialog.Builder(getActivity())
+            .setMessage(message)
+            .setPositiveButton("Share", (dialog, which) -> shareResults())
+            .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+            .create()
+            .show();
     }
 
     public void shareResults() {
@@ -277,18 +256,16 @@ public class ResultsFragment extends Fragment {
         for (ResultModel checkedResult : viewModel.getCheckedResults())
             resultLinks.add(checkedResult.getDetailsLink());
 
-//        String subjectText = "Check Out These Pre-Owned Toyotas I Found for You!";
-        String bodyText = buildBodyText(resultLinks);
+        String bodyText = viewModel.buildShareBodyText(resultLinks);
+
         if (!resultLinks.isEmpty()) {
-//
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_SEND);
-//            intent.putExtra(Intent.EXTRA_SUBJECT, subjectText);
-            intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(bodyText));
-//            intent.setType("text/plain");
-            intent.setType("text/html");
-            Intent shareIntent = Intent.createChooser(intent, "Share Search Results");
-            startActivity(shareIntent);
+            Intent intent = new Intent()
+                .setAction(Intent.ACTION_SEND)
+                .putExtra(Intent.EXTRA_TEXT, HtmlCompat.fromHtml(bodyText, HtmlCompat.FROM_HTML_MODE_LEGACY))
+                .putExtra(Intent.EXTRA_HTML_TEXT, HtmlCompat.fromHtml(bodyText, HtmlCompat.FROM_HTML_MODE_LEGACY))
+                .setType("text/html");
+
+            startActivity(Intent.createChooser(intent, "Share Search Results"));
         }
     }
 
@@ -302,23 +279,12 @@ public class ResultsFragment extends Fragment {
         viewModel.clearCheckedResults();
     }
 
+//    private void adjustBottomMargin
+
     @Override
     public void onResume() {
         Log.d(TAG, "ONRESUME");
         super.onResume();
-    }
-
-    private String buildBodyText(List<String> resultLinks) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Check out these pre-owned Toyotas I found for you! Click the links below to view each vehicle: </br>");
-        for (String link : resultLinks) {
-            String linkString = String.format("<a href=\"%s\">%s</a></br>", link, link);
-//            stringBuilder.append("<a href=\"").append(link).append("\">").append(link).append("</a>").append("\n\n");
-            stringBuilder.append(linkString);
-            Log.d(TAG, linkString);
-        }
-
-        return stringBuilder.toString();
     }
 
     // TODO - Results are reloaded on orientation change????
@@ -329,12 +295,9 @@ public class ResultsFragment extends Fragment {
         super.onDestroyView();
     }
 
-
-
     public void handleBackPressed() {
         if (viewModel.getEditMenuVisibility().getValue() == null ||
                 viewModel.getEditMenuVisibility().getValue() == View.INVISIBLE) {
-            FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.remove(this);
             transaction.commit();
@@ -342,7 +305,6 @@ public class ResultsFragment extends Fragment {
         } else
             viewModel.toggleEdit();
     }
-
 
     public void crossFade(View view1, View view2) {
         view1.setAlpha(0f);

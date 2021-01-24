@@ -59,8 +59,6 @@ public class ResultsViewModel extends AndroidViewModel {
         super.onCleared();
     }
 
-
-
     // TODO -- Call SearchResults every time? OR only when null and nothing has changed?
     public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
         if (searchResults == null || searchResults.getValue().isEmpty())
@@ -68,6 +66,46 @@ public class ResultsViewModel extends AndroidViewModel {
 
         searchResults = searchRepository.getSearchResults(searchId);
         return searchResults;
+    }
+
+    public void setEditMenuVisibility(int visibility) {
+        editMenuVisibility.postValue(visibility);
+    }
+
+    public MutableLiveData<Integer> getEditMenuVisibility() {
+        return editMenuVisibility;
+    }
+
+    public void toggleEdit() {
+        if (editMenuVisibility.getValue() != null && editMenuVisibility.getValue() == View.VISIBLE) {
+            editMenuVisibility.postValue(View.INVISIBLE);
+            clearCheckedResults();
+        } else {
+            editMenuVisibility.postValue(View.VISIBLE);
+        }
+    }
+
+    public int addCheckedResult(ResultModel... results) {
+        Collections.addAll(checkedResults, results);
+        return checkedResults.size();
+    }
+
+    public int removeCheckedResult(ResultModel result) {
+        checkedResults.remove(result);
+        return checkedResults.size();
+    }
+
+    public void clearCheckedResults() {
+
+        checkedResults.clear();
+        editMenuVisibility.setValue(View.INVISIBLE);
+    }
+
+    public void restoreCheckedCardStates(ArrayList<ResultModel> results) {
+        for (ResultModel checkedResult : checkedResults)
+            for (ResultModel result : results)
+                if (result.getDetailsLink().equalsIgnoreCase(checkedResult.getDetailsLink()))
+                    result.setIsChecked(true);
     }
 
     public SingleLiveEvent<Boolean> getSortCompleted() { return sortCompleted; }
@@ -111,41 +149,26 @@ public class ResultsViewModel extends AndroidViewModel {
         sortCompleted.setValue(true);
     }
 
-    public void clearCheckedResults() {
-
-        checkedResults.clear();
-        editMenuVisibility.setValue(View.INVISIBLE);
-    }
-
-    public int removeCheckedResult(ResultModel result) {
-        checkedResults.remove(result);
-        return checkedResults.size();
-    }
-
-    public int addCheckedResult(ResultModel... results) {
-        Collections.addAll(checkedResults, results);
-        return checkedResults.size();
-    }
-
     public List<ResultModel> getCheckedResults() { return checkedResults; }
 
     public SingleLiveEvent<Integer> getOpenShareConfirmation() { return openShareConfirmation; }
 
-    public void setEditMenuVisibility(int visibility) {
-        editMenuVisibility.postValue(visibility);
+    public String buildShareConfirmationMessage() {
+        int numberOfResults = checkedResults.size();
+        return numberOfResults > 1
+                ? "Share " + numberOfResults + " results?"
+                : "Share 1 result?";
     }
+    public String buildShareBodyText(List<String> resultLinks) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Check out these pre-owned Toyotas I found for you!" +
+                " Click the links below to view each vehicle:<br /><br />");
 
-    public MutableLiveData<Integer> getEditMenuVisibility() {
-        return editMenuVisibility;
-    }
-
-    public void toggleEdit() {
-        if (editMenuVisibility.getValue() != null && editMenuVisibility.getValue() == View.VISIBLE) {
-            editMenuVisibility.postValue(View.INVISIBLE);
-            clearCheckedResults();
-        } else {
-            editMenuVisibility.postValue(View.VISIBLE);
+        for (String link : resultLinks) {
+            String linkString = String.format("<a href=\"%s\">%s</a><br /><br />", link, link);
+            stringBuilder.append(linkString);
         }
+        return stringBuilder.toString();
     }
 
     public SingleLiveEvent<List<ResultModel>> getViewDetails() { return viewDetails; }
