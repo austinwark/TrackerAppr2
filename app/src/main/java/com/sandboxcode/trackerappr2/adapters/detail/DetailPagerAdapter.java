@@ -1,12 +1,10 @@
 package com.sandboxcode.trackerappr2.adapters.detail;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.sandboxcode.trackerappr2.fragments.DetailDemoFragment;
+import com.sandboxcode.trackerappr2.fragments.DetailFragment;
 import com.sandboxcode.trackerappr2.fragments.DetailPagerFragment;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 
@@ -32,7 +30,7 @@ public class DetailPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        DetailDemoFragment fragment = DetailDemoFragment.newInstance(position, searchId, results.get(position));
+        DetailFragment fragment = DetailFragment.newInstance(position, searchId, results.get(position));
         return fragment;
     }
 

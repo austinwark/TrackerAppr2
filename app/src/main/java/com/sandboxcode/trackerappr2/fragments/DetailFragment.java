@@ -3,7 +3,12 @@ package com.sandboxcode.trackerappr2.fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,46 +16,69 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.viewmodels.DetailViewModel;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.Objects;
 
 public class DetailFragment extends Fragment {
 
-    @SuppressWarnings("unused")
+    public static final String ARG_POSITION = "position";
+    public static final String ARG_SEARCH_ID = "search_id";
+    public static final String ARG_RESULT = "result";
     private static final String TAG = DetailFragment.class.getSimpleName();
-    ImageView image;
-    private ResultModel result;
+
+    private int position;
     private String searchId;
+    private ResultModel result;
+    private ImageView image;
+
+    public DetailFragment() {
+        // Required empty public constructor
+    }
+
+    public static DetailFragment newInstance(int position, String searchId, ResultModel result) {
+        DetailFragment fragment = new DetailFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_POSITION, position);
+        args.putString(ARG_SEARCH_ID, searchId);
+        args.putParcelable(ARG_RESULT, Parcels.wrap(result));
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            postponeEnterTransition();
-            // Get result and search ID
-            result = Parcels.unwrap(getArguments().getParcelable("RESULT"));
-            searchId = getArguments().getString("SEARCH_ID");
-
-        } else {
-            // TODO -- restart activity? somehow go back to previous fragment?
+        Bundle args = getArguments();
+        if (args != null) {
+            position = args.getInt(ARG_POSITION);
+            searchId = args.getString(ARG_SEARCH_ID);
+            result = Parcels.unwrap(args.getParcelable(ARG_RESULT));
         }
-
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_detail, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        DetailViewModel viewModel = new ViewModelProvider(requireActivity())
+                .get(DetailViewModel.class);
+        viewModel.setResultHasBeenViewed(result.getVin(), searchId);
+        result.setIsNewResult(false);
+
+        instantiateUI(view);
+    }
 
     private void instantiateUI(View v) {
         TextView title = v.findViewById(R.id.tv_details_title);
@@ -100,30 +128,5 @@ public class DetailFragment extends Fragment {
             if (webIntent.resolveActivity(getActivity().getPackageManager()) != null)
                 startActivity(webIntent);
         });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (((AppCompatActivity) getActivity()) != null
-                && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-
-            Objects.requireNonNull(((AppCompatActivity) getActivity())
-                    .getSupportActionBar()).setTitle("Details");
-        }
-
-        // Change isNew field indicating the user has seen the result
-        DetailViewModel viewModel = new ViewModelProvider(requireActivity())
-                .get(DetailViewModel.class);
-        viewModel.setResultHasBeenViewed(result.getVin(), searchId);
-        result.setIsNewResult(false);
-
-        instantiateUI(view);
     }
 }

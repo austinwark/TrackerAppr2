@@ -1,40 +1,23 @@
 package com.sandboxcode.trackerappr2.adapters.result;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
-import android.content.Context;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.sandboxcode.trackerappr2.R;
-import com.sandboxcode.trackerappr2.fragments.DetailFragment;
 import com.sandboxcode.trackerappr2.fragments.DetailPagerFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.squareup.picasso.Picasso;
 
-import org.parceler.Parcels;
-
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Predicate;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class ResultsHolder extends RecyclerView.ViewHolder {
 
