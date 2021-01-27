@@ -1,39 +1,23 @@
 package com.sandboxcode.trackerappr2.adapters.result;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
-import android.content.Context;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
-//import com.google.android.material.transition.MaterialContainerTransform;
-import com.google.android.material.transition.MaterialContainerTransform;
 import com.sandboxcode.trackerappr2.R;
-import com.sandboxcode.trackerappr2.fragments.DetailFragment;
+import com.sandboxcode.trackerappr2.fragments.DetailPagerFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.squareup.picasso.Picasso;
 
-import org.parceler.Parcels;
-
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.function.Predicate;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class ResultsHolder extends RecyclerView.ViewHolder {
 
@@ -59,7 +43,6 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
     public ResultsHolder(View itemView, FragmentManager fragmentManager,
                          String searchId, ResultsFragment resultsFragment) {
         super(itemView);
-//        resultsFragment.setExitTransition(new Hold());
         cardView = itemView.findViewById(R.id.result_layout_card);
         title = itemView.findViewById(R.id.result_text_title);
         stock = itemView.findViewById(R.id.result_text_stock);
@@ -86,7 +69,6 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
         String formattedPrice = formatter.format(Integer.parseInt(result.getPrice()));
         price.setText(formattedPrice);
 
-//        thumbnail.setTransitionName("result_to_detail_transition_" + position);
         Picasso.get().load(result.getImageUrl()).into(thumbnail);
 
         cardView.setChecked(result.isChecked());
@@ -96,7 +78,6 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
 //        newIcon.setVisibility(result.getIsNewResult() ? View.VISIBLE : View.INVISIBLE);
 
         this.position = position;
-        thumbnail.setTransitionName(result.getVin());
 
     }
 
@@ -139,24 +120,18 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
         }
     };
 
+    // TODO -- pass arraylist of ResultModels to display in Pager!!!!!!
     public void viewDetails(ResultModel result, String searchId) {
-        Bundle args = new Bundle();
-        args.putParcelable("RESULT", Parcels.wrap(result));
-        args.putString("SEARCH_ID", searchId);
-
-        DetailFragment fragment = new DetailFragment();
-        fragment.setSharedElementEnterTransition(new MaterialContainerTransform());
-        fragment.setArguments(args);
+        List<ResultModel> results = new ArrayList<>(1);
+        results.add(result);
+        DetailPagerFragment fragment = DetailPagerFragment.newInstance(results, searchId);
 
         fragmentManager
                 .beginTransaction()
-                .setReorderingAllowed(true)
-                .addSharedElement(thumbnail, thumbnail.getTransitionName())
-                .replace(R.id.main_fragment_container,
-                        fragment,
-                        DetailFragment.class.getSimpleName())
+                .replace(R.id.main_fragment_container, fragment, DetailPagerFragment.class.getSimpleName())
                 .addToBackStack(null)
                 .commit();
+
     }
 
     public void setEditActive(int editActive) {

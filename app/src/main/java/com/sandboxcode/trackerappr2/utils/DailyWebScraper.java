@@ -48,6 +48,7 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
         if (!Boolean.parseBoolean(search.getAllDealerships()))
             queryString.append(UrlBits.NOT_ALL_DEALERSHIPS.getVal());
 
+        Log.d(TAG, queryString.toString() + "====================");
 //        if (!search.getYear().isEmpty()) {
 //            queryString.append(UrlBits.YEAR.getVal());
 //            queryString.append(search.getYear());
@@ -89,6 +90,9 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
         SearchModel search;
         Elements mainContent;
         ArrayList<ResultModel> results;
+
+        if (map == null)
+            return;
 
         for (Map.Entry<SearchModel, Elements> entry : map.entrySet()) {
             search = entry.getKey();

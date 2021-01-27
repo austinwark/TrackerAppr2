@@ -4,31 +4,35 @@ import com.google.firebase.database.Exclude;
 
 import org.parceler.Parcel;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Map;
 
-// TODO - add engine, transmission, and dealer to model
+// TODO - Implement AutoValue @Parcelable extension (need to make class immutable)
 @Parcel
-public class ResultModel {
+public class ResultModel implements Serializable {
 
-    private String stock;
-    private String make;
-    private String model;
-    private String year;
-    private String trim;
-    private String extColor;
-    private String intColor;
-    private String price;
-    private String vin;
-    private String miles;
-    private String engine;
-    private String transmission;
-    private String dealer;
-    private String imageUrl;
-    private boolean isNewResult;
-    private String carfaxLink;
-    private String detailsLink;
-
-    private boolean isChecked; // field used to keep track of UI state in RecyclerView
+    String stock;
+    String make;
+    String model;
+    String year;
+    String trim;
+    String extColor;
+    String intColor;
+    String price;
+    String vin;
+    String miles;
+    String engine;
+    String transmission;
+    String dealer;
+    String imageUrl;
+    boolean isNewResult;
+    String carfaxLink;
+    String detailsLink;
+    boolean isChecked; // field used to keep track of UI state in RecyclerView
 
     /**
      * Default constructor required by Firebase
@@ -57,6 +61,30 @@ public class ResultModel {
         detailsLink = details.get("detailsLink");
         isChecked = false;
     }
+
+    public static Object deepCopy(Object object) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(object);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+            return objectInputStream.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+//    public ResultModel(ResultModel result) {
+//        this.stock = result.getStock();
+//        this.make = result.getMake();
+//        this.model = result.getModel();
+//        this.year = result.getYear();
+//        this.trim = result.getTrim();
+//        this.extColor = result.getExtColor();
+//        this
+//    }
 
     @Override
     public String toString() {
@@ -89,10 +117,11 @@ public class ResultModel {
         return getVin().hashCode();
     }
 
-
     public String getStock() {
         return stock;
     }
+
+    public String getMake() { return make; }
 
     public String getModel() {
         return model;
