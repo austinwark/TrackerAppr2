@@ -4,8 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,7 +48,7 @@ import java.util.Objects;
  */
 public class SearchesFragment extends Fragment {
 
-    private static final String TAG = "SearchesFragment";
+    private static final String TAG = SearchesFragment.class.getSimpleName();
     private static final String RESULT_MESSAGE_TAG = "result_message";
     FloatingActionButton fab;
 
@@ -215,11 +218,22 @@ public class SearchesFragment extends Fragment {
 
         fab = view.findViewById(R.id.searches_fab_create);
         fab.setImageResource(R.drawable.ic_create);
-        fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), CreateActivity.class)));
+        fab.setOnClickListener(view1 -> startOnBoarding());
+        //        fab.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), CreateActivity.class)));
+
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireActivity().getApplicationContext());
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+    }
+
+    public void startOnBoarding() {
+        OnBoardingPagerFragment fragment2 = OnBoardingPagerFragment.newInstance();
+        FragmentTransaction transaction2 = getParentFragmentManager().beginTransaction();
+        transaction2.replace(R.id.main_fragment_container, fragment2);
+        transaction2.addToBackStack(null);
+        transaction2.commit();
     }
 
     private void crossFade(View view1, View view2) {

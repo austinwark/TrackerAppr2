@@ -7,43 +7,30 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.sandboxcode.trackerappr2.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link OnBoardingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class OnBoardingFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = OnBoardingFragment.class.getSimpleName();
+    public static final String ARG_IMAGE_ID = "image_id";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int imageId;
+    private ImageView imageView;
 
     public OnBoardingFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OnBoardingFragment.
-     */
     // TODO: Rename and change types and number of parameters
-    public static OnBoardingFragment newInstance(String param1, String param2) {
+    public static OnBoardingFragment newInstance(int imageId) {
         OnBoardingFragment fragment = new OnBoardingFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_IMAGE_ID, imageId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,10 +38,9 @@ public class OnBoardingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        Bundle args = getArguments();
+        if (args != null)
+            imageId = args.getInt(ARG_IMAGE_ID);
     }
 
     @Override
@@ -62,5 +48,11 @@ public class OnBoardingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_on_boarding, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@Nonnull View view, @Nullable Bundle savedInstanceState) {
+        imageView = view.findViewById(R.id.on_boarding_image);
+        imageView.setImageDrawable(getResources().getDrawable(imageId));
     }
 }

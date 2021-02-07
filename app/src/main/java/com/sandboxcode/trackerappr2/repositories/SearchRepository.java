@@ -143,13 +143,6 @@ public class SearchRepository implements AsyncResponse {
         errorMessage.postValue(message);
     }
 
-    public String getUserId() {
-        if (AUTH_REF.getCurrentUser() != null)
-            return authRepository.getUserId();
-        else
-            return null;
-    }
-
     // Called by DetailFragment to mark a result as viewed
     public void setResultHasBeenViewed(String vin, String searchId) {
 

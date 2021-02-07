@@ -23,6 +23,7 @@ import androidx.preference.PreferenceManager;
 
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.fragments.DetailFragment;
+import com.sandboxcode.trackerappr2.fragments.OnBoardingPagerFragment;
 import com.sandboxcode.trackerappr2.fragments.ResultsFragment;
 import com.sandboxcode.trackerappr2.fragments.SearchesFragment;
 import com.sandboxcode.trackerappr2.utils.ResultsReceiver;
@@ -65,12 +66,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate");
         Toolbar toolbarTop = findViewById(R.id.toolbar_top);
         setSupportActionBar(toolbarTop);
 
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        viewModel.checkFirstRun();
+
+        viewModel.getStartOnBoarding().observe(this, startOnBoarding -> {
+            startOnBoarding();
+        });
         viewModel.getUserSignedIn().observe(this, userSignedIn -> {
 //            viewModel.setSearchesListener();
             userId = viewModel.getUserId();
@@ -86,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
         if (savedInstanceState == null) {
-            SearchesFragment fragment = new SearchesFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            SearchesFragment fragment = new SearchesFragment();
             transaction.replace(R.id.main_fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -95,9 +102,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //    public void retrieveSavedSettings(String userId) {
-//        viewModel.getSavedSettings(userId);
-//    }
+    private void startOnBoarding() {
+        OnBoardingPagerFragment fragment2 = OnBoardingPagerFragment.newInstance();
+        FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+        transaction2.replace(R.id.main_fragment_container, fragment2);
+        transaction2.addToBackStack(null);
+        transaction2.commit();
+    }
 
     private void clearNotificationServices() {
         if (notificationManager == null)
@@ -157,6 +168,9 @@ public class MainActivity extends AppCompatActivity {
         // If fragment is SearchesFragment call its own method to handle back pressed
         if ((fragment instanceof SearchesFragment))
             ((SearchesFragment) fragment).handleBackPressed();
+//        else if ((fragment instanceof OnBoardingPagerFragment)) {
+//
+//        }
         else if ((fragment instanceof  ResultsFragment))
             ((ResultsFragment) fragment).handleBackPressed();
         else

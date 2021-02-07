@@ -159,7 +159,7 @@ public class SearchesViewModel extends AndroidViewModel {
     }
 
     public String getUserId() {
-        return searchRepository.getUserId();
+        return authRepository.getUserId();
     }
 
     public MutableLiveData<Boolean> getSignUserOut() {

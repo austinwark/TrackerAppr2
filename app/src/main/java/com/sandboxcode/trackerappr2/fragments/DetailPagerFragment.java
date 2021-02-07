@@ -26,11 +26,6 @@ import java.util.List;
 
 import static java.lang.Math.abs;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DetailPagerFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DetailPagerFragment extends Fragment {
 
     private static final String TAG = DetailPagerFragment.class.getSimpleName();
