@@ -61,11 +61,11 @@ public class MainViewModel extends AndroidViewModel {
     public SingleLiveEvent<Boolean> getStartOnBoarding() { return startOnBoarding; }
 
 
-        public void checkFirstRun() {
+    public void checkFirstRun() {
         final String PREFS_NAME = "PrefsFile";
         final String PREF_VERSION_CODE_KEY = "version_code";
         final int DOES_NOT_EXIST = -1;
-
+    
         // Get current version code
         int currentVersionCode = BuildConfig.VERSION_CODE;
 
@@ -75,13 +75,13 @@ public class MainViewModel extends AndroidViewModel {
         int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOES_NOT_EXIST);
 
         // Check for first run or update
-        if (currentVersionCode == savedVersionCode) {
+        if (currentVersionCode == savedVersionCode) { // Not first run or new version (regular run)
             Log.d(TAG, "Normal Run");
             return;
-        } else if (savedVersionCode == DOES_NOT_EXIST) {
+        } else if (savedVersionCode == DOES_NOT_EXIST) { // First time running app
             Log.d(TAG, "New Install");
             startOnBoarding.setValue(true);
-        } else if (currentVersionCode > savedVersionCode) {
+        } else if (currentVersionCode > savedVersionCode) { // App updated
             Log.d(TAG, "Update");
         }
 

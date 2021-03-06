@@ -103,12 +103,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startOnBoarding() {
-        OnBoardingPagerFragment fragment2 = OnBoardingPagerFragment.newInstance();
-        FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-        transaction2.replace(R.id.main_fragment_container, fragment2);
-        transaction2.addToBackStack(null);
-        transaction2.commit();
+
     }
+
+    //    private void startOnBoarding() {
+//        OnBoardingPagerFragment fragment2 = OnBoardingPagerFragment.newInstance();
+//        FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+//        transaction2.replace(R.id.main_fragment_container, fragment2);
+//        transaction2.addToBackStack(null);
+//        transaction2.commit();
+//    }
 
     private void clearNotificationServices() {
         if (notificationManager == null)
@@ -124,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         alarmManager.cancel(notifyPendingIntent);
     }
 
+    // TODO -- fix notifications not going off until app is opened
     private void startUpdatingResultsBroadcast() {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 

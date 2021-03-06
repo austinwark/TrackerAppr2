@@ -1,5 +1,6 @@
 package com.sandboxcode.trackerappr2.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sandboxcode.trackerappr2.R;
+import com.sandboxcode.trackerappr2.activities.MainActivity;
 import com.sandboxcode.trackerappr2.adapters.on_boarding.OnBoardingPagerAdapter;
 
 public class OnBoardingPagerFragment extends Fragment {
@@ -62,6 +64,7 @@ public class OnBoardingPagerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        hideSystemUI();
+        // Hide action bar
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         viewPager = view.findViewById(R.id.on_boarding_view_pager);
         dotsLayout = view.findViewById(R.id.on_boarding_layout_dots);
@@ -92,7 +95,7 @@ public class OnBoardingPagerFragment extends Fragment {
     }
 
     private void launchHomeScreen() {
-        getParentFragmentManager().popBackStack();
+        startActivity(new Intent(getContext(), MainActivity.class));
     }
 
     OnPageChangeCallback pageChangeCallback = new OnPageChangeCallback() {
@@ -134,21 +137,19 @@ public class OnBoardingPagerFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // TODO -- Move logic to ViewModel
+        if (!((AppCompatActivity) getActivity()).getSupportActionBar().isShowing())
+            // Make sure action bar is visible
+            ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         Log.d(TAG, "onDestroy -------------------");
     }
 
-    private void hideSystemUI() {
-
-        View decorView = getActivity().getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE
-                        // Set the content to appear under the system bars so that the
-                        // content doesn't resize when the system bars hide and show.
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        // Hide the nav bar and status bar
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-        );
+    public void handleOnBackPressed() {
+        int currentPage = viewPager.getCurrentItem();
+        if (currentPage > 0)
+            viewPager.setCurrentItem((currentPage - 1));
+        else
+            launchHomeScreen();
     }
+
 }

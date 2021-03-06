@@ -16,6 +16,7 @@ public class OnBoardingPagerAdapter extends FragmentStateAdapter {
         this.itemCount = images.length;
     }
 
+    // TODO -- CHANGE PAGERADAPTER TO RECYCLERVIEW LIKE IN EXAMPLE
     @Override
     public Fragment createFragment(int position) {
         OnBoardingFragment fragment = OnBoardingFragment.newInstance(images[position]);

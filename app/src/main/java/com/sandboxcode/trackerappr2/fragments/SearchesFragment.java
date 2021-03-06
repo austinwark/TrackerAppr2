@@ -34,6 +34,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
 import com.sandboxcode.trackerappr2.activities.EditActivity;
+import com.sandboxcode.trackerappr2.activities.OnBoardingActivity;
 import com.sandboxcode.trackerappr2.adapters.search.SearchesAdapter;
 import com.sandboxcode.trackerappr2.viewmodels.SearchesViewModel;
 
@@ -229,11 +230,13 @@ public class SearchesFragment extends Fragment {
     }
 
     public void startOnBoarding() {
-        OnBoardingPagerFragment fragment2 = OnBoardingPagerFragment.newInstance();
-        FragmentTransaction transaction2 = getParentFragmentManager().beginTransaction();
-        transaction2.replace(R.id.main_fragment_container, fragment2);
-        transaction2.addToBackStack(null);
-        transaction2.commit();
+        startActivity(new Intent(getContext(), OnBoardingActivity.class));
+
+        //        OnBoardingPagerFragment fragment2 = OnBoardingPagerFragment.newInstance();
+//        FragmentTransaction transaction2 = getParentFragmentManager().beginTransaction();
+//        transaction2.replace(R.id.main_fragment_container, fragment2);
+//        transaction2.addToBackStack(null);
+//        transaction2.commit();
     }
 
     private void crossFade(View view1, View view2) {
