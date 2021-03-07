@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 
@@ -23,14 +24,18 @@ import android.widget.TextView;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.MainActivity;
 import com.sandboxcode.trackerappr2.adapters.on_boarding.OnBoardingPagerAdapter;
+import com.sandboxcode.trackerappr2.viewmodels.OnBoardingViewModel;
+
+import java.util.ArrayList;
 
 public class OnBoardingPagerFragment extends Fragment {
 
     private static final String TAG = OnBoardingPagerFragment.class.getSimpleName();
 
+    private OnBoardingViewModel viewModel;
     private OnBoardingPagerAdapter onBoardingPagerAdapter;
     private ViewPager2 viewPager;
-    private int[] images = {R.drawable.screenshot1, R.drawable.screenshot2};
+    private int[] images;
     private LinearLayout dotsLayout;
     private Button skipButton;
     private Button nextButton;
@@ -43,7 +48,6 @@ public class OnBoardingPagerFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static OnBoardingPagerFragment newInstance() {
         OnBoardingPagerFragment fragment = new OnBoardingPagerFragment();
-
         return fragment;
     }
 
@@ -62,10 +66,12 @@ public class OnBoardingPagerFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        hideSystemUI();
         // Hide action bar
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
+        viewModel = new ViewModelProvider(getActivity()).get(OnBoardingViewModel.class);
+        viewModel.saveImages();
         viewPager = view.findViewById(R.id.on_boarding_view_pager);
         dotsLayout = view.findViewById(R.id.on_boarding_layout_dots);
         skipButton = view.findViewById(R.id.on_boarding_skip_button);
@@ -92,6 +98,12 @@ public class OnBoardingPagerFragment extends Fragment {
             else
                 launchHomeScreen();
         });
+    }
+
+    /** Saves images ArrayList to int array */
+    public void setImages(ArrayList<Integer> images) {
+        for (int counter = 0; counter < images.size(); counter++)
+            this.images[counter] = images.get(counter);
     }
 
     private void launchHomeScreen() {
