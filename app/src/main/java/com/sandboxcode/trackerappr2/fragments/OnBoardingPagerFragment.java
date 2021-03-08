@@ -71,7 +71,7 @@ public class OnBoardingPagerFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
         viewModel = new ViewModelProvider(getActivity()).get(OnBoardingViewModel.class);
-        viewModel.saveImages();
+        viewModel.saveImages(R.drawable.screenshot1, R.drawable.screenshot2);
         viewPager = view.findViewById(R.id.on_boarding_view_pager);
         dotsLayout = view.findViewById(R.id.on_boarding_layout_dots);
         skipButton = view.findViewById(R.id.on_boarding_skip_button);
