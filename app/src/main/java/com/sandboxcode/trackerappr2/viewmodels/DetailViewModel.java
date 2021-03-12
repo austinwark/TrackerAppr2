@@ -14,7 +14,7 @@ public class DetailViewModel extends AndroidViewModel {
 
     public DetailViewModel(@NonNull Application application) {
         super(application);
-        searchRepository = new SearchRepository();
+        searchRepository = new SearchRepository(application);
 
     }
 

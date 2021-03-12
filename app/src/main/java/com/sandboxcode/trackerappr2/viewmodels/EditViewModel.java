@@ -20,7 +20,7 @@ public class EditViewModel extends AndroidViewModel {
 
     public EditViewModel(Application application) {
         super(application);
-        repository = new SearchRepository();
+        repository = new SearchRepository(application);
         search = repository.getSingleSearch();
         changesSaved = repository.getChangesSaved();
         errorMessage = repository.getErrorMessage();

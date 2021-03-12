@@ -1,5 +1,6 @@
 package com.sandboxcode.trackerappr2.repositories;
 
+import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
+import com.sandboxcode.trackerappr2.room_components.SearchDao;
+import com.sandboxcode.trackerappr2.room_components.SearchRoomDatabase;
 import com.sandboxcode.trackerappr2.utils.AsyncResponse;
 import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 import com.sandboxcode.trackerappr2.utils.WebScraper;
@@ -27,6 +30,8 @@ public class SearchRepository implements AsyncResponse {
     private static final FirebaseAuth AUTH_REF = FirebaseAuth.getInstance();
     private static final DatabaseReference DATABASE_REF = FirebaseDatabase.getInstance().getReference();
     private final AuthRepository authRepository = new AuthRepository();
+
+    private SearchDao searchDao;
 
     /* Fragment Searches */
     private final SearchesListener searchesListener = new SearchesListener();
@@ -42,8 +47,11 @@ public class SearchRepository implements AsyncResponse {
     /* Both */
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
-    public SearchRepository() {
-
+    /* TODO - Get rid of Application parameter to ease unit testing.
+       See --> https://developer.android.com/codelabs/android-room-with-a-view#8 */
+    public SearchRepository(Application application) {
+        SearchRoomDatabase db = SearchRoomDatabase.getDatabase(application);
+        searchDao = db.searchDao();
     }
 
     public void setListeners() {
@@ -107,6 +115,8 @@ public class SearchRepository implements AsyncResponse {
             scraper.setDelegate(this);
             scraper.execute();
         });
+
+        searchDao.insert(searchModel);
     }
 
     public void saveChanges(SearchModel search) {

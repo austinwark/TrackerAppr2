@@ -57,7 +57,7 @@ public class MainViewModel extends AndroidViewModel {
     public MainViewModel(Application application) {
         super(application);
 
-        searchRepository = new SearchRepository();
+        searchRepository = new SearchRepository(application);
         authRepository = new AuthRepository();
         allSearches = searchRepository.getAllSearches();
 

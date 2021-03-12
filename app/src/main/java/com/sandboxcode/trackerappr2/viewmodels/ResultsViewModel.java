@@ -36,7 +36,7 @@ public class ResultsViewModel extends AndroidViewModel {
 
     public ResultsViewModel(@NonNull Application application) {
         super(application);
-        searchRepository = new SearchRepository();
+        searchRepository = new SearchRepository(application);
         checkedResults = new ArrayList<>();
         editMenuVisibility.postValue(View.INVISIBLE);
     }

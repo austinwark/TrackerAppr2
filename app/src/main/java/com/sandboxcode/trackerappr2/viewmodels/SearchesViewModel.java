@@ -38,7 +38,7 @@ public class SearchesViewModel extends AndroidViewModel {
 
     public SearchesViewModel(@NonNull Application application) {
         super(application);
-        searchRepository = new SearchRepository();
+        searchRepository = new SearchRepository(application);
         authRepository = new AuthRepository();
         allSearches = searchRepository.getAllSearches();
 
