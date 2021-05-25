@@ -81,6 +81,7 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
         }
     }
 
+    /* If results are not empty -- tell Repository to save results in firebase */
     @Override
     protected void onPostExecute(Elements mainContent) {
         ArrayList<ResultModel> results;

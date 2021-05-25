@@ -4,7 +4,9 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
+import com.sandboxcode.trackerappr2.room_components.ResultDao;
 import com.sandboxcode.trackerappr2.room_components.SearchDao;
 import com.sandboxcode.trackerappr2.room_components.SearchRoomDatabase;
 import com.sandboxcode.trackerappr2.utils.AsyncResponse;
@@ -32,6 +35,7 @@ public class SearchRepository implements AsyncResponse {
     private final AuthRepository authRepository = new AuthRepository();
 
     private SearchDao searchDao;
+    private ResultDao resultDao;
 
     /* Fragment Searches */
     private final SearchesListener searchesListener = new SearchesListener();
@@ -51,10 +55,12 @@ public class SearchRepository implements AsyncResponse {
        See --> https://developer.android.com/codelabs/android-room-with-a-view#8 */
     public SearchRepository(Application application) {
         SearchRoomDatabase db = SearchRoomDatabase.getDatabase(application);
-        searchDao = db.searchDao();
+        searchDao = db.getSearchDao();
+        resultDao = db.getResultDao();
     }
 
     public void setListeners() {
+
         DATABASE_REF.child("queries").child(authRepository.getUserId())
                 .addValueEventListener(searchesListener);
     }
@@ -83,6 +89,9 @@ public class SearchRepository implements AsyncResponse {
 
                 DATABASE_REF.child("results").child(authRepository.getUserId()).child(searchId)
                         .removeValue();
+
+                // Delete search in local DB
+                searchDao.deleteById(searchId);
             }
         }
 
@@ -116,7 +125,7 @@ public class SearchRepository implements AsyncResponse {
             scraper.execute();
         });
 
-        searchDao.insert(searchModel);
+        searchDao.insertSearches(searchModel);
     }
 
     public void saveChanges(SearchModel search) {
@@ -248,6 +257,42 @@ public class SearchRepository implements AsyncResponse {
         });
     }
 
+    /* Load all saved searches in firebase to local database */
+    private void updateRoomDatabase(List<SearchModel> searches) {
+
+        Log.d(TAG, "Updating database");
+
+        for (SearchModel search : searches) {
+            Log.d(TAG, "search: " + search.getId());
+            searchDao.insertSearches(search);
+        }
+
+        List<SearchModel> localSearches = searchDao.loadAllSearches();
+
+        if (localSearches != null) {
+            Log.d(TAG, "local searches not null");
+            Log.d(TAG, "SIZE OF LOCAL SEARCHES: " + localSearches.size());
+
+            for (SearchModel search : localSearches) {
+
+                DATABASE_REF.child("queries").child(authRepository.getUserId())
+                        .child(search.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            Log.d(TAG, "snapshot " + search.getSearchName() + " does not exist");
+                            searchDao.deleteSearches(search);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) { }
+
+                });
+            }
+        }
+    }
+
     private class SingleSearchListener implements ValueEventListener {
 
         @Override
@@ -271,6 +316,7 @@ public class SearchRepository implements AsyncResponse {
             }
 
             allSearches.postValue(searchList);
+            updateRoomDatabase(searchList);
         }
 
         @Override

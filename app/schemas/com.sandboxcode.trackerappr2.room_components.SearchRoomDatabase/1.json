@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "19523a2506be39f4dbc4d3de32466970",
+    "identityHash": "37077a3d747be8041ac2942f3c26a47d",
     "entities": [
       {
         "tableName": "search_table",
@@ -95,12 +95,146 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "result_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`vin` TEXT NOT NULL, `search_id` TEXT, `stock` TEXT, `make` TEXT, `model` TEXT, `year` TEXT, `trim` TEXT, `ext_color` TEXT, `int_color` TEXT, `price` TEXT, `miles` TEXT, `engine` TEXT, `transmission` TEXT, `dealer` TEXT, `image_url` TEXT, `is_new_result` INTEGER NOT NULL, `carfax_link` TEXT, `details_link` TEXT, PRIMARY KEY(`vin`), FOREIGN KEY(`search_id`) REFERENCES `search_table`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "vin",
+            "columnName": "vin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "searchId",
+            "columnName": "search_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "stock",
+            "columnName": "stock",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "make",
+            "columnName": "make",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "trim",
+            "columnName": "trim",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "extColor",
+            "columnName": "ext_color",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "intColor",
+            "columnName": "int_color",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "miles",
+            "columnName": "miles",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "engine",
+            "columnName": "engine",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transmission",
+            "columnName": "transmission",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dealer",
+            "columnName": "dealer",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "image_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isNewResult",
+            "columnName": "is_new_result",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "carfaxLink",
+            "columnName": "carfax_link",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "detailsLink",
+            "columnName": "details_link",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "vin"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "search_table",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "search_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '19523a2506be39f4dbc4d3de32466970')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '37077a3d747be8041ac2942f3c26a47d')"
     ]
   }
 }

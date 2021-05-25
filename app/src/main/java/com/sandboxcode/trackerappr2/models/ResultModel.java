@@ -1,5 +1,13 @@
 package com.sandboxcode.trackerappr2.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import static androidx.room.ForeignKey.CASCADE;
+
 import com.google.firebase.database.Exclude;
 
 import org.parceler.Parcel;
@@ -13,26 +21,53 @@ import java.util.Map;
 
 // TODO - Implement AutoValue @Parcelable extension (need to make class immutable)
 @Parcel
+@Entity(tableName = "result_table",
+        foreignKeys = @ForeignKey(
+                entity = SearchModel.class,
+                parentColumns = "id",
+                childColumns = "search_id",
+                onDelete = CASCADE)
+)
 public class ResultModel implements Serializable {
 
-    String stock;
-    String make;
-    String model;
-    String year;
-    String trim;
-    String extColor;
-    String intColor;
-    String price;
-    String vin;
-    String miles;
-    String engine;
-    String transmission;
-    String dealer;
-    String imageUrl;
-    boolean isNewResult;
-    String carfaxLink;
-    String detailsLink;
-    boolean isChecked; // field used to keep track of UI state in RecyclerView
+    @PrimaryKey
+    @NonNull
+    public String vin;
+
+    @ColumnInfo(name = "search_id")
+    public String searchId;
+
+    public String stock;
+    public String make;
+    public String model;
+    public String year;
+    public String trim;
+
+    @ColumnInfo(name = "ext_color")
+    public String extColor;
+
+    @ColumnInfo(name = "int_color")
+    public String intColor;
+    public String price;
+    public String miles;
+    public String engine;
+    public String transmission;
+    public String dealer;
+
+    @ColumnInfo(name = "image_url")
+    public String imageUrl;
+
+    @ColumnInfo(name = "is_new_result")
+    public boolean isNewResult;
+
+    @ColumnInfo(name = "carfax_link")
+    public String carfaxLink;
+
+    @ColumnInfo(name = "details_link")
+    public String detailsLink;
+
+    @Ignore
+    boolean isChecked; // Used to keep track of UI state in RecyclerView (No need to save in DB)
 
     /**
      * Default constructor required by Firebase
@@ -41,7 +76,6 @@ public class ResultModel implements Serializable {
     }
 
     public ResultModel(Map<String, String> details) {
-
         stock = details.get("stock");
         make = details.get("make");
         model = details.get("model");
@@ -75,16 +109,6 @@ public class ResultModel implements Serializable {
             return null;
         }
     }
-
-//    public ResultModel(ResultModel result) {
-//        this.stock = result.getStock();
-//        this.make = result.getMake();
-//        this.model = result.getModel();
-//        this.year = result.getYear();
-//        this.trim = result.getTrim();
-//        this.extColor = result.getExtColor();
-//        this
-//    }
 
     @Override
     public String toString() {
@@ -146,6 +170,8 @@ public class ResultModel implements Serializable {
     public String getVin() {
         return vin;
     }
+
+    public String getSearchId() { return searchId; }
 
     public String getMiles() {
         return miles;
