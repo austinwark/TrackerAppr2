@@ -25,10 +25,10 @@ public interface SearchDao {
     public void deleteSearches(SearchModel... searches);
 
     @Query("SELECT * FROM search_table")
-    public List<SearchModel> loadAllSearches();
+    public List<SearchModel> loadAllSearchesOnce();
 
-    //    @Query("SELECT * FROM search_table")
-//    public LiveData<List<SearchModel>> loadAllSearches();
+    @Query("SELECT * FROM search_table")
+    public LiveData<List<SearchModel>> loadAllSearches();
 
     @Query("SELECT * FROM search_table WHERE id = :searchId")
     public LiveData<SearchModel> loadSingleSearch(String searchId);

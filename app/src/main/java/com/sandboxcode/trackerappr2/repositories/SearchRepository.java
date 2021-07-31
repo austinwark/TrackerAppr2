@@ -267,18 +267,21 @@ public class SearchRepository implements AsyncResponse {
             searchDao.insertSearches(search);
         }
 
-        List<SearchModel> localSearches = searchDao.loadAllSearches();
-
+        List<SearchModel> localSearches = searchDao.loadAllSearchesOnce();
+  
         if (localSearches != null) {
             Log.d(TAG, "local searches not null");
             Log.d(TAG, "SIZE OF LOCAL SEARCHES: " + localSearches.size());
 
             for (SearchModel search : localSearches) {
 
+                // Check if local search is in firebase
                 DATABASE_REF.child("queries").child(authRepository.getUserId())
                         .child(search.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        // If local search does not exist in firebase, delete it
                         if (!snapshot.exists()) {
                             Log.d(TAG, "snapshot " + search.getSearchName() + " does not exist");
                             searchDao.deleteSearches(search);
