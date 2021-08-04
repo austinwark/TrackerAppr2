@@ -19,6 +19,9 @@ public interface ResultDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insertResults(ResultModel... results);
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    public void insertOnlyNewResults(ResultModel... results);
+
     @Update
     public void updateResults(ResultModel... results);
 

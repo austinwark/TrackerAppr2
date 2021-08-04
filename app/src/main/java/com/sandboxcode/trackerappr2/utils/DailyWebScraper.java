@@ -49,7 +49,7 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
         if (!Boolean.parseBoolean(search.getAllDealerships()))
             queryString.append(UrlBits.NOT_ALL_DEALERSHIPS.getVal());
 
-        Log.d(TAG, queryString.toString() + "====================");
+//        Log.d(TAG, queryString.toString() + "====================");
 //        if (!search.getYear().isEmpty()) {
 //            queryString.append(UrlBits.YEAR.getVal());
 //            queryString.append(search.getYear());
@@ -119,6 +119,7 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
 
     private ArrayList<ResultModel> parseElements(SearchModel search, Elements content) {
         ArrayList<ResultModel> results = new ArrayList<>();
+        String searchId = search.getId();
 
         for (Element vehicle : content) {
             float minYear = Float.parseFloat(search.getMinYear());
@@ -127,6 +128,7 @@ public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elem
             if (vehicleYear >= minYear && vehicleYear <= maxYear) {
 
                 Map<String, String> details = new HashMap<>();
+                details.put("searchId", searchId);
                 details.put("vin", vehicle.attr("data-vin"));
                 details.put("make", vehicle.attr("data-make"));
                 details.put("model", vehicle.attr("data-model"));

@@ -26,7 +26,7 @@ public class SearchesViewModel extends AndroidViewModel implements SearchReposit
     private final SearchRepository searchRepository;
     private final AuthRepository authRepository;
 
-    private MutableLiveData<List<SearchModel>> allSearches;
+//    private MutableLiveData<List<SearchModel>> allSearches;
     private LiveData<List<SearchModel>> allRoomSearches;
     private final SingleLiveEvent<String> toastMessage = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
@@ -42,7 +42,7 @@ public class SearchesViewModel extends AndroidViewModel implements SearchReposit
         super(application);
         searchRepository = new SearchRepository(application);
         authRepository = new AuthRepository();
-        allSearches = searchRepository.getAllSearches();
+//        allSearches = searchRepository.getAllSearches();
         allRoomSearches = searchRepository.getAllRoomSearches();
 
         userSignedIn = authRepository.getUserSignedIn();
@@ -161,8 +161,9 @@ public class SearchesViewModel extends AndroidViewModel implements SearchReposit
         startEditActivity.setValue(searchId);
     }
 
+    // TODO -- Do I need to call getAllSearches here?
     public void refreshSearches() {
-        searchRepository.getAllSearches();
+//        searchRepository.getAllSearches();
         toggleEdit(); // hide edit menu
         checkedItems.clear(); // Reset checked items
     }

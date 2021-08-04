@@ -106,126 +106,200 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
 //                });
 //    }
 
+//    @Override
+//    public void processResults(Map<String, ArrayList<ResultModel>> results) {
+//
+//        // Ref pointing to the user's search results grouped by search ID
+//        DatabaseReference searchesRef = DATABASE_REF.child("results").child(userId);
+//
+//        searchesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                // Close method if user has no searches
+//                if (!snapshot.hasChildren())
+//                    return;
+//
+//                // Counter used to create notifications after each set of results is checked
+//                long totalSearches = snapshot.getChildrenCount();
+//                int searchesCount = 0;
+//
+//                //  For each group of search results
+//                for (DataSnapshot searchInDb : snapshot.getChildren()) {
+//
+//                    String searchId = searchInDb.getKey();
+//
+//                    if (searchId == null)
+//                        return;
+//
+//                    // Ref pointing to results from one search
+//                    DatabaseReference resultsRef = searchesRef.child(searchId);
+//
+//                    ArrayList<ResultModel> newSearchResults = results.get(searchId);
+//
+//                    if (newSearchResults == null) // Protects again Null Pointer Exception
+//                        newSearchResults = new ArrayList<>();
+//
+//                    ArrayList<ResultModel> currentResults = new ArrayList<>();
+//
+//                    int numberOfResults = 0; // total results for the search
+//                    int numberOfNewResults = 0; // total new (unseen) results for the search
+//
+//                    // Load the search's current results
+//                    for (DataSnapshot currentResult : searchInDb.getChildren())
+//                        currentResults.add(currentResult.getValue(ResultModel.class));
+//
+//                    // If there are existing results in database
+//                    if (!currentResults.isEmpty()) {
+//
+//                        // Check each scrapedResult to see if it already exists
+//                        for (ResultModel scrapedResult : newSearchResults) {
+//                            if (currentResults.contains(scrapedResult)) {
+//
+//                                // Get the already existing result from currentResults
+//                                ResultModel matchingCurrentResult =
+//                                        currentResults.get(currentResults.indexOf(scrapedResult));
+//
+//                                // If the already existing result has been viewed by user -- update
+//                                // the scrapedResult with the same value
+//                                if (!matchingCurrentResult.getIsNewResult()) {
+//                                    scrapedResult.setIsNewResult(false); // true by default
+//
+//                                } else // If currentResult has already been viewed
+//                                    numberOfNewResults++;
+//
+//                            } else // If scrapedResult has not been scraped yet
+//                                numberOfNewResults++;
+//                        }
+//                    } else // If there are no existing current results
+//                        numberOfNewResults = newSearchResults.size();
+//
+//                    resultsRef.setValue(null); // reset the search's result document
+//
+//                    // Save each new search result and keep track of total results
+//                    for (ResultModel result : newSearchResults) {
+//                        resultsRef.child(result.getVin()).setValue(result);
+//                        numberOfResults++;
+//                    }
+//
+//                    // Set number of results (total and new) in search document
+//                    DATABASE_REF.child("queries").child(userId).child(searchId)
+//                            .child("numberOfResults").setValue(numberOfResults);
+//                    DATABASE_REF.child("queries").child(userId).child(searchId)
+//                            .child("numberOfNewResults").setValue(numberOfNewResults);
+//
+//                    // Create a new notification if there is one or more new results
+//                    if (numberOfNewResults > 0) {
+//                        numberOfNotifications++;
+//                        newNotifications.add(new NewNotification(searchId, numberOfNewResults));
+//                    }
+//
+//                    // Send notification once all searches have been checked
+//                    searchesCount++;
+//                    if (searchesCount == totalSearches) {
+//                        int totalNewNotifications = 0;
+//                        for (NewNotification newNotification : newNotifications)
+//                            totalNewNotifications += newNotification.getNumberOfNewResults();
+//
+//                        // If user has notifications enabled -- show notifications
+//                        SharedPreferences sharedPreferences =
+//                                PreferenceManager.getDefaultSharedPreferences(context);
+//                        if (sharedPreferences.getBoolean("notifications", false))
+//                            deliverSummaryNotification(context, newNotifications, totalNewNotifications);
+//                    }
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // No need to notify user of firebase read error
+//            }
+//        });
+//    }
+
+//    @Override
+//    public void processResults(Map<String, ArrayList<ResultModel>> results) {
+//
+//        List<SearchModel> searches = searchDao.loadAllSearchesOnce();
+//        if (searches == null || searches.isEmpty())
+//            return;
+//
+//        int searchesCount = 0;
+//        int totalSearchesCount = searches.size();
+//
+//        for (SearchModel search : searches) {
+//
+//            int numberOfResults = 0;
+//            int numberOfNewResults = 0;
+//            String searchId = search.getId();
+//
+//            ArrayList<ResultModel> scrapedResults = results.get(searchId);
+//
+//
+//            if (scrapedResults == null)
+//                scrapedResults = new ArrayList<>();
+//
+//            List<ResultModel> currentResultsInDb = resultDao.loadAllResults(searchId);
+//
+//            if (!currentResultsInDb.isEmpty()) {
+//
+//                for (ResultModel scrapedResult : scrapedResults) {
+//                    if (currentResultsInDb.contains(scrapedResult)) {
+//
+//                        ResultModel matchingCurrentResult = currentResultsInDb.get(currentResultsInDb.indexOf(scrapedResult));
+//                        if (!matchingCurrentResult.getIsNewResult())
+//                            scrapedResult.setIsNewResult(false);
+//                        else
+//                            numberOfNewResults++;
+//
+//                    } else
+//                        numberOfNewResults++;
+//                }
+//            } else
+//                numberOfNewResults = scrapedResults.size();
+//
+//            resultDao.deleteAll(searchId);
+//
+//            for (ResultModel result : scrapedResults) {
+//                resultDao.insertResults(result);
+//                numberOfResults++;
+//            }
+//
+//            search.setNumberOfNewResults(numberOfNewResults);
+//            search.setNumberOfResults(numberOfResults);
+//
+//            if (numberOfNewResults > 0) {
+//                numberOfNotifications++;
+//                newNotifications.add(new NewNotification(searchId, numberOfNewResults));
+//            }
+//
+//            searchesCount++;
+//            if (searchesCount == totalSearchesCount) {
+//                int totalNewNotifications = 0;
+//                for (NewNotification newNotification : newNotifications)
+//                    totalNewNotifications += newNotification.getNumberOfNewResults();
+//
+//                SharedPreferences sharedPreferences =
+//                        PreferenceManager.getDefaultSharedPreferences(context);
+//                if (sharedPreferences.getBoolean("notifications", false))
+//                    deliverSummaryNotification(context, newNotifications, totalNewNotifications);
+//            }
+//        }
+//    }
+
     @Override
     public void processResults(Map<String, ArrayList<ResultModel>> results) {
 
-        // Ref pointing to the user's search results grouped by search ID
-        DatabaseReference searchesRef = DATABASE_REF.child("results").child(userId);
-
-        searchesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                // Close method if user has no searches
-                if (!snapshot.hasChildren())
-                    return;
-
-                // Counter used to create notifications after each set of results is checked
-                long totalSearches = snapshot.getChildrenCount();
-                int searchesCount = 0;
-
-                //  For each group of search results
-                for (DataSnapshot searchInDb : snapshot.getChildren()) {
-
-                    String searchId = searchInDb.getKey();
-
-                    if (searchId == null)
-                        return;
-
-                    // Ref pointing to results from one search
-                    DatabaseReference resultsRef = searchesRef.child(searchId);
-
-                    ArrayList<ResultModel> newSearchResults = results.get(searchId);
-
-                    if (newSearchResults == null) // Protects again Null Pointer Exception
-                        newSearchResults = new ArrayList<>();
-
-                    ArrayList<ResultModel> currentResults = new ArrayList<>();
-
-                    int numberOfResults = 0; // total results for the search
-                    int numberOfNewResults = 0; // total new (unseen) results for the search
-
-                    // Load the search's current results
-                    for (DataSnapshot currentResult : searchInDb.getChildren())
-                        currentResults.add(currentResult.getValue(ResultModel.class));
-
-                    // If there are existing results in database
-                    if (!currentResults.isEmpty()) {
-
-                        // Check each scrapedResult to see if it already exists
-                        for (ResultModel scrapedResult : newSearchResults) {
-                            if (currentResults.contains(scrapedResult)) {
-
-                                // Get the already existing result from currentResults
-                                ResultModel matchingCurrentResult =
-                                        currentResults.get(currentResults.indexOf(scrapedResult));
-
-                                // If the already existing result has been viewed by user -- update
-                                // the scrapedResult with the same value
-                                if (!matchingCurrentResult.getIsNewResult()) {
-                                    scrapedResult.setIsNewResult(false); // true by default
-
-                                } else // If currentResult has already been viewed
-                                    numberOfNewResults++;
-
-                            } else // If scrapedResult has not been scraped yet
-                                numberOfNewResults++;
-                        }
-                    } else // If there are no existing current results
-                        numberOfNewResults = newSearchResults.size();
-
-                    resultsRef.setValue(null); // reset the search's result document
-
-                    // Save each new search result and keep track of total results
-                    for (ResultModel result : newSearchResults) {
-                        resultsRef.child(result.getVin()).setValue(result);
-                        numberOfResults++;
-                    }
-
-                    // Set number of results (total and new) in search document
-                    DATABASE_REF.child("queries").child(userId).child(searchId)
-                            .child("numberOfResults").setValue(numberOfResults);
-                    DATABASE_REF.child("queries").child(userId).child(searchId)
-                            .child("numberOfNewResults").setValue(numberOfNewResults);
-
-                    // Create a new notification if there is one or more new results
-                    if (numberOfNewResults > 0) {
-                        numberOfNotifications++;
-                        newNotifications.add(new NewNotification(searchId, numberOfNewResults));
-                    }
-
-                    // Send notification once all searches have been checked
-                    searchesCount++;
-                    if (searchesCount == totalSearches) {
-                        int totalNewNotifications = 0;
-                        for (NewNotification newNotification : newNotifications)
-                            totalNewNotifications += newNotification.getNumberOfNewResults();
-
-                        // If user has notifications enabled -- show notifications
-                        SharedPreferences sharedPreferences =
-                                PreferenceManager.getDefaultSharedPreferences(context);
-                        if (sharedPreferences.getBoolean("notifications", false))
-                            deliverSummaryNotification(context, newNotifications, totalNewNotifications);
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // No need to notify user of firebase read error
-            }
-        });
-    }
-
-    public void processResults2(Map<String, ArrayList<ResultModel>> results) {
-
+        // Load all searches from DB
         List<SearchModel> searches = searchDao.loadAllSearchesOnce();
         if (searches == null || searches.isEmpty())
             return;
 
+        // Keeps track of iterations
         int searchesCount = 0;
         int totalSearchesCount = searches.size();
+
 
         for (SearchModel search : searches) {
 
@@ -233,33 +307,38 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
             int numberOfNewResults = 0;
             String searchId = search.getId();
 
+            // Results from WebScraper
             ArrayList<ResultModel> scrapedResults = results.get(searchId);
+
+
             if (scrapedResults == null)
                 scrapedResults = new ArrayList<>();
 
+            // Insert only new results into DB
+            for (ResultModel scrapedResult : scrapedResults) {
+                resultDao.insertOnlyNewResults(scrapedResult);
+            }
+
+            // All results, both new and old
             List<ResultModel> currentResultsInDb = resultDao.loadAllResults(searchId);
+
             if (!currentResultsInDb.isEmpty()) {
 
-                for (ResultModel scrapedResult : scrapedResults) {
-                    if (currentResultsInDb.contains(scrapedResult)) {
+                for (ResultModel result : currentResultsInDb) {
 
-                        ResultModel matchingCurrentResult = currentResultsInDb.get(currentResultsInDb.indexOf(scrapedResult));
-                        if (!matchingCurrentResult.getIsNewResult())
-                            scrapedResult.setIsNewResult(false);
-                        else
+                    // Delete old results not found in new web scrape
+                    if (!scrapedResults.contains(result)) {
+                        resultDao.deleteResults(result);
+
+                    } else {
+
+                        // Keep track of total and new results
+                        numberOfResults++;
+                        if (result.getIsNewResult())
                             numberOfNewResults++;
+                    }
 
-                    } else
-                        numberOfNewResults++;
                 }
-            } else
-                numberOfNewResults = scrapedResults.size();
-
-            resultDao.deleteAll(searchId);
-
-            for (ResultModel result : scrapedResults) {
-                resultDao.insertResults(result);
-                numberOfResults++;
             }
 
             search.setNumberOfNewResults(numberOfNewResults);
@@ -267,7 +346,7 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
 
             if (numberOfNewResults > 0) {
                 numberOfNotifications++;
-                newNotifications.add(new NewNotification(searchId, numberOfNewResults));
+                newNotifications.add(new NewNotification(searchId, search.getSearchName(), numberOfNewResults));
             }
 
             searchesCount++;
@@ -278,8 +357,11 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
 
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(context);
+
                 if (sharedPreferences.getBoolean("notifications", false))
-                    deliverSummaryNotification(context, newNotifications, totalNewNotifications);
+
+                    deliverSummaryNotification(context, newNotifications,
+                            totalNewNotifications);
             }
         }
     }
@@ -306,7 +388,7 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
 
         for (NewNotification notification : newNotifications) {
             String inboxStyleLine = notification.getNumberOfNewResults() +  " new results in "
-                    + notification.getSearchId();
+                    + notification.getSearchName();
 
             inboxStyle.addLine(inboxStyleLine);
         }
@@ -334,16 +416,20 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
 
     public static class NewNotification {
         private final String searchId;
+        private final String searchName;
         private final int numberOfNewResults;
 
-        public NewNotification(String searchId, int numberOfNewResults) {
+        public NewNotification(String searchId, String searchName, int numberOfNewResults) {
             this.searchId = searchId;
+            this.searchName = searchName;
             this.numberOfNewResults = numberOfNewResults;
         }
 
         public String getSearchId() {
             return searchId;
         }
+
+        public String getSearchName() { return searchName; }
 
         public int getNumberOfNewResults() {
             return numberOfNewResults;

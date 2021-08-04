@@ -30,7 +30,7 @@ public class MainViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> signUserOut;
 
     /* Searches Fragment */
-    private MutableLiveData<List<SearchModel>> allSearches;
+//    private MutableLiveData<List<SearchModel>> allSearches;
     private final SingleLiveEvent<String> toastMessage = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
     private final SingleLiveEvent<String> startEditActivity = new SingleLiveEvent<>();
@@ -59,7 +59,7 @@ public class MainViewModel extends AndroidViewModel {
 
         searchRepository = new SearchRepository(application);
         authRepository = new AuthRepository();
-        allSearches = searchRepository.getAllSearches();
+//        allSearches = searchRepository.getAllSearches();
 
         userSignedIn = authRepository.getUserSignedIn();
         signUserOut = authRepository.getSignUserOut();
@@ -142,11 +142,11 @@ public class MainViewModel extends AndroidViewModel {
         startEditActivity.setValue(searchId);
     }
 
-    public void refreshSearches() {
-        searchRepository.getAllSearches();
-        toggleEdit(); // hide edit menu
-        checkedItems.clear(); // Reset checked items
-    }
+//    public void refreshSearches() {
+//        searchRepository.getAllSearches();
+//        toggleEdit(); // hide edit menu
+//        checkedItems.clear(); // Reset checked items
+//    }
 
     public String getUserId() {
         return searchRepository.getUserId();

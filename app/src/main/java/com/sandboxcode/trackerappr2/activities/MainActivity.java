@@ -124,8 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(notifyPendingIntent);
-//        long repeatInterval = 1800000; // half hour
-        long repeatInterval = 120000; // 2 minutes
+        long repeatInterval = 1800000; // half hour
         long triggerTime = SystemClock.elapsedRealtime();
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, repeatInterval, notifyPendingIntent);
 
