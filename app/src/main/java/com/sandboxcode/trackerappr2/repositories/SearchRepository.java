@@ -315,6 +315,9 @@ public class SearchRepository implements AsyncResponse {
                 // Reset the currentResults document in firebase
                 resultsRef.setValue(null);
 
+                // Reset the current results in room DB
+                resultDao.deleteAll(searchId);
+
                 // Save each new result and keep track of the total count
                 for (ResultModel result : searchResults) {
                     resultsRef.child(result.getVin()).setValue(result);

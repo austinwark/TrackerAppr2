@@ -94,7 +94,10 @@ public class EditActivity extends AppCompatActivity {
         String maxPrice = Collections.max(priceValues).toString();
         String allDealerships = String.valueOf(dealerSwitch.isChecked());
 
-        editViewModel.saveChanges(searchName, model, trim, minYear, maxYear,
+//        editViewModel.saveChanges(searchName, model, trim, minYear, maxYear,
+//                minPrice, maxPrice, allDealerships, search.getCreatedDate());
+
+        editViewModel.saveRoomChanges(searchName, model, trim, minYear, maxYear,
                 minPrice, maxPrice, allDealerships, search.getCreatedDate());
     }
 

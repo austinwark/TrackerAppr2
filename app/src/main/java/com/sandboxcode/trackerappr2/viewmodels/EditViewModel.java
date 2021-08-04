@@ -65,6 +65,18 @@ public class EditViewModel extends AndroidViewModel {
         repository.saveChanges(searchModel);
     }
 
+    public void saveRoomChanges(String name, String model, String trim, String minYear, String maxYear,
+                            String minPrice, String maxPrice, String allDealerships,
+                            String createdDate) {
+
+        SearchModel searchModel = new SearchModel(searchId, name, model, trim, minYear,
+                maxYear, minPrice, maxPrice, allDealerships);
+        searchModel.setLastEditedDate();
+        searchModel.setCreatedDate(createdDate);
+        repository.saveRoomChanges(searchModel);
+    }
+
+
     public MutableLiveData<Boolean> getChangesSaved() {
         return changesSaved;
     }
