@@ -42,7 +42,7 @@ public class SearchRepository implements AsyncResponse {
     private final MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
     private final LiveData<List<SearchModel>> allRoomSearches;
     /* Fragment Results */
-    private final SingleLiveEvent<ArrayList<ResultModel>> searchResults = new SingleLiveEvent<>();
+    private final SingleLiveEvent<List<ResultModel>> searchResults = new SingleLiveEvent<>();
 
     /* Activity Edit */
     private final MutableLiveData<SearchModel> singleSearch = new MutableLiveData<>();
@@ -106,12 +106,23 @@ public class SearchRepository implements AsyncResponse {
 
     }
 
-    public SingleLiveEvent<ArrayList<ResultModel>> getSearchResults(String searchId) {
-        DATABASE_REF.child("results").child(authRepository.getUserId()).child(searchId)
-                .addListenerForSingleValueEvent(new ResultsListener());
-
+    public SingleLiveEvent<List<ResultModel>> getSearchResults(String searchId) {
+        List<ResultModel> results = resultDao.loadAllResults(searchId);
+        searchResults.setValue(results);
         return searchResults;
     }
+
+    public ResultModel getSingleSearchResult(String vin) {
+        ResultModel result = resultDao.loadSingleResult(vin);
+        return result;
+    }
+
+    //    public SingleLiveEvent<ArrayList<ResultModel>> getSearchResults(String searchId) {
+//        DATABASE_REF.child("results").child(authRepository.getUserId()).child(searchId)
+//                .addListenerForSingleValueEvent(new ResultsListener());
+//
+//        return searchResults;
+//    }
 
     public void create(String name, String model, String trim, String minYear, String maxYear,
                        String minPrice, String maxPrice, String allDealerships) {
@@ -200,10 +211,15 @@ public class SearchRepository implements AsyncResponse {
         DATABASE_REF.child("results").child(authRepository.getUserId())
                 .child(searchId).child(vin).child("isNewResult").setValue(false);
 
-        // Update isNewResult field in Room database
+        // Update isNewResult field in Room DB
         ResultModel viewedResult = resultDao.loadSingleResult(vin);
         viewedResult.setIsNewResult(false);
         resultDao.updateResult(viewedResult);
+
+        // Update the search's numberOfNewResults in Room DB
+        SearchModel viewedSearch = searchDao.getSingleSearch(searchId);
+        viewedSearch.setNumberOfNewResults(viewedSearch.getNumberOfNewResults() - 1);
+        searchDao.updateSearch(viewedSearch);
 
         // Get numberOfNewResults from correlated search document to update its numberOfNewResults
         DATABASE_REF.child("queries").child(authRepository.getUserId()).child(searchId)
@@ -224,8 +240,7 @@ public class SearchRepository implements AsyncResponse {
         });
     }
 
-    public void processRoomResults(List<ResultModel> searchResults, String searchId) {
-        String userUid = authRepository.getUserId();
+    public void processResults(List<ResultModel> searchResults, SearchModel search) {
 
         List<ResultModel> currentResults;
         int numberOfResults = 0;
@@ -238,6 +253,8 @@ public class SearchRepository implements AsyncResponse {
 
             // Check each newly scraped result against each current result
             for (ResultModel scrapedResult : searchResults) {
+
+                Log.d(TAG, "---- Scraped Result ----");
 
                 if (currentResults.contains(scrapedResult)) {
 
@@ -261,82 +278,85 @@ public class SearchRepository implements AsyncResponse {
         }
 
         // TODO -- will this delete all results with same searchId??
-        resultDao.deleteAll(searchId);
+        resultDao.deleteAll(search.getId());
 
         for (ResultModel result : searchResults) {
             resultDao.insertResults(result);
             numberOfResults++;
         }
 
-        // TODO -- Set number of total & new results in search document
+        // Set number of total & new results in search document
+        search.setNumberOfResults(numberOfResults);
+        search.setNumberOfNewResults(numberOfNewResults);
+        searchDao.updateSearch(search);
 
     }
 
-    @Override
-    public void processResults(ArrayList<ResultModel> searchResults, String searchId) {
-        String userUid = authRepository.getUserId();
-
-        DatabaseReference resultsRef = DATABASE_REF.child("results").child(userUid).child(searchId);
-        resultsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<ResultModel> currentResults = new ArrayList<>();
-                int numberOfResults = 0;
-                int numberOfNewResults = 0;
-
-                // Save the search's current results in an ArrayList
-                if (snapshot.hasChildren())
-                    for (DataSnapshot currentResult : snapshot.getChildren())
-                        currentResults.add(currentResult.getValue(ResultModel.class));
-
-                if (!currentResults.isEmpty()) {
-
-                    // Check each newly scraped result against each current result
-                    for (ResultModel scrapedResult : searchResults) {
-                        if (currentResults.contains(scrapedResult)) {
-
-                            ResultModel matchingCurrentResult =
-                                    currentResults.get(currentResults.indexOf(scrapedResult));
-
-                            if (!matchingCurrentResult.getIsNewResult()) {
-                                scrapedResult.setIsNewResult(false); // this is true by default
-                            } else {
-                                numberOfNewResults++;
-                            }
-                        } else {
-                            numberOfNewResults++;
-                        }
-                    }
-
-                } else {
-                    numberOfNewResults = searchResults.size();
-                }
-
-                // Reset the currentResults document in firebase
-                resultsRef.setValue(null);
-
-                // Reset the current results in room DB
-                resultDao.deleteAll(searchId);
-
-                // Save each new result and keep track of the total count
-                for (ResultModel result : searchResults) {
-                    resultsRef.child(result.getVin()).setValue(result);
-                    resultDao.insertResults(result);
-                    numberOfResults++;
-                }
-
-                // Set number of total & new results in search document
-                DATABASE_REF.child("queries").child(userUid).child(searchId)
-                        .child("numberOfResults").setValue(numberOfResults);
-                DATABASE_REF.child("queries").child(userUid).child(searchId)
-                        .child("numberOfNewResults").setValue(numberOfNewResults);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
+//    @Override
+//    public void processResults(ArrayList<ResultModel> searchResults, String searchId) {
+//        String userUid = authRepository.getUserId();
+//
+//        DatabaseReference resultsRef = DATABASE_REF.child("results").child(userUid).child(searchId);
+//        resultsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                ArrayList<ResultModel> currentResults = new ArrayList<>();
+//                int numberOfResults = 0;
+//                int numberOfNewResults = 0;
+//
+//                // Save the search's current results in an ArrayList
+//                if (snapshot.hasChildren())
+//                    for (DataSnapshot currentResult : snapshot.getChildren())
+//                        currentResults.add(currentResult.getValue(ResultModel.class));
+//
+//                if (!currentResults.isEmpty()) {
+//
+//                    // Check each newly scraped result against each current result
+//                    for (ResultModel scrapedResult : searchResults) {
+//                        if (currentResults.contains(scrapedResult)) {
+//
+//                            ResultModel matchingCurrentResult =
+//                                    currentResults.get(currentResults.indexOf(scrapedResult));
+//
+//                            if (!matchingCurrentResult.getIsNewResult()) {
+//                                scrapedResult.setIsNewResult(false); // this is true by default
+//                            } else {
+//                                numberOfNewResults++;
+//                            }
+//                        } else {
+//                            numberOfNewResults++;
+//                        }
+//                    }
+//
+//                } else {
+//                    numberOfNewResults = searchResults.size();
+//                }
+//
+//                // Reset the currentResults document in firebase
+//                resultsRef.setValue(null);
+//
+//                // Reset the current results in room DB
+//                resultDao.deleteAll(searchId);
+//
+//                // Save each new result and keep track of the total count
+//                for (ResultModel result : searchResults) {
+//                    resultsRef.child(result.getVin()).setValue(result);
+//                    resultDao.insertResults(result);
+//                    numberOfResults++;
+//                }
+//
+//                // Set number of total & new results in search document
+//                DATABASE_REF.child("queries").child(userUid).child(searchId)
+//                        .child("numberOfResults").setValue(numberOfResults);
+//                DATABASE_REF.child("queries").child(userUid).child(searchId)
+//                        .child("numberOfNewResults").setValue(numberOfNewResults);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//            }
+//        });
+//    }
 
     /* Load all saved searches in firebase to local database */
     /* TODO -- Updates RoomSearches LiveData TWICE, fix so it only does it once */

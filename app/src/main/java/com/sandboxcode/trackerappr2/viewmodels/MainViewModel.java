@@ -39,7 +39,7 @@ public class MainViewModel extends AndroidViewModel {
     private final ArrayList<String> checkedItems = new ArrayList<>();
 
     /* Results Fragment */
-    private SingleLiveEvent<ArrayList<ResultModel>> searchResults;
+    private SingleLiveEvent<List<ResultModel>> searchResults;
     private SingleLiveEvent<Integer> sortMenuOpen = new SingleLiveEvent<>();
     private final SingleLiveEvent<Boolean> sortCompleted = new SingleLiveEvent<>();
     private SingleLiveEvent<Integer> openShareConfirmation = new SingleLiveEvent<>();
@@ -120,7 +120,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     // TODO -- Call SearchResults every time? OR only when null and nothing has changed?
-    public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
+    public MutableLiveData<List<ResultModel>> getSearchResults(String searchId) {
         if (searchResults == null || searchResults.getValue().isEmpty())
             Log.d(TAG, "NULL ------------");
 

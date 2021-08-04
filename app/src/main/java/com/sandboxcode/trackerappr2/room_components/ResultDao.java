@@ -28,8 +28,8 @@ public interface ResultDao {
     @Query("SELECT * FROM result_table")
     public List<ResultModel> loadAllResultsOnce();
 
-    @Query("SELECT * FROM result_table")
-    public LiveData<List<ResultModel>> loadAllResults();
+    @Query("SELECT * FROM result_table WHERE search_id = :searchId")
+    public List<ResultModel> loadAllResults(String searchId);
 
     @Query("SELECT * FROM result_table WHERE vin = :vin")
     public ResultModel loadSingleResult(String vin);

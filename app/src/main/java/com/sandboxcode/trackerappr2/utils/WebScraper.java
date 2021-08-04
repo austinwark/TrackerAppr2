@@ -87,7 +87,7 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
         ArrayList<ResultModel> results;
         if (mainContent != null) {
             results = parseElements(mainContent);
-            delegate.processResults(results, search.getId());
+            delegate.processResults(results, search);
         }
     }
 

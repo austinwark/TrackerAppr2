@@ -37,6 +37,9 @@ public interface SearchDao {
     @Query("SELECT * FROM search_table WHERE id = :searchId")
     public LiveData<SearchModel> loadSingleSearch(String searchId);
 
+    @Query("SELECT * FROM search_table WHERE id = :searchId")
+    public SearchModel getSingleSearch(String searchId);
+
     @Query("DELETE FROM search_table WHERE id = :searchId")
     public void deleteById(String searchId);
 

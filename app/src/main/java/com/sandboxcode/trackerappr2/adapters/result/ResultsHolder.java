@@ -120,7 +120,6 @@ public class ResultsHolder extends RecyclerView.ViewHolder {
         }
     };
 
-    // TODO -- pass arraylist of ResultModels to display in Pager!!!!!!
     public void viewDetails(ResultModel result, String searchId) {
         List<ResultModel> results = new ArrayList<>(1);
         results.add(result);

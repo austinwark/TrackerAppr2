@@ -72,10 +72,6 @@ public class DetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        DetailViewModel viewModel = new ViewModelProvider(requireActivity())
-                .get(DetailViewModel.class);
-        viewModel.setResultHasBeenViewed(result.getVin(), searchId);
-        result.setIsNewResult(false);
 
         instantiateUI(view);
     }
