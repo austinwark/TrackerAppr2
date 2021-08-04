@@ -132,6 +132,7 @@ public class ResultModel implements Serializable {
 
         ResultModel otherResult = (ResultModel) o;
 
+        // TODO -- ALSO COMPARE SEARCH_ID
         if (otherResult.getVin() != null)
             return otherResult.getVin().equalsIgnoreCase(getVin());
         else

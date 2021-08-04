@@ -22,10 +22,15 @@ import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.LoginActivity;
 import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
+import com.sandboxcode.trackerappr2.room_components.ResultDao;
+import com.sandboxcode.trackerappr2.room_components.SearchDao;
+import com.sandboxcode.trackerappr2.room_components.SearchRoomDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+// TODO -- Access Room through Repository and maybe ViewModel?
 public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResponse {
 
     private static final String TAG = "ResultsReceiver";
@@ -36,6 +41,8 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
             "primary_notification_channel";
     private static final String USER_ID_EXTRA = "user_id";
     private static final DatabaseReference DATABASE_REF = FirebaseDatabase.getInstance().getReference();
+    private SearchDao searchDao;
+    private ResultDao resultDao;
     private NotificationManager notificationManager;
     private Context context;
     private String userId;
@@ -48,6 +55,9 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
         this.context = context;
         userId = intent.getStringExtra(USER_ID_EXTRA);
 
+        SearchRoomDatabase db = SearchRoomDatabase.getDatabase(context);
+        searchDao = db.getSearchDao();
+        resultDao = db.getResultDao();
 
         if (userId != null && !userId.isEmpty()) {
             notificationManager =
@@ -61,29 +71,40 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
     }
 
     private void refreshResults(String userId) {
-        // Get search IDs
-        DATABASE_REF.child("queries").child(userId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        ArrayList<SearchModel> searches = new ArrayList<>();
-                        if (snapshot.hasChildren()) {
+        List<SearchModel> searches = searchDao.loadAllSearchesOnce();
 
-                            // Get the user's searches
-                            for (DataSnapshot child : snapshot.getChildren())
-                                searches.add(child.getValue(SearchModel.class));
+        if (searches == null || searches.isEmpty())
+            return;
 
-                            DailyWebScraper scraper = new DailyWebScraper(searches);
-                            scraper.setDelegate(ResultsReceiver.this);
-                            scraper.execute();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
+        DailyWebScraper scraper = new DailyWebScraper(searches);
+        scraper.setDelegate(ResultsReceiver.this);
+        scraper.execute();
     }
+
+    //    private void refreshResults(String userId) {
+//        // Get search IDs
+//        DATABASE_REF.child("queries").child(userId)
+//                .addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        ArrayList<SearchModel> searches = new ArrayList<>();
+//                        if (snapshot.hasChildren()) {
+//
+//                            // Get the user's searches
+//                            for (DataSnapshot child : snapshot.getChildren())
+//                                searches.add(child.getValue(SearchModel.class));
+//
+//                            DailyWebScraper scraper = new DailyWebScraper(searches);
+//                            scraper.setDelegate(ResultsReceiver.this);
+//                            scraper.execute();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//                    }
+//                });
+//    }
 
     @Override
     public void processResults(Map<String, ArrayList<ResultModel>> results) {
@@ -195,6 +216,72 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
                 // No need to notify user of firebase read error
             }
         });
+    }
+
+    public void processResults2(Map<String, ArrayList<ResultModel>> results) {
+
+        List<SearchModel> searches = searchDao.loadAllSearchesOnce();
+        if (searches == null || searches.isEmpty())
+            return;
+
+        int searchesCount = 0;
+        int totalSearchesCount = searches.size();
+
+        for (SearchModel search : searches) {
+
+            int numberOfResults = 0;
+            int numberOfNewResults = 0;
+            String searchId = search.getId();
+
+            ArrayList<ResultModel> scrapedResults = results.get(searchId);
+            if (scrapedResults == null)
+                scrapedResults = new ArrayList<>();
+
+            List<ResultModel> currentResultsInDb = resultDao.loadAllResults(searchId);
+            if (!currentResultsInDb.isEmpty()) {
+
+                for (ResultModel scrapedResult : scrapedResults) {
+                    if (currentResultsInDb.contains(scrapedResult)) {
+
+                        ResultModel matchingCurrentResult = currentResultsInDb.get(currentResultsInDb.indexOf(scrapedResult));
+                        if (!matchingCurrentResult.getIsNewResult())
+                            scrapedResult.setIsNewResult(false);
+                        else
+                            numberOfNewResults++;
+
+                    } else
+                        numberOfNewResults++;
+                }
+            } else
+                numberOfNewResults = scrapedResults.size();
+
+            resultDao.deleteAll(searchId);
+
+            for (ResultModel result : scrapedResults) {
+                resultDao.insertResults(result);
+                numberOfResults++;
+            }
+
+            search.setNumberOfNewResults(numberOfNewResults);
+            search.setNumberOfResults(numberOfResults);
+
+            if (numberOfNewResults > 0) {
+                numberOfNotifications++;
+                newNotifications.add(new NewNotification(searchId, numberOfNewResults));
+            }
+
+            searchesCount++;
+            if (searchesCount == totalSearchesCount) {
+                int totalNewNotifications = 0;
+                for (NewNotification newNotification : newNotifications)
+                    totalNewNotifications += newNotification.getNumberOfNewResults();
+
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(context);
+                if (sharedPreferences.getBoolean("notifications", false))
+                    deliverSummaryNotification(context, newNotifications, totalNewNotifications);
+            }
+        }
     }
 
     private void deliverSummaryNotification(Context context,

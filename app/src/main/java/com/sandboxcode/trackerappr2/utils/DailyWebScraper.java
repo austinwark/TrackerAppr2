@@ -14,17 +14,18 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DailyWebScraper extends AsyncTask<Void, Void, Map<SearchModel, Elements>> {
 
 
     private static final String TAG = "WebScraper";
-    private final ArrayList<SearchModel> searches;
+    private final List<SearchModel> searches;
 
     private DailyAsyncResponse delegate = null;
 
-    public DailyWebScraper(ArrayList<SearchModel> searches) {
+    public DailyWebScraper(List<SearchModel> searches) {
 
         this.searches = searches;
     }
