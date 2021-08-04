@@ -24,7 +24,7 @@ public class ResultsViewModel extends AndroidViewModel {
     private static final String TAG = ResultsViewModel.class.getSimpleName();
     private final SearchRepository searchRepository;
 
-    private SingleLiveEvent<ArrayList<ResultModel>> searchResults;
+    private SingleLiveEvent<List<ResultModel>> searchResults;
     private final SingleLiveEvent<Integer> sortMenuOpen = new SingleLiveEvent<>();
     private final SingleLiveEvent<Boolean> sortCompleted = new SingleLiveEvent<>();
     private final SingleLiveEvent<Integer> openShareConfirmation = new SingleLiveEvent<>();
@@ -36,7 +36,7 @@ public class ResultsViewModel extends AndroidViewModel {
 
     public ResultsViewModel(@NonNull Application application) {
         super(application);
-        searchRepository = new SearchRepository();
+        searchRepository = new SearchRepository(application);
         checkedResults = new ArrayList<>();
         editMenuVisibility.postValue(View.INVISIBLE);
     }
@@ -60,7 +60,7 @@ public class ResultsViewModel extends AndroidViewModel {
     }
 
     // TODO -- Call SearchResults every time? OR only when null and nothing has changed?
-    public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
+    public MutableLiveData<List<ResultModel>> getSearchResults(String searchId) {
         if (searchResults == null || searchResults.getValue().isEmpty())
             Log.d(TAG, "NULL ------------");
 

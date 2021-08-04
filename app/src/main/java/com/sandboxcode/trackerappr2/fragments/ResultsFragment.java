@@ -122,9 +122,9 @@ public class ResultsFragment extends Fragment {
         instantiateUI(view);
 
         viewModel.getSearchResults(searchId).observe(getViewLifecycleOwner(), results -> {
-            unsortedResults = results;
+            unsortedResults = (ArrayList) results;
 
-            viewModel.restoreCheckedCardStates(results);
+            viewModel.restoreCheckedCardStates(unsortedResults);
             adapter.setResults(results);
 
             if (results.isEmpty())

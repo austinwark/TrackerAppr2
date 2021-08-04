@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,13 +20,14 @@ import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchesViewModel extends AndroidViewModel {
+public class SearchesViewModel extends AndroidViewModel implements SearchRepository.CustomOnCompleteListener {
 
     private static final String TAG = SearchesViewModel.class.getSimpleName();
     private final SearchRepository searchRepository;
     private final AuthRepository authRepository;
 
-    private MutableLiveData<List<SearchModel>> allSearches;
+//    private MutableLiveData<List<SearchModel>> allSearches;
+    private LiveData<List<SearchModel>> allRoomSearches;
     private final SingleLiveEvent<String> toastMessage = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
     private final SingleLiveEvent<String> startEditActivity = new SingleLiveEvent<>();
@@ -38,9 +40,10 @@ public class SearchesViewModel extends AndroidViewModel {
 
     public SearchesViewModel(@NonNull Application application) {
         super(application);
-        searchRepository = new SearchRepository();
+        searchRepository = new SearchRepository(application);
         authRepository = new AuthRepository();
-        allSearches = searchRepository.getAllSearches();
+//        allSearches = searchRepository.getAllSearches();
+        allRoomSearches = searchRepository.getAllRoomSearches();
 
         userSignedIn = authRepository.getUserSignedIn();
         signUserOut = authRepository.getSignUserOut();
@@ -52,14 +55,20 @@ public class SearchesViewModel extends AndroidViewModel {
         return userSignedIn;
     }
 
-    public void setSearchesListener() {
-        searchRepository.setListeners();
-    }
+//    public void setSearchesListener() {
+//        searchRepository.setListeners();
+//    }
 
-    public MutableLiveData<List<SearchModel>> getAllSearches() {
-        if (allSearches == null)
-            allSearches = searchRepository.getAllSearches();
-        return allSearches;
+//    public MutableLiveData<List<SearchModel>> getAllSearches() {
+//        if (allSearches == null)
+//            allSearches = searchRepository.getAllSearches();
+//        return allSearches;
+//    }
+
+    public LiveData<List<SearchModel>> getAllRoomSearches() {
+//        if (allRoomSearches == null)
+//            allRoomSearches = searchRepository.getAllRoomSearches();
+        return allRoomSearches;
     }
 
     // TODO - RESET LIST WHEN NAVIGATING AWAY FROM SCREEN
@@ -112,7 +121,7 @@ public class SearchesViewModel extends AndroidViewModel {
 
     public void deleteSearches() {
         Log.d(TAG, String.valueOf(checkedItems.size()));
-        searchRepository.delete(checkedItems, onDeleteListener);
+        searchRepository.delete(checkedItems, this);
         checkedItems.clear();
         setToastMessage("Deleting search.");
 
@@ -152,8 +161,9 @@ public class SearchesViewModel extends AndroidViewModel {
         startEditActivity.setValue(searchId);
     }
 
+    // TODO -- Do I need to call getAllSearches here?
     public void refreshSearches() {
-        searchRepository.getAllSearches();
+//        searchRepository.getAllSearches();
         toggleEdit(); // hide edit menu
         checkedItems.clear(); // Reset checked items
     }
@@ -183,4 +193,13 @@ public class SearchesViewModel extends AndroidViewModel {
             toggleEdit();
         }
     };
+
+    @Override
+    public void onComplete(Boolean success) {
+        if (success)
+            toggleEdit();
+        else
+            setToastMessage("Deletion error");
+    }
+
 }

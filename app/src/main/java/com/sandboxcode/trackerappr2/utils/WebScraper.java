@@ -22,17 +22,13 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
 
     private static final String TAG = "WebScraper";
     private final SearchModel search;
-    private final DatabaseReference ref;
-    private final String userUid;
     private final StringBuilder queryString;
 
     private AsyncResponse delegate = null;
 
-    public WebScraper(SearchModel search, DatabaseReference ref, String userUid) {
+    public WebScraper(SearchModel search) {
 
         this.search = search;
-        this.ref = ref;
-        this.userUid = userUid;
         queryString = new StringBuilder();
         buildQueryString();
     }
@@ -81,17 +77,20 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
         }
     }
 
+    /* If results are not empty -- tell Repository to save results in firebase */
     @Override
     protected void onPostExecute(Elements mainContent) {
         ArrayList<ResultModel> results;
         if (mainContent != null) {
             results = parseElements(mainContent);
-            delegate.processResults(results, search.getId());
+            delegate.processResults(results, search);
         }
     }
 
+    /* Iterate through search results and save & return relevant data in an ArrayList */
     private ArrayList<ResultModel> parseElements(Elements content) {
         ArrayList<ResultModel> results = new ArrayList<>();
+        String searchId = search.getId();
 
         for (Element vehicle : content) {
             float minYear = Float.parseFloat(search.getMinYear());
@@ -100,6 +99,7 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
             if (vehicleYear >= minYear && vehicleYear <= maxYear) {
 
                 Map<String, String> details = new HashMap<>();
+                details.put("searchId", searchId);
                 details.put("vin", vehicle.attr("data-vin"));
                 details.put("make", vehicle.attr("data-make"));
                 details.put("model", vehicle.attr("data-model"));
@@ -121,7 +121,6 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
                 details.put("detailsLink", vehicle.select("a.vehicleDetailsLink").attr("href"));
                 ResultModel resultModel = new ResultModel(details);
                 results.add(resultModel);
-                Log.d(TAG, resultModel.toString());
             }
         }
         return results;

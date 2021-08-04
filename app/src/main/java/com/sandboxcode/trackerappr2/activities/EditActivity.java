@@ -31,6 +31,7 @@ public class EditActivity extends AppCompatActivity {
     private static final String RESULT_MESSAGE_TAG = "result_message";
     private EditViewModel editViewModel;
     private SearchModel search;
+    private SearchModel roomSearch;
 
     private AutoCompleteTextView modelSpinner;
     private TextInputEditText searchNameEditText;
@@ -49,7 +50,7 @@ public class EditActivity extends AppCompatActivity {
         editViewModel = new ViewModelProvider(this).get(EditViewModel.class);
         editViewModel.setSearchId(getIntent().getStringExtra("searchId"));
 
-        editViewModel.getSearch().observe(this, searchModel -> {
+        editViewModel.getRoomSearch().observe(this, searchModel -> {
             search = searchModel;
             insertCurrentSearchValues(search);
         });
@@ -89,7 +90,10 @@ public class EditActivity extends AppCompatActivity {
         String maxPrice = Collections.max(priceValues).toString();
         String allDealerships = String.valueOf(dealerSwitch.isChecked());
 
-        editViewModel.saveChanges(searchName, model, trim, minYear, maxYear,
+//        editViewModel.saveChanges(searchName, model, trim, minYear, maxYear,
+//                minPrice, maxPrice, allDealerships, search.getCreatedDate());
+
+        editViewModel.saveRoomChanges(searchName, model, trim, minYear, maxYear,
                 minPrice, maxPrice, allDealerships, search.getCreatedDate());
     }
 

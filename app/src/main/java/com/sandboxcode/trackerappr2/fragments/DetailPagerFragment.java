@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.adapters.detail.DetailPagerAdapter;
 import com.sandboxcode.trackerappr2.models.ResultModel;
+import com.sandboxcode.trackerappr2.viewmodels.DetailViewModel;
 
 import org.parceler.Parcels;
 
@@ -76,6 +78,9 @@ public class DetailPagerFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        DetailViewModel viewModel = new ViewModelProvider(requireActivity())
+                .get(DetailViewModel.class);
+
         viewPager = view.findViewById(R.id.details_view_pager);
         counterTextView = view.findViewById(R.id.detail_pager_text_counter);
 
@@ -86,10 +91,16 @@ public class DetailPagerFragment extends Fragment {
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
+
+                // Set counter above slide
                 int pagePosition = position + 1;
                 int total = results.size();
                 String newText = pagePosition + "/" + total;
                 counterTextView.setText(newText);
+
+                // Set result as viewed in DB
+                ResultModel selectedResult = results.get(position);
+                viewModel.setResultHasBeenViewed(selectedResult.getVin(), searchId);
             }
         });
     }

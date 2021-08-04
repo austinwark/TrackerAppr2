@@ -30,7 +30,7 @@ public class MainViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> signUserOut;
 
     /* Searches Fragment */
-    private MutableLiveData<List<SearchModel>> allSearches;
+//    private MutableLiveData<List<SearchModel>> allSearches;
     private final SingleLiveEvent<String> toastMessage = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
     private final SingleLiveEvent<String> startEditActivity = new SingleLiveEvent<>();
@@ -39,7 +39,7 @@ public class MainViewModel extends AndroidViewModel {
     private final ArrayList<String> checkedItems = new ArrayList<>();
 
     /* Results Fragment */
-    private SingleLiveEvent<ArrayList<ResultModel>> searchResults;
+    private SingleLiveEvent<List<ResultModel>> searchResults;
     private SingleLiveEvent<Integer> sortMenuOpen = new SingleLiveEvent<>();
     private final SingleLiveEvent<Boolean> sortCompleted = new SingleLiveEvent<>();
     private SingleLiveEvent<Integer> openShareConfirmation = new SingleLiveEvent<>();
@@ -57,9 +57,9 @@ public class MainViewModel extends AndroidViewModel {
     public MainViewModel(Application application) {
         super(application);
 
-        searchRepository = new SearchRepository();
+        searchRepository = new SearchRepository(application);
         authRepository = new AuthRepository();
-        allSearches = searchRepository.getAllSearches();
+//        allSearches = searchRepository.getAllSearches();
 
         userSignedIn = authRepository.getUserSignedIn();
         signUserOut = authRepository.getSignUserOut();
@@ -99,14 +99,6 @@ public class MainViewModel extends AndroidViewModel {
 
     }
 
-    public void deleteSearches() {
-        Log.d(TAG, String.valueOf(checkedItems.size()));
-        searchRepository.delete(checkedItems, onDeleteListener);
-        checkedItems.clear();
-        setToastMessage("Deleting search.");
-
-    }
-
     public SingleLiveEvent<String> getToastMessage() {
         return toastMessage;
     }
@@ -120,7 +112,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     // TODO -- Call SearchResults every time? OR only when null and nothing has changed?
-    public MutableLiveData<ArrayList<ResultModel>> getSearchResults(String searchId) {
+    public MutableLiveData<List<ResultModel>> getSearchResults(String searchId) {
         if (searchResults == null || searchResults.getValue().isEmpty())
             Log.d(TAG, "NULL ------------");
 
@@ -150,11 +142,11 @@ public class MainViewModel extends AndroidViewModel {
         startEditActivity.setValue(searchId);
     }
 
-    public void refreshSearches() {
-        searchRepository.getAllSearches();
-        toggleEdit(); // hide edit menu
-        checkedItems.clear(); // Reset checked items
-    }
+//    public void refreshSearches() {
+//        searchRepository.getAllSearches();
+//        toggleEdit(); // hide edit menu
+//        checkedItems.clear(); // Reset checked items
+//    }
 
     public String getUserId() {
         return searchRepository.getUserId();
@@ -238,5 +230,4 @@ public class MainViewModel extends AndroidViewModel {
     protected void onCleared() {
         // TODO -- unsubscribe listeners in repository
     }
-
 }

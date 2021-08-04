@@ -3,24 +3,56 @@ package com.sandboxcode.trackerappr2.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+
+@Entity(tableName = "search_table")
 public class SearchModel implements Parcelable {
 
+    @PrimaryKey
+    @NonNull
     private String id;
+
+    @ColumnInfo(name = "search_name")
     private String searchName;
+
     private String model;
+
     private String trim;
+
+    @ColumnInfo(name = "min_year")
     private String minYear;
+
+    @ColumnInfo(name = "max_year")
     private String maxYear;
+
+    @ColumnInfo(name = "min_price")
     private String minPrice;
+
+    @ColumnInfo(name = "max_price")
     private String maxPrice;
+
+    @ColumnInfo(name = "all_dealerships")
     private String allDealerships;
+
+    @ColumnInfo(name = "number_of_results")
     private int numberOfResults;
+
+    @ColumnInfo(name = "number_of_new_results")
     private int numberOfNewResults;
+
+    @ColumnInfo(name = "created_date")
     private String createdDate;
+
+    @ColumnInfo(name = "last_edited_date")
     private String lastEditedDate;
 
     public SearchModel(String key, String searchName, String model, String trim, String minYear,
@@ -150,6 +182,8 @@ public class SearchModel implements Parcelable {
         return id;
     }
 
+    public void setId(String id) { this.id = id; }
+
     public String getAllDealerships() {
         return this.allDealerships;
     }
@@ -187,4 +221,51 @@ public class SearchModel implements Parcelable {
         return lastEditedDate;
     }
 
+    public int getNumberOfNewResults() {
+        return numberOfNewResults;
+    }
+
+    public void setSearchName(String searchName) {
+        this.searchName = searchName;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setTrim(String trim) {
+        this.trim = trim;
+    }
+
+    public void setMinYear(String minYear) {
+        this.minYear = minYear;
+    }
+
+    public void setMaxYear(String maxYear) {
+        this.maxYear = maxYear;
+    }
+
+    public void setMinPrice(String minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    public void setMaxPrice(String maxPrice) {
+        this.maxPrice = maxPrice;
+    }
+
+    public void setAllDealerships(String allDealerships) {
+        this.allDealerships = allDealerships;
+    }
+
+    public void setNumberOfResults(int numberOfResults) {
+        this.numberOfResults = numberOfResults;
+    }
+
+    public void setNumberOfNewResults(int numberOfNewResults) {
+        this.numberOfNewResults = numberOfNewResults;
+    }
+
+    public void setLastEditedDate(String lastEditedDate) {
+        this.lastEditedDate = lastEditedDate;
+    }
 }

@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
+import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.repositories.SearchRepository;
 
 public class DetailViewModel extends AndroidViewModel {
@@ -14,11 +15,13 @@ public class DetailViewModel extends AndroidViewModel {
 
     public DetailViewModel(@NonNull Application application) {
         super(application);
-        searchRepository = new SearchRepository();
+        searchRepository = new SearchRepository(application);
 
     }
 
     public void setResultHasBeenViewed(String vin, String searchId) {
-        searchRepository.setResultHasBeenViewed(vin, searchId);
+        ResultModel viewedResult = searchRepository.getSingleSearchResult(vin);
+        if (viewedResult != null && viewedResult.getIsNewResult())
+            searchRepository.setResultHasBeenViewed(vin, searchId);
     }
 }

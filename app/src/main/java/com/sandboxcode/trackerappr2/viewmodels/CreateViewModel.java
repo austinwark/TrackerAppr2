@@ -18,7 +18,7 @@ public class CreateViewModel extends AndroidViewModel {
 
     public CreateViewModel(Application application) {
         super(application);
-        repository = new SearchRepository();
+        repository = new SearchRepository(application);
         createCancelled = new MutableLiveData<>();
     }
 
