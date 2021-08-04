@@ -22,6 +22,7 @@ import java.util.Map;
 // TODO - Implement AutoValue @Parcelable extension (need to make class immutable)
 @Parcel
 @Entity(tableName = "result_table",
+        primaryKeys = {"vin", "search_id"},
         foreignKeys = @ForeignKey(
                 entity = SearchModel.class,
                 parentColumns = "id",
@@ -30,11 +31,11 @@ import java.util.Map;
 )
 public class ResultModel implements Serializable {
 
-    @PrimaryKey
     @NonNull
     public String vin;
 
     @ColumnInfo(name = "search_id")
+    @NonNull
     public String searchId;
 
     public String stock;
@@ -77,6 +78,7 @@ public class ResultModel implements Serializable {
 
     public ResultModel(Map<String, String> details) {
         stock = details.get("stock");
+        searchId = details.get("searchId");
         make = details.get("make");
         model = details.get("model");
         year = details.get("year");
@@ -112,8 +114,8 @@ public class ResultModel implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
-                stock, make, model, year, trim, extColor, price, miles, intColor, vin, dealer);
+        return String.format("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
+                stock, searchId, make, model, year, trim, extColor, price, miles, intColor, vin, dealer);
     }
 
     public String getTitle() {

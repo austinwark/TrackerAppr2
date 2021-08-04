@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +27,7 @@ public class SearchesViewModel extends AndroidViewModel {
     private final AuthRepository authRepository;
 
     private MutableLiveData<List<SearchModel>> allSearches;
+    private LiveData<List<SearchModel>> allRoomSearches;
     private final SingleLiveEvent<String> toastMessage = new SingleLiveEvent<>();
     private final MutableLiveData<Integer> editMenuOpen = new MutableLiveData<>();
     private final SingleLiveEvent<String> startEditActivity = new SingleLiveEvent<>();
@@ -41,6 +43,7 @@ public class SearchesViewModel extends AndroidViewModel {
         searchRepository = new SearchRepository(application);
         authRepository = new AuthRepository();
         allSearches = searchRepository.getAllSearches();
+        allRoomSearches = searchRepository.getAllRoomSearches();
 
         userSignedIn = authRepository.getUserSignedIn();
         signUserOut = authRepository.getSignUserOut();
@@ -60,6 +63,12 @@ public class SearchesViewModel extends AndroidViewModel {
         if (allSearches == null)
             allSearches = searchRepository.getAllSearches();
         return allSearches;
+    }
+
+    public LiveData<List<SearchModel>> getAllRoomSearches() {
+//        if (allRoomSearches == null)
+//            allRoomSearches = searchRepository.getAllRoomSearches();
+        return allRoomSearches;
     }
 
     // TODO - RESET LIST WHEN NAVIGATING AWAY FROM SCREEN

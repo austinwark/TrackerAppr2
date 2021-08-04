@@ -31,6 +31,7 @@ public class EditActivity extends AppCompatActivity {
     private static final String RESULT_MESSAGE_TAG = "result_message";
     private EditViewModel editViewModel;
     private SearchModel search;
+    private SearchModel roomSearch;
 
     private AutoCompleteTextView modelSpinner;
     private TextInputEditText searchNameEditText;
@@ -49,7 +50,11 @@ public class EditActivity extends AppCompatActivity {
         editViewModel = new ViewModelProvider(this).get(EditViewModel.class);
         editViewModel.setSearchId(getIntent().getStringExtra("searchId"));
 
-        editViewModel.getSearch().observe(this, searchModel -> {
+//        editViewModel.getSearch().observe(this, searchModel -> {
+//            search = searchModel;
+//            insertCurrentSearchValues(search);
+//        });
+        editViewModel.getRoomSearch().observe(this, searchModel -> {
             search = searchModel;
             insertCurrentSearchValues(search);
         });

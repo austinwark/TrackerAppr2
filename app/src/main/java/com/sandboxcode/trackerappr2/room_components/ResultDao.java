@@ -9,6 +9,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.sandboxcode.trackerappr2.models.ResultModel;
+import com.sandboxcode.trackerappr2.models.SearchModel;
 
 import java.util.List;
 
@@ -25,12 +26,21 @@ public interface ResultDao {
     public void deleteResults(ResultModel... results);
 
     @Query("SELECT * FROM result_table")
-    public ResultModel[] loadAllResults();
+    public List<ResultModel> loadAllResultsOnce();
+
+    @Query("SELECT * FROM result_table")
+    public LiveData<List<ResultModel>> loadAllResults();
 
     @Query("SELECT * FROM result_table WHERE vin = :vin")
-    public LiveData<List<ResultModel>> loadSingleResult(String vin);
+    public ResultModel loadSingleResult(String vin);
 
     @Query("DELETE FROM result_table WHERE vin = :vin")
     public void deleteByVin(String vin);
+
+    @Query("DELETE FROM result_table WHERE search_id = :searchId")
+    public void deleteAll(String searchId);
+
+    @Update
+    public void updateResult(ResultModel result);
 
 }

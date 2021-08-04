@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +33,7 @@ import com.sandboxcode.trackerappr2.R;
 import com.sandboxcode.trackerappr2.activities.CreateActivity;
 import com.sandboxcode.trackerappr2.activities.EditActivity;
 import com.sandboxcode.trackerappr2.adapters.search.SearchesAdapter;
+import com.sandboxcode.trackerappr2.models.SearchModel;
 import com.sandboxcode.trackerappr2.viewmodels.SearchesViewModel;
 
 import java.util.ArrayList;
@@ -135,17 +137,35 @@ public class SearchesFragment extends Fragment {
 
         instantiateUI(view);
 
-        viewModel.getAllSearches().observe(getViewLifecycleOwner(), searches -> {
+//        viewModel.getAllSearches().observe(getViewLifecycleOwner(), searches -> {
+//
+//            adapter.setSearches(searches);
+//            if (searches.isEmpty())
+//                crossFade(noSearchesLayout, loaderLayout);
+//            else
+//                crossFade(recyclerView, loaderLayout);
+//
+//            // Refresh Menu to potentially enable/disable editSearchItem
+//            numberOfSearches = searches.size();
+//            requireActivity().invalidateOptionsMenu();
+//
+//        });
+        viewModel.getAllRoomSearches().observe(getViewLifecycleOwner(), searches -> {
+            Log.d(TAG, "************** ViewModel.getAllRoomSearches **************");
             adapter.setSearches(searches);
             if (searches.isEmpty())
                 crossFade(noSearchesLayout, loaderLayout);
             else
                 crossFade(recyclerView, loaderLayout);
 
-            // Refresh Menu to potentially enable/disable editSearchItem
             numberOfSearches = searches.size();
             requireActivity().invalidateOptionsMenu();
 
+            //            for (SearchModel search : searches) {
+//                Log.d(TAG, "--------------");
+//                Log.d(TAG, search.getSearchName());
+//                Log.d(TAG, "--------------");
+//            }
         });
         viewModel.getEditMenuOpen().observe(getViewLifecycleOwner(), editMenuOpen -> {
             toolbarBottom.setVisibility(editMenuOpen);

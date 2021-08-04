@@ -34,13 +34,13 @@ public class SearchRepository implements AsyncResponse {
     private static final DatabaseReference DATABASE_REF = FirebaseDatabase.getInstance().getReference();
     private final AuthRepository authRepository = new AuthRepository();
 
-    private SearchDao searchDao;
-    private ResultDao resultDao;
+    private final SearchDao searchDao;
+    private final ResultDao resultDao;
 
     /* Fragment Searches */
     private final SearchesListener searchesListener = new SearchesListener();
     private final MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
-
+    private final LiveData<List<SearchModel>> allRoomSearches;
     /* Fragment Results */
     private final SingleLiveEvent<ArrayList<ResultModel>> searchResults = new SingleLiveEvent<>();
 
@@ -57,6 +57,8 @@ public class SearchRepository implements AsyncResponse {
         SearchRoomDatabase db = SearchRoomDatabase.getDatabase(application);
         searchDao = db.getSearchDao();
         resultDao = db.getResultDao();
+
+        allRoomSearches = searchDao.loadAllSearches();
     }
 
     public void setListeners() {
@@ -71,10 +73,16 @@ public class SearchRepository implements AsyncResponse {
                 .child(searchId).addListenerForSingleValueEvent(new SingleSearchListener());
     }
 
+    public LiveData<SearchModel> retrieveRoomSearch(String searchId) {
+          return searchDao.loadSingleSearch(searchId);
+    }
+
     @NonNull
     public MutableLiveData<List<SearchModel>> getAllSearches() {
         return allSearches;
     }
+
+    public LiveData<List<SearchModel>> getAllRoomSearches() { return allRoomSearches; }
 
     public MutableLiveData<SearchModel> getSingleSearch() {
         return singleSearch;
@@ -82,6 +90,7 @@ public class SearchRepository implements AsyncResponse {
 
     public void delete(List<String> searchesToDelete, OnCompleteListener<Void> onCompleteListener) {
         if (authRepository.getUserId() != null) {
+
 
             for (String searchId : searchesToDelete) {
                 DATABASE_REF.child("queries").child(authRepository.getUserId())
@@ -146,6 +155,21 @@ public class SearchRepository implements AsyncResponse {
                 });
     }
 
+    public void saveRoomChanges(SearchModel search) {
+        int numberOfRowsUpdated = searchDao.updateSearch(search);
+
+        if (numberOfRowsUpdated >= 1) {
+            setChangesSaved(true);
+            WebScraper scraper = new WebScraper(search,
+                    DATABASE_REF, authRepository.getUserId());
+            scraper.setDelegate(this);
+            scraper.execute();
+
+        } else {
+            setErrorMessage("Error saving changes.");
+        }
+    }
+
     public MutableLiveData<Boolean> getChangesSaved() {
         return changesSaved;
     }
@@ -176,6 +200,11 @@ public class SearchRepository implements AsyncResponse {
         DATABASE_REF.child("results").child(authRepository.getUserId())
                 .child(searchId).child(vin).child("isNewResult").setValue(false);
 
+        // Update isNewResult field in Room database
+        ResultModel viewedResult = resultDao.loadSingleResult(vin);
+        viewedResult.setIsNewResult(false);
+        resultDao.updateResult(viewedResult);
+
         // Get numberOfNewResults from correlated search document to update its numberOfNewResults
         DATABASE_REF.child("queries").child(authRepository.getUserId()).child(searchId)
                 .child("numberOfNewResults").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -195,6 +224,54 @@ public class SearchRepository implements AsyncResponse {
         });
     }
 
+    public void processRoomResults(List<ResultModel> searchResults, String searchId) {
+        String userUid = authRepository.getUserId();
+
+        List<ResultModel> currentResults;
+        int numberOfResults = 0;
+        int numberOfNewResults = 0;
+
+        // Save thg search's current results in an ArrayList
+        currentResults = resultDao.loadAllResultsOnce();
+
+        if (currentResults != null && !currentResults.isEmpty()) {
+
+            // Check each newly scraped result against each current result
+            for (ResultModel scrapedResult : searchResults) {
+
+                if (currentResults.contains(scrapedResult)) {
+
+                    ResultModel matchingCurrentResult =
+                            currentResults.get(currentResults.indexOf(scrapedResult));
+
+                    // If result is not new -- set newly scraped result to false
+                    if (!matchingCurrentResult.getIsNewResult()) {
+                        scrapedResult.setIsNewResult(false); // this is true by default
+
+                      // Otherwise -- increment # of new results
+                    } else {
+                        numberOfNewResults++;
+                    }
+                } else {
+                     numberOfNewResults++;
+                }
+            }
+        } else {
+            numberOfNewResults = searchResults.size();
+        }
+
+        // TODO -- will this delete all results with same searchId??
+        resultDao.deleteAll(searchId);
+
+        for (ResultModel result : searchResults) {
+            resultDao.insertResults(result);
+            numberOfResults++;
+        }
+
+        // TODO -- Set number of total & new results in search document
+
+    }
+
     @Override
     public void processResults(ArrayList<ResultModel> searchResults, String searchId) {
         String userUid = authRepository.getUserId();
@@ -207,7 +284,7 @@ public class SearchRepository implements AsyncResponse {
                 int numberOfResults = 0;
                 int numberOfNewResults = 0;
 
-                // Get the current results of the search
+                // Save the search's current results in an ArrayList
                 if (snapshot.hasChildren())
                     for (DataSnapshot currentResult : snapshot.getChildren())
                         currentResults.add(currentResult.getValue(ResultModel.class));
@@ -241,6 +318,7 @@ public class SearchRepository implements AsyncResponse {
                 // Save each new result and keep track of the total count
                 for (ResultModel result : searchResults) {
                     resultsRef.child(result.getVin()).setValue(result);
+                    resultDao.insertResults(result);
                     numberOfResults++;
                 }
 
@@ -258,6 +336,7 @@ public class SearchRepository implements AsyncResponse {
     }
 
     /* Load all saved searches in firebase to local database */
+    /* TODO -- Updates RoomSearches LiveData TWICE, fix so it only does it once */
     private void updateRoomDatabase(List<SearchModel> searches) {
 
         Log.d(TAG, "Updating database");
@@ -319,7 +398,9 @@ public class SearchRepository implements AsyncResponse {
             }
 
             allSearches.postValue(searchList);
-            updateRoomDatabase(searchList);
+
+            // TODO -- Decide how often to sync with firebase (maybe change to updateFirebaseDatabase)
+//            updateRoomDatabase(searchList);
         }
 
         @Override

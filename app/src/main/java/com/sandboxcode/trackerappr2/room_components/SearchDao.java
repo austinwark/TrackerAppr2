@@ -18,6 +18,10 @@ public interface SearchDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insertSearches(SearchModel... searches);
 
+    /* Returns an integer representing the number of rows that were updated successfully */
+    @Update
+    public int updateSearch(SearchModel search);
+
     @Update
     public void updateSearches(SearchModel... searches);
 

@@ -3,6 +3,7 @@ package com.sandboxcode.trackerappr2.viewmodels;
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.sandboxcode.trackerappr2.models.SearchModel;
@@ -14,6 +15,7 @@ public class EditViewModel extends AndroidViewModel {
     private final SearchRepository repository;
     private String searchId;
     private final MutableLiveData<SearchModel> search;
+    private LiveData<SearchModel> roomSearch;
     private SingleLiveEvent<String> toastMessage;
     private final MutableLiveData<Boolean> changesSaved;
     private final MutableLiveData<String> errorMessage;
@@ -33,6 +35,12 @@ public class EditViewModel extends AndroidViewModel {
     public MutableLiveData<SearchModel> getSearch() {
         repository.retrieveSearch(searchId);
         return search;
+    }
+
+    // TODO -- If null, perhaps close EditActivity?
+    public LiveData<SearchModel> getRoomSearch() {
+        roomSearch = repository.retrieveRoomSearch(searchId);
+        return roomSearch;
     }
 
     public SingleLiveEvent<String> getToastMessage() {

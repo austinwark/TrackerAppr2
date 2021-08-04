@@ -91,8 +91,10 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
         }
     }
 
+    /* Iterate through search results and save & return relevant data in an ArrayList */
     private ArrayList<ResultModel> parseElements(Elements content) {
         ArrayList<ResultModel> results = new ArrayList<>();
+        String searchId = search.getId();
 
         for (Element vehicle : content) {
             float minYear = Float.parseFloat(search.getMinYear());
@@ -101,6 +103,7 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
             if (vehicleYear >= minYear && vehicleYear <= maxYear) {
 
                 Map<String, String> details = new HashMap<>();
+                details.put("searchId", searchId);
                 details.put("vin", vehicle.attr("data-vin"));
                 details.put("make", vehicle.attr("data-make"));
                 details.put("model", vehicle.attr("data-model"));
