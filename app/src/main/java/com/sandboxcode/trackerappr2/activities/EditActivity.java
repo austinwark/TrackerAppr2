@@ -50,10 +50,6 @@ public class EditActivity extends AppCompatActivity {
         editViewModel = new ViewModelProvider(this).get(EditViewModel.class);
         editViewModel.setSearchId(getIntent().getStringExtra("searchId"));
 
-//        editViewModel.getSearch().observe(this, searchModel -> {
-//            search = searchModel;
-//            insertCurrentSearchValues(search);
-//        });
         editViewModel.getRoomSearch().observe(this, searchModel -> {
             search = searchModel;
             insertCurrentSearchValues(search);

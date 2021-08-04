@@ -87,7 +87,7 @@ public class SearchesFragment extends Fragment {
 
 //        viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         viewModel = new ViewModelProvider(getActivity()).get(SearchesViewModel.class);
-        viewModel.setSearchesListener();
+//        viewModel.setSearchesListener();
         checkedItems = viewModel.getCheckedItems();
         adapter = new SearchesAdapter(R.layout.search_list_item, this, checkedItems);
 

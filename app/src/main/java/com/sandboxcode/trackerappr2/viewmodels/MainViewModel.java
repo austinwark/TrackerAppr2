@@ -99,14 +99,6 @@ public class MainViewModel extends AndroidViewModel {
 
     }
 
-    public void deleteSearches() {
-        Log.d(TAG, String.valueOf(checkedItems.size()));
-        searchRepository.delete(checkedItems, onDeleteListener);
-        checkedItems.clear();
-        setToastMessage("Deleting search.");
-
-    }
-
     public SingleLiveEvent<String> getToastMessage() {
         return toastMessage;
     }
@@ -238,5 +230,4 @@ public class MainViewModel extends AndroidViewModel {
     protected void onCleared() {
         // TODO -- unsubscribe listeners in repository
     }
-
 }

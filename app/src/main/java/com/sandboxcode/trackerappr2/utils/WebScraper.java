@@ -22,17 +22,13 @@ public class WebScraper extends AsyncTask<Void, Void, Elements> {
 
     private static final String TAG = "WebScraper";
     private final SearchModel search;
-    private final DatabaseReference ref;
-    private final String userUid;
     private final StringBuilder queryString;
 
     private AsyncResponse delegate = null;
 
-    public WebScraper(SearchModel search, DatabaseReference ref, String userUid) {
+    public WebScraper(SearchModel search) {
 
         this.search = search;
-        this.ref = ref;
-        this.userUid = userUid;
         queryString = new StringBuilder();
         buildQueryString();
     }

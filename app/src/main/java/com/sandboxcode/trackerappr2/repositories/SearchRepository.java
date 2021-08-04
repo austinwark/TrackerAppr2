@@ -26,20 +26,21 @@ import com.sandboxcode.trackerappr2.utils.WebScraper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SearchRepository implements AsyncResponse {
 
     private static final String TAG = "SearchRepository";
     private static final FirebaseAuth AUTH_REF = FirebaseAuth.getInstance();
-    private static final DatabaseReference DATABASE_REF = FirebaseDatabase.getInstance().getReference();
+//    private static final DatabaseReference DATABASE_REF = FirebaseDatabase.getInstance().getReference();
     private final AuthRepository authRepository = new AuthRepository();
 
     private final SearchDao searchDao;
     private final ResultDao resultDao;
 
     /* Fragment Searches */
-    private final SearchesListener searchesListener = new SearchesListener();
-    private final MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
+//    private final SearchesListener searchesListener = new SearchesListener();
+//    private final MutableLiveData<List<SearchModel>> allSearches = new MutableLiveData<>();
     private final LiveData<List<SearchModel>> allRoomSearches;
     /* Fragment Results */
     private final SingleLiveEvent<List<ResultModel>> searchResults = new SingleLiveEvent<>();
@@ -61,26 +62,20 @@ public class SearchRepository implements AsyncResponse {
         allRoomSearches = searchDao.loadAllSearches();
     }
 
-    public void setListeners() {
-
-        DATABASE_REF.child("queries").child(authRepository.getUserId())
-                .addValueEventListener(searchesListener);
-    }
-
-    public void retrieveSearch(String searchId) {
-
-        DATABASE_REF.child("queries").child(authRepository.getUserId())
-                .child(searchId).addListenerForSingleValueEvent(new SingleSearchListener());
-    }
+//    public void setListeners() {
+//
+//        DATABASE_REF.child("queries").child(authRepository.getUserId())
+//                .addValueEventListener(searchesListener);
+//    }
 
     public LiveData<SearchModel> retrieveRoomSearch(String searchId) {
           return searchDao.loadSingleSearch(searchId);
     }
 
-    @NonNull
-    public MutableLiveData<List<SearchModel>> getAllSearches() {
-        return allSearches;
-    }
+//    @NonNull
+//    public MutableLiveData<List<SearchModel>> getAllSearches() {
+//        return allSearches;
+//    }
 
     public LiveData<List<SearchModel>> getAllRoomSearches() { return allRoomSearches; }
 
@@ -88,21 +83,34 @@ public class SearchRepository implements AsyncResponse {
         return singleSearch;
     }
 
-    public void delete(List<String> searchesToDelete, OnCompleteListener<Void> onCompleteListener) {
+    public void delete(List<String> searchesToDelete, CustomOnCompleteListener customOnCompleteListener) {
+//        if (authRepository.getUserId() != null) {
+//
+//
+//            for (String searchId : searchesToDelete) {
+//                DATABASE_REF.child("queries").child(authRepository.getUserId())
+//                    .child(searchId).removeValue().addOnCompleteListener(onCompleteListener);
+//
+//                DATABASE_REF.child("results").child(authRepository.getUserId()).child(searchId)
+//                        .removeValue();
+//
+//                // Delete search in local DB
+//                searchDao.deleteById(searchId);
+//
+//            }
+//        }
+
+        // TODO: Tidy up onComplete tasks
         if (authRepository.getUserId() != null) {
 
-
             for (String searchId : searchesToDelete) {
-                DATABASE_REF.child("queries").child(authRepository.getUserId())
-                    .child(searchId).removeValue().addOnCompleteListener(onCompleteListener);
-
-                DATABASE_REF.child("results").child(authRepository.getUserId()).child(searchId)
-                        .removeValue();
-
-                // Delete search in local DB
                 searchDao.deleteById(searchId);
+                resultDao.deleteAll(searchId);
             }
-        }
+
+            customOnCompleteListener.onComplete(true);
+        } else
+            customOnCompleteListener.onComplete(false);
 
     }
 
@@ -128,51 +136,55 @@ public class SearchRepository implements AsyncResponse {
                        String minPrice, String maxPrice, String allDealerships) {
 
         //TODO-- Add completed check and return boolean to confirm success
-        final String KEY = DATABASE_REF.child("queries")
-                .child(authRepository.getUserId()).push().getKey();
+//        final String KEY = DATABASE_REF.child("queries")
+//                .child(authRepository.getUserId()).push().getKey();
+
+        final String KEY = UUID.randomUUID().toString();
 
         SearchModel searchModel = new SearchModel(KEY, name, model, trim, minYear,
                 maxYear, minPrice, maxPrice, allDealerships);
         searchModel.setCreatedDate();
         searchModel.setLastEditedDate();
 
-        DATABASE_REF.child("queries").child(authRepository.getUserId()).child(KEY)
-                .setValue(searchModel).addOnSuccessListener(aVoid -> {
-
-            WebScraper scraper = new WebScraper(searchModel,
-                    DATABASE_REF, authRepository.getUserId());
-            scraper.setDelegate(this);
-            scraper.execute();
-        });
+//        DATABASE_REF.child("queries").child(authRepository.getUserId()).child(KEY)
+//                .setValue(searchModel).addOnSuccessListener(aVoid -> {
+//
+//            WebScraper scraper = new WebScraper(searchModel,
+//                    DATABASE_REF, authRepository.getUserId());
+//            scraper.setDelegate(this);
+//            scraper.execute();
+//        });
 
         searchDao.insertSearches(searchModel);
+        WebScraper scraper = new WebScraper(searchModel);
+        scraper.setDelegate(this);
+        scraper.execute();
+
     }
 
-    public void saveChanges(SearchModel search) {
-        DATABASE_REF.child("queries").child(authRepository.getUserId())
-                .child(search.getId()).setValue(search)
-                .addOnCompleteListener(task -> {
-
-                    if (task.isSuccessful()) {
-                        setChangesSaved(true);
-                        WebScraper scraper = new WebScraper(search,
-                                DATABASE_REF, authRepository.getUserId());
-                        scraper.setDelegate(this);
-                        scraper.execute();
-
-                    } else {
-                        setErrorMessage("Error saving changes.");
-                    }
-                });
-    }
+//    public void saveChanges(SearchModel search) {
+//        DATABASE_REF.child("queries").child(authRepository.getUserId())
+//                .child(search.getId()).setValue(search)
+//                .addOnCompleteListener(task -> {
+//
+//                    if (task.isSuccessful()) {
+//                        setChangesSaved(true);
+//                        WebScraper scraper = new WebScraper(search);
+//                        scraper.setDelegate(this);
+//                        scraper.execute();
+//
+//                    } else {
+//                        setErrorMessage("Error saving changes.");
+//                    }
+//                });
+//    }
 
     public void saveRoomChanges(SearchModel search) {
         int numberOfRowsUpdated = searchDao.updateSearch(search);
 
         if (numberOfRowsUpdated >= 1) {
             setChangesSaved(true);
-            WebScraper scraper = new WebScraper(search,
-                    DATABASE_REF, authRepository.getUserId());
+            WebScraper scraper = new WebScraper(search);
             scraper.setDelegate(this);
             scraper.execute();
 
@@ -208,8 +220,8 @@ public class SearchRepository implements AsyncResponse {
     public void setResultHasBeenViewed(String vin, String searchId) {
 
         // Set isNewResult value in result document to false
-        DATABASE_REF.child("results").child(authRepository.getUserId())
-                .child(searchId).child(vin).child("isNewResult").setValue(false);
+//        DATABASE_REF.child("results").child(authRepository.getUserId())
+//                .child(searchId).child(vin).child("isNewResult").setValue(false);
 
         // Update isNewResult field in Room DB
         ResultModel viewedResult = resultDao.loadSingleResult(vin);
@@ -222,22 +234,22 @@ public class SearchRepository implements AsyncResponse {
         searchDao.updateSearch(viewedSearch);
 
         // Get numberOfNewResults from correlated search document to update its numberOfNewResults
-        DATABASE_REF.child("queries").child(authRepository.getUserId()).child(searchId)
-                .child("numberOfNewResults").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists() && snapshot.getValue() != null) {
-                    long numberOfNewResults = (Long) snapshot.getValue();
-                    numberOfNewResults--;
-                    DATABASE_REF.child("queries").child(authRepository.getUserId()).child(searchId)
-                            .child("numberOfNewResults").setValue(numberOfNewResults);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+//        DATABASE_REF.child("queries").child(authRepository.getUserId()).child(searchId)
+//                .child("numberOfNewResults").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists() && snapshot.getValue() != null) {
+//                    long numberOfNewResults = (Long) snapshot.getValue();
+//                    numberOfNewResults--;
+//                    DATABASE_REF.child("queries").child(authRepository.getUserId()).child(searchId)
+//                            .child("numberOfNewResults").setValue(numberOfNewResults);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//            }
+//        });
     }
 
     public void processResults(List<ResultModel> searchResults, SearchModel search) {
@@ -358,94 +370,57 @@ public class SearchRepository implements AsyncResponse {
 //        });
 //    }
 
-    /* Load all saved searches in firebase to local database */
-    /* TODO -- Updates RoomSearches LiveData TWICE, fix so it only does it once */
-    private void updateRoomDatabase(List<SearchModel> searches) {
+//    private class SingleSearchListener implements ValueEventListener {
+//
+//        @Override
+//        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//            SearchModel search = snapshot.getValue(SearchModel.class);
+//            singleSearch.postValue(search);
+//        }
+//
+//        @Override
+//        public void onCancelled(@NonNull DatabaseError error) {
+//        }
+//    }
 
-        Log.d(TAG, "Updating database");
+//    private class SearchesListener implements ValueEventListener {
+//        @Override
+//        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//            List<SearchModel> searchList = new ArrayList<>();
+//            for (DataSnapshot child : dataSnapshot.getChildren()) {
+//                searchList.add(child.getValue(SearchModel.class));
+//            }
+//
+//            allSearches.postValue(searchList);
+//
+//            // TODO -- Decide how often to sync with firebase (maybe change to updateFirebaseDatabase)
+////            updateRoomDatabase(searchList);
+//        }
+//
+//        @Override
+//        public void onCancelled(@NonNull DatabaseError databaseError) {
+//        }
+//    }
 
-        for (SearchModel search : searches) {
-            Log.d(TAG, "search: " + search.getId());
-            searchDao.insertSearches(search);
-        }
+//    private class ResultsListener implements ValueEventListener {
+//
+//        @Override
+//        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//            ArrayList<ResultModel> results = new ArrayList<>();
+//            for (DataSnapshot child : snapshot.getChildren()) {
+//                results.add(child.getValue(ResultModel.class));
+//            }
+//
+//            searchResults.setValue(results);
+//        }
+//
+//        @Override
+//        public void onCancelled(@NonNull DatabaseError error) {
+//        }
+//    }
 
-        List<SearchModel> localSearches = searchDao.loadAllSearchesOnce();
-  
-        if (localSearches != null) {
-            Log.d(TAG, "local searches not null");
-            Log.d(TAG, "SIZE OF LOCAL SEARCHES: " + localSearches.size());
-
-            for (SearchModel search : localSearches) {
-
-                // Check if local search is in firebase
-                DATABASE_REF.child("queries").child(authRepository.getUserId())
-                        .child(search.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        // If local search does not exist in firebase, delete it
-                        if (!snapshot.exists()) {
-                            Log.d(TAG, "snapshot " + search.getSearchName() + " does not exist");
-                            searchDao.deleteSearches(search);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) { }
-
-                });
-            }
-        }
-    }
-
-    private class SingleSearchListener implements ValueEventListener {
-
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            SearchModel search = snapshot.getValue(SearchModel.class);
-            singleSearch.postValue(search);
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-        }
-    }
-
-    // TODO - Change to ChildEventListener
-    private class SearchesListener implements ValueEventListener {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            List<SearchModel> searchList = new ArrayList<>();
-            for (DataSnapshot child : dataSnapshot.getChildren()) {
-                searchList.add(child.getValue(SearchModel.class));
-            }
-
-            allSearches.postValue(searchList);
-
-            // TODO -- Decide how often to sync with firebase (maybe change to updateFirebaseDatabase)
-//            updateRoomDatabase(searchList);
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-        }
-    }
-
-    private class ResultsListener implements ValueEventListener {
-
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            ArrayList<ResultModel> results = new ArrayList<>();
-            for (DataSnapshot child : snapshot.getChildren()) {
-                results.add(child.getValue(ResultModel.class));
-            }
-
-            searchResults.setValue(results);
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-        }
+    public interface CustomOnCompleteListener {
+        void onComplete(Boolean success);
     }
 
 }

@@ -20,7 +20,7 @@ import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchesViewModel extends AndroidViewModel {
+public class SearchesViewModel extends AndroidViewModel implements SearchRepository.CustomOnCompleteListener {
 
     private static final String TAG = SearchesViewModel.class.getSimpleName();
     private final SearchRepository searchRepository;
@@ -55,15 +55,15 @@ public class SearchesViewModel extends AndroidViewModel {
         return userSignedIn;
     }
 
-    public void setSearchesListener() {
-        searchRepository.setListeners();
-    }
+//    public void setSearchesListener() {
+//        searchRepository.setListeners();
+//    }
 
-    public MutableLiveData<List<SearchModel>> getAllSearches() {
-        if (allSearches == null)
-            allSearches = searchRepository.getAllSearches();
-        return allSearches;
-    }
+//    public MutableLiveData<List<SearchModel>> getAllSearches() {
+//        if (allSearches == null)
+//            allSearches = searchRepository.getAllSearches();
+//        return allSearches;
+//    }
 
     public LiveData<List<SearchModel>> getAllRoomSearches() {
 //        if (allRoomSearches == null)
@@ -121,7 +121,7 @@ public class SearchesViewModel extends AndroidViewModel {
 
     public void deleteSearches() {
         Log.d(TAG, String.valueOf(checkedItems.size()));
-        searchRepository.delete(checkedItems, onDeleteListener);
+        searchRepository.delete(checkedItems, this);
         checkedItems.clear();
         setToastMessage("Deleting search.");
 
@@ -192,4 +192,13 @@ public class SearchesViewModel extends AndroidViewModel {
             toggleEdit();
         }
     };
+
+    @Override
+    public void onComplete(Boolean success) {
+        if (success)
+            toggleEdit();
+        else
+            setToastMessage("Deletion error");
+    }
+
 }

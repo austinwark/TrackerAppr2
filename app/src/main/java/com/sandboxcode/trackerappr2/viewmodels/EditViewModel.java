@@ -32,11 +32,6 @@ public class EditViewModel extends AndroidViewModel {
         this.searchId = searchId;
     }
 
-    public MutableLiveData<SearchModel> getSearch() {
-        repository.retrieveSearch(searchId);
-        return search;
-    }
-
     // TODO -- If null, perhaps close EditActivity?
     public LiveData<SearchModel> getRoomSearch() {
         roomSearch = repository.retrieveRoomSearch(searchId);
@@ -54,16 +49,16 @@ public class EditViewModel extends AndroidViewModel {
         toastMessage.setValue(message);
     }
 
-    public void saveChanges(String name, String model, String trim, String minYear, String maxYear,
-                            String minPrice, String maxPrice, String allDealerships,
-                            String createdDate) {
-
-        SearchModel searchModel = new SearchModel(searchId, name, model, trim, minYear,
-                maxYear, minPrice, maxPrice, allDealerships);
-        searchModel.setLastEditedDate();
-        searchModel.setCreatedDate(createdDate);
-        repository.saveChanges(searchModel);
-    }
+//    public void saveChanges(String name, String model, String trim, String minYear, String maxYear,
+//                            String minPrice, String maxPrice, String allDealerships,
+//                            String createdDate) {
+//
+//        SearchModel searchModel = new SearchModel(searchId, name, model, trim, minYear,
+//                maxYear, minPrice, maxPrice, allDealerships);
+//        searchModel.setLastEditedDate();
+//        searchModel.setCreatedDate(createdDate);
+//        repository.saveChanges(searchModel);
+//    }
 
     public void saveRoomChanges(String name, String model, String trim, String minYear, String maxYear,
                             String minPrice, String maxPrice, String allDealerships,
