@@ -182,6 +182,10 @@ public class SearchesViewModel extends AndroidViewModel implements SearchReposit
         // Not implemented yet...
     }
 
+    public void backupDataToFirebase() {
+        searchRepository.backupDataToFirebase();
+    }
+
     @Override
     protected void onCleared() {
         // TODO -- unsubscribe listeners in repository

@@ -304,6 +304,81 @@ public class SearchRepository implements AsyncResponse {
 
     }
 
+    /** Backs up local data to Firebase Realtime Database */
+    public void backupDataToFirebase() {
+
+        // User must be logged in recently
+        if (AUTH_REF.getCurrentUser() == null)
+            return;
+
+        String userId = AUTH_REF.getCurrentUser().getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+        // Searches saved to local DB
+        List<SearchModel> searches = searchDao.loadAllSearchesOnce();
+
+        if (searches == null || searches.isEmpty())
+            return;
+
+        for (SearchModel search : searches) {
+            // Save each search to Firebase
+            ref.child("queries").child(userId).child(search.getId()).setValue(search);
+
+            // Search results saved to local DB
+            List<ResultModel> results = resultDao.loadAllResults(search.getId());
+            if (results == null)
+                return;
+
+            for (ResultModel result : results) {
+                // Save each result to Firebase
+                ref.child("results").child(userId).child(search.getId())
+                        .child(result.getVin()).setValue(result);
+            }
+
+            deleteOldResults(ref, userId, search, results);
+        }
+
+        deleteOldSearches(ref, userId, searches);
+    }
+
+    /** Helper method to backupDataToLocalFirebase. Deletes old searches in Firebase */
+    protected void deleteOldSearches(DatabaseReference ref, String userId,
+                                     List<SearchModel> searches) {
+
+        ref.child("queries").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot childSnapshot : snapshot.getChildren())
+                    if (!searches.contains(childSnapshot.getValue(SearchModel.class)))
+                        childSnapshot.getRef().removeValue();
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+    }
+
+    /** Helper method to backupDataToLocalFirebase. Deletes old search results in Firebase */
+    protected void deleteOldResults(DatabaseReference ref, String userId,
+                               SearchModel search, List<ResultModel> results) {
+
+        ref.child("results").child(userId).child(search.getId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot childSnapshot : snapshot.getChildren())
+                    if (!results.contains(childSnapshot.getValue(ResultModel.class)))
+                        childSnapshot.getRef().removeValue();
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+    }
+
 //    @Override
 //    public void processResults(ArrayList<ResultModel> searchResults, String searchId) {
 //        String userUid = authRepository.getUserId();
