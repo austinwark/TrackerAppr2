@@ -321,7 +321,6 @@ public class SearchRepository implements AsyncResponse {
             return;
 
         for (SearchModel search : searches) {
-
             // Save each search to Firebase
             ref.child("queries").child(userId).child(search.getId()).setValue(search);
 
@@ -353,6 +352,7 @@ public class SearchRepository implements AsyncResponse {
                 for (DataSnapshot childSnapshot : snapshot.getChildren())
                     if (!searches.contains(childSnapshot.getValue(SearchModel.class)))
                         childSnapshot.getRef().removeValue();
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) { }

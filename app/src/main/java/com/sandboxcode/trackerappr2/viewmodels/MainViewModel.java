@@ -6,6 +6,8 @@ import android.view.View;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.sandboxcode.trackerappr2.R;
@@ -14,17 +16,22 @@ import com.sandboxcode.trackerappr2.models.ResultModel;
 import com.sandboxcode.trackerappr2.models.SearchModel;
 import com.sandboxcode.trackerappr2.repositories.AuthRepository;
 import com.sandboxcode.trackerappr2.repositories.SearchRepository;
+import com.sandboxcode.trackerappr2.utils.DataBackupWorker;
 import com.sandboxcode.trackerappr2.utils.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MainViewModel extends AndroidViewModel {
 
     private static final String TAG = MainViewModel.class.getSimpleName();
+    private static final String DATA_BACKUP_TAG = "data_backup_tag";
     private final SearchRepository searchRepository;
     private final AuthRepository authRepository;
+    private WorkManager workManager;
+
     /* MainActivity */
     private final MutableLiveData<Boolean> userSignedIn;
     private final MutableLiveData<Boolean> signUserOut;
@@ -59,6 +66,7 @@ public class MainViewModel extends AndroidViewModel {
 
         searchRepository = new SearchRepository(application);
         authRepository = new AuthRepository();
+
 //        allSearches = searchRepository.getAllSearches();
 
         userSignedIn = authRepository.getUserSignedIn();
@@ -66,6 +74,19 @@ public class MainViewModel extends AndroidViewModel {
 
         checkedResults = new ArrayList<>();
 
+        workManager = WorkManager.getInstance(application);
+        startDataBackupWork();
+
+    }
+
+    /** Backup Local DB to Firebase Realtime DB every hour and on app startup */
+    public void startDataBackupWork() {
+        PeriodicWorkRequest backupRequest = new PeriodicWorkRequest.Builder(
+                DataBackupWorker.class, 60, TimeUnit.MINUTES)
+                .addTag(DATA_BACKUP_TAG)
+                .build();
+
+        workManager.enqueue(backupRequest);
     }
 
     public MutableLiveData<Boolean> getUserSignedIn() {
