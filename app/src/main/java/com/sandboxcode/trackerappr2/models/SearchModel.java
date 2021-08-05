@@ -14,12 +14,16 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-@Entity(tableName = "search_table")
+@Entity(tableName = "search_table",
+primaryKeys = {"id", "user_id"})
 public class SearchModel implements Parcelable {
 
-    @PrimaryKey
     @NonNull
     private String id;
+
+    @ColumnInfo(name = "user_id")
+    @NonNull
+    private String userId;
 
     @ColumnInfo(name = "search_name")
     private String searchName;
@@ -55,9 +59,10 @@ public class SearchModel implements Parcelable {
     @ColumnInfo(name = "last_edited_date")
     private String lastEditedDate;
 
-    public SearchModel(String key, String searchName, String model, String trim, String minYear,
+    public SearchModel(String key, String userId, String searchName, String model, String trim, String minYear,
                        String maxYear, String minPrice, String maxPrice, String allDealerships) {
         this.id = key;
+        this.userId = userId;
         this.searchName = searchName;
         this.model = model;
         this.trim = trim;
@@ -68,10 +73,11 @@ public class SearchModel implements Parcelable {
         this.allDealerships = allDealerships;
     }
 
-    public SearchModel(String key, String searchName, String model, String trim, String minYear,
+    public SearchModel(String key, String userId, String searchName, String model, String trim, String minYear,
                        String maxYear, String minPrice, String maxPrice, String allDealerships,
                        int numberOfResults, int numberOfNewResults) {
         this.id = key;
+        this.userId = userId;
         this.searchName = searchName;
         this.model = model;
         this.trim = trim;
@@ -132,6 +138,7 @@ public class SearchModel implements Parcelable {
 
     protected SearchModel(Parcel in) {
         id = in.readString();
+        userId = in.readString();
         searchName = in.readString();
         model = in.readString();
         trim = in.readString();
@@ -196,6 +203,7 @@ public class SearchModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
+        dest.writeString(userId);
         dest.writeString(model);
         dest.writeString(trim);
         dest.writeString(minYear);
@@ -267,5 +275,14 @@ public class SearchModel implements Parcelable {
 
     public void setLastEditedDate(String lastEditedDate) {
         this.lastEditedDate = lastEditedDate;
+    }
+
+    @NonNull
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(@NonNull String userId) {
+        this.userId = userId;
     }
 }

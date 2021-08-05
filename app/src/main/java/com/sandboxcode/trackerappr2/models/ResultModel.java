@@ -22,12 +22,7 @@ import java.util.Map;
 // TODO - Implement AutoValue @Parcelable extension (need to make class immutable)
 @Parcel
 @Entity(tableName = "result_table",
-        primaryKeys = {"vin", "search_id"},
-        foreignKeys = @ForeignKey(
-                entity = SearchModel.class,
-                parentColumns = "id",
-                childColumns = "search_id",
-                onDelete = CASCADE)
+        primaryKeys = {"vin", "search_id"}
 )
 public class ResultModel implements Serializable {
 

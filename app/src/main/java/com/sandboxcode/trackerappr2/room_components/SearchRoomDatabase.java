@@ -12,7 +12,7 @@ import com.sandboxcode.trackerappr2.models.SearchModel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {SearchModel.class, ResultModel.class}, version = 2)
+@Database(entities = {SearchModel.class, ResultModel.class}, version = 3)
 public abstract class SearchRoomDatabase extends RoomDatabase {
 
     public abstract SearchDao getSearchDao();

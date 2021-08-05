@@ -71,7 +71,7 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
     }
 
     private void refreshResults(String userId) {
-        List<SearchModel> searches = searchDao.loadAllSearchesOnce();
+        List<SearchModel> searches = searchDao.loadAllSearchesOnce(userId);
 
         if (searches == null || searches.isEmpty())
             return;
@@ -292,7 +292,7 @@ public class ResultsReceiver extends BroadcastReceiver implements DailyAsyncResp
     public void processResults(Map<String, ArrayList<ResultModel>> results) {
 
         // Load all searches from DB
-        List<SearchModel> searches = searchDao.loadAllSearchesOnce();
+        List<SearchModel> searches = searchDao.loadAllSearchesOnce(userId);
         if (searches == null || searches.isEmpty())
             return;
 

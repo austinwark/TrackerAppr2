@@ -64,7 +64,8 @@ public class EditViewModel extends AndroidViewModel {
                             String minPrice, String maxPrice, String allDealerships,
                             String createdDate) {
 
-        SearchModel searchModel = new SearchModel(searchId, name, model, trim, minYear,
+        String userId = repository.getUserId();
+        SearchModel searchModel = new SearchModel(searchId, userId, name, model, trim, minYear,
                 maxYear, minPrice, maxPrice, allDealerships);
         searchModel.setLastEditedDate();
         searchModel.setCreatedDate(createdDate);

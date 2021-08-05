@@ -59,7 +59,8 @@ public class SearchRepository implements AsyncResponse {
         searchDao = db.getSearchDao();
         resultDao = db.getResultDao();
 
-        allRoomSearches = searchDao.loadAllSearches();
+        String userId = getUserId();
+        allRoomSearches = searchDao.loadAllSearches(userId);
     }
 
 //    public void setListeners() {
@@ -139,10 +140,12 @@ public class SearchRepository implements AsyncResponse {
 //        final String KEY = DATABASE_REF.child("queries")
 //                .child(authRepository.getUserId()).push().getKey();
 
+        String userId = getUserId();
         final String KEY = UUID.randomUUID().toString();
-
-        SearchModel searchModel = new SearchModel(KEY, name, model, trim, minYear,
+        Log.d(TAG, userId);
+        SearchModel searchModel = new SearchModel(KEY, userId, name, model, trim, minYear,
                 maxYear, minPrice, maxPrice, allDealerships);
+        Log.d(TAG, searchModel.getUserId());
         searchModel.setCreatedDate();
         searchModel.setLastEditedDate();
 
@@ -308,14 +311,14 @@ public class SearchRepository implements AsyncResponse {
     public void backupDataToFirebase() {
 
         // User must be logged in recently
-        if (AUTH_REF.getCurrentUser() == null)
+        if (getUserId() == null)
             return;
 
-        String userId = AUTH_REF.getCurrentUser().getUid();
+        String userId = getUserId();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
         // Searches saved to local DB
-        List<SearchModel> searches = searchDao.loadAllSearchesOnce();
+        List<SearchModel> searches = searchDao.loadAllSearchesOnce(userId);
 
         if (searches == null || searches.isEmpty())
             return;
