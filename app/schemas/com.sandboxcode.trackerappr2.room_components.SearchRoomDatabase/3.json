@@ -1,0 +1,236 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "1e218fddf4f6ae3305bc24fe5c759c0c",
+    "entities": [
+      {
+        "tableName": "search_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` TEXT NOT NULL, `search_name` TEXT, `model` TEXT, `trim` TEXT, `min_year` TEXT, `max_year` TEXT, `min_price` TEXT, `max_price` TEXT, `all_dealerships` TEXT, `number_of_results` INTEGER NOT NULL, `number_of_new_results` INTEGER NOT NULL, `created_date` TEXT, `last_edited_date` TEXT, PRIMARY KEY(`id`, `user_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "searchName",
+            "columnName": "search_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "trim",
+            "columnName": "trim",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minYear",
+            "columnName": "min_year",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "maxYear",
+            "columnName": "max_year",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minPrice",
+            "columnName": "min_price",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "maxPrice",
+            "columnName": "max_price",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "allDealerships",
+            "columnName": "all_dealerships",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "numberOfResults",
+            "columnName": "number_of_results",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfNewResults",
+            "columnName": "number_of_new_results",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdDate",
+            "columnName": "created_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastEditedDate",
+            "columnName": "last_edited_date",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id",
+            "user_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "result_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`vin` TEXT NOT NULL, `search_id` TEXT NOT NULL, `stock` TEXT, `make` TEXT, `model` TEXT, `year` TEXT, `trim` TEXT, `ext_color` TEXT, `int_color` TEXT, `price` TEXT, `miles` TEXT, `engine` TEXT, `transmission` TEXT, `dealer` TEXT, `image_url` TEXT, `is_new_result` INTEGER NOT NULL, `carfax_link` TEXT, `details_link` TEXT, PRIMARY KEY(`vin`, `search_id`))",
+        "fields": [
+          {
+            "fieldPath": "vin",
+            "columnName": "vin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "searchId",
+            "columnName": "search_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stock",
+            "columnName": "stock",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "make",
+            "columnName": "make",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "trim",
+            "columnName": "trim",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "extColor",
+            "columnName": "ext_color",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "intColor",
+            "columnName": "int_color",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "miles",
+            "columnName": "miles",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "engine",
+            "columnName": "engine",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transmission",
+            "columnName": "transmission",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dealer",
+            "columnName": "dealer",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "image_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isNewResult",
+            "columnName": "is_new_result",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "carfaxLink",
+            "columnName": "carfax_link",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "detailsLink",
+            "columnName": "details_link",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "vin",
+            "search_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1e218fddf4f6ae3305bc24fe5c759c0c')"
+    ]
+  }
+}

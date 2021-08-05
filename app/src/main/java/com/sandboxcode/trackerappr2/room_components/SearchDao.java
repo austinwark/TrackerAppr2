@@ -28,11 +28,11 @@ public interface SearchDao {
     @Delete
     public void deleteSearches(SearchModel... searches);
 
-    @Query("SELECT * FROM search_table")
-    public List<SearchModel> loadAllSearchesOnce();
+    @Query("SELECT * FROM search_table WHERE user_id = :userId")
+    public List<SearchModel> loadAllSearchesOnce(String userId);
 
-    @Query("SELECT * FROM search_table")
-    public LiveData<List<SearchModel>> loadAllSearches();
+    @Query("SELECT * FROM search_table WHERE user_id = :userId")
+    public LiveData<List<SearchModel>> loadAllSearches(String userId);
 
     @Query("SELECT * FROM search_table WHERE id = :searchId")
     public LiveData<SearchModel> loadSingleSearch(String searchId);
